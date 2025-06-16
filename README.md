@@ -30,3 +30,24 @@ Bienvenue sur le dépôt GitHub du projet **Leila Snacks & Douceurs**, un site e
 ```bash
 git clone https://github.com/taizceccon/leilasnacksetdouceurs.git
 cd leilasnacksetdouceurs
+
+##Fonctionnalités principales
+Affichage des produits par catégorie
+
+Panier avec système de commande
+Formulaire de contact
+Gestion des horaires
+Interface d’administration (CRUD Produits, Commandes, Horaires)
+
+
+## Documentation complémentaire
+Charte graphique : /docs/charte_graphique.pdf
+
+Diagrammes UML : /docs/diagrammes/
+
+Présentation projet : /docs/dossier_projet_leila.pdf
+
+## Auteur
+Taiz Ceccon 
+Développeuse Web en formation DWWM - Promo 2025
+linkedin.com/in/taiz-ceccon
