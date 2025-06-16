@@ -47,6 +47,8 @@ Diagrammes UML : /docs/diagrammes/
 
 Présentation projet : /docs/dossier_projet_leila.pdf
 
+« Ce projet est encore en cours d’intégration, la partie paiement est optionnelle selon le temps restant. »
+
 ## Auteur
 Taiz Ceccon 
 Développeuse Web en formation DWWM - Promo 2025
