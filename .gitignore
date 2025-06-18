@@ -1,27 +1,43 @@
-# Ignorer les fichiers système
+# Fichiers système
 .DS_Store
 Thumbs.db
 
-# Ignorer les fichiers d’environnement
+# Fichiers d'environnement
 .env
+.env.local
+.env.*.local
+.env.test
 
 # Cache et logs
 /var/
 /vendor/
 /node_modules/
+/cache/
+/logs/
+/tmp/
+
+# Dossiers publics compilés
 /public/build/
 /public/bundles/
 /public/uploads/
-/cache/
-/logs/
 
-# IDEs
+# IDE et éditeurs
 .vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
 
-# Tests
+# PHPUnit
 phpunit.xml
 phpunit.result.cache
 
-# Migrations générées (si tu veux les exclure)
-#migrations/
+# Composer
+composer.lock
+
+# Autres fichiers sensibles ou inutiles
+*.log
+*.cache
+*.lock
+
+# Docker / dev
+docker-compose.override.yml
