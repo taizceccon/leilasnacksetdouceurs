@@ -64,6 +64,37 @@ final class HomeController extends AbstractController
         ]);
     }
 
+   
+    #[Route('/snacks', name: 'category_snacks')]
+    public function showSnacks(CategoryRepository $categoryRepository): Response
+    {
+        $category = $categoryRepository->find(1); // ID de la catégorie "snacks"
+
+        return $this->render('product/snacks.html.twig', [
+            'category' => $category,
+        ]);
+    }
+
+    #[Route('/douceurs', name: 'category_douceurs')]
+    public function showDouceurs(CategoryRepository $categoryRepository): Response
+    {
+        $category = $categoryRepository->find(2); // ID de la catégorie "Douceurs"
+
+        return $this->render('product/douceurs.html.twig', [
+            'category' => $category,
+        ]);
+    }
+
+    #[Route('/packs-coffrets', name: 'category_packs')]
+    public function showPacks(CategoryRepository $categoryRepository): Response
+    {
+        $category = $categoryRepository->find(3); // ID de la catégorie "Packs & Coffrets"
+
+        return $this->render('product/packs_coffrets.html.twig', [
+            'category' => $category,
+        ]);
+    }
+
     #[Route('/contact', name: 'app_contact')]
     public function contact(Request $request, EntityManagerInterface $em, MailerInterface $mailer): Response
     {

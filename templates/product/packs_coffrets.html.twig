@@ -1,0 +1,49 @@
+{# templates/category/packs_coffrets.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Packs & Coffrets - Douceurs & Snacks de Leila{% endblock %}
+
+{% block body %}
+<section class="text-center py-8 bg-pink-100">
+    <h1 class="text-4xl font-cursive text-pink-800">🎁 Packs & Coffrets</h1>
+    <p class="text-pink-700 mt-2">Des assortiments gourmands pour faire plaisir ou se faire plaisir 💝</p>
+</section>
+
+{# <section class="w-full">
+    <img src="{{ asset('images/packs_banner.jpg') }}" alt="Packs et Coffrets" class="w-full h-[300px] object-cover object-center rounded-lg shadow-md md:h-[400px] lg:h-[500px]">
+</section> #}
+
+<section class="container mx-auto py-10">
+    {% if category %}
+        <h2 class="text-2xl font-bold text-center mb-8">{{ category.category }}</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for product in category.products %}
+                <div class="bg-white rounded shadow p-4 text-center hover:shadow-xl transition">
+                    <a href="{{ path('product_detail', {'id': product.id}) }}">
+                        <img src="/images/{{ product.image }}" alt="{{ product.titre }}" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer">
+                        <h3 class="font-bold text-lg hover:underline">{{ product.titre }}</h3>
+                    </a>
+                    <p class="text-sm text-gray-600">
+                        {{ product.description|length > 100 ? product.description[:100] ~ '...' : product.description }}
+                    </p>
+                    {% if product.urlvideo %}
+                        <a href="{{ product.urlvideo }}" target="_blank" class="text-blue-500 underline block mt-2">Voir en vidéo</a>
+                    {% endif %}
+                    <p class="text-green-600 font-semibold mt-2">{{ (product.prix / 100)|number_format(2, ',', ' ') }} €</p>
+
+                    <form action="{{ path('cart_add') }}" method="POST" class="mt-2">
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <input type="number" name="quantity" value="1" min="1" class="border rounded w-16 text-center">
+                        <button type="submit" class="bg-pink-600 text-white rounded px-4 py-1 mt-2">Ajouter au panier</button>
+                    </form>
+                </div>
+            {% else %}
+                <p class="text-center col-span-4 text-gray-500">Aucun produit disponible pour le moment.</p>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-gray-600">La catégorie "Packs & Coffrets" n'existe pas ou a été désactivée.</p>
+    {% endif %}
+</section>
+{% endblock %}
