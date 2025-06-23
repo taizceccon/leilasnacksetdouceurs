@@ -2,42 +2,38 @@
 .DS_Store
 Thumbs.db
 
-# Fichiers d'environnement
+# MAMP ou autres environnements locaux
+tmp/
+logs/
+*.log
+
+# Node (si tu utilises npm ou vite)
+node_modules/
+
+# Composer
+/vendor/
+/composer.lock
+
+# Fichiers sensibles
 .env
 .env.local
-.env.*.local
-.env.test
+.env.*
 
-# Cache et logs
-/var/
-/vendor/
-/node_modules/
-/cache/
-/logs/
-/tmp/
-
-# Dossiers publics compilés
-/public/build/
-/public/bundles/
-/public/uploads/
-
-# IDE et éditeurs
-.vscode/
+# Cache d'éditeurs
 .idea/
+.vscode/
 *.sublime-project
 *.sublime-workspace
 
-# PHPUnit
-phpunit.xml
-phpunit.result.cache
+# Autres fichiers temporaires
+*.bak
+*.tmp
+*.swp
+*.orig
 
-# Composer
-composer.lock
+# Systèmes Unix / macOS
+*.~undo-tree~
+*~
 
-# Autres fichiers sensibles ou inutiles
-*.log
-*.cache
-*.lock
-
-# Docker / dev
-docker-compose.override.yml
+# fichiers upload temporaires
+uploads_tmp/
