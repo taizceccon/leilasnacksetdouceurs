@@ -1,17 +1,45 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} Douceurs & Snacks de Leila {% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="icon" href="/favicon.ico">    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
+    {% block stylesheets %}{% endblock %}
+    
+</head>
+<body class="bg-pink-50 text-gray-800 font-sans">    
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <a href="{{ path('app_home') }}"><img src="/images/logo.png" alt="Logo Leila" class="h-40"></a>                
+            </div>
+            <nav class="space-x-4 text-sm">
+                <a href="#" class="text-gray-600 hover:text-pink-600">Snacks</a>
+                <a href="#" class="text-gray-600 hover:text-pink-600">Douceurs</a>
+                <a href="#" class="text-gray-600 hover:text-pink-600">Packs & Coffrets</a>
+                <a href="#" class="text-gray-600 hover:text-pink-600">Inscription</a>
+                <a href="{{ path('app_contact') }}" class="text-gray-600 hover:text-pink-600">Contact</a>
+                <a href="{{ path('cart_show') }}" class="font-bold text-pink-600">Mon Panier</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
         {% block body %}{% endblock %}
-    </body>
+    </main>
+
+    <footer class="bg-white border-t mt-10 py-4 text-center text-sm text-gray-500">
+        &copy; {{ "now"|date("Y") }} Douceurs & Snacks de Leila. Tous droits réservés.
+        <div class="mt-2">
+            <a href="/contact" class="mx-2">Contact</a> · 
+            <a href="#" class="mx-2">Instagram</a> · 
+            <a href="#" class="mx-2">Commander</a>
+        </div>
+    </footer>
+
+</body>
 </html>

@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Contact;
+use App\Form\ContactType;
+use App\Repository\ProductRepository;
+use App\Repository\CategoryRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request; 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Routing\Annotation\Route;
+
+
+final class HomeController extends AbstractController
+{
+    // #[Route('/', name: 'app_home')]
+    // public function index(): Response
+    // {
+    //     return $this->render('index.html.twig', [
+    //         'controller_name' => 'HomeController',
+    //     ]);
+    // }
+
+    #[Route('/', name: 'app_home')]
+    public function index(ProductRepository $productRepository): Response
+    {
+        $snacks = $productRepository->findByCategoryName('Snacks');
+        $douceurs = $productRepository->findByCategoryName('Douceurs');
+
+        dump($snacks, $douceurs);
+
+        return $this->render('home/index.html.twig', [
+            'Snacks' => $snacks,
+            'Douceurs' => $douceurs,
+        ]);
+    }
+
+
+
+   #[Route('/products', name: 'products_index')]
+    public function products(CategoryRepository $categoryRepository): Response
+    {
+        $categories = $categoryRepository->findAllWithProducts();
+
+        return $this->render('product/index.html.twig', [
+            'categories' => $categories,
+        ]);
+    }
+
+
+    #[Route('/product/{id}', name: 'product_detail')]
+    public function productDetail(int $id, ProductRepository $productRepository): Response
+    {
+        $product = $productRepository->find($id);
+        if (!$product) {
+            throw $this->createNotFoundException('Produit non trouvé');
+        }
+
+        return $this->render('product/detail.html.twig', [
+            'product' => $product,
+        ]);
+    }
+
+    #[Route('/contact', name: 'app_contact')]
+    public function contact(Request $request, EntityManagerInterface $em, MailerInterface $mailer): Response
+    {
+        $contact = new Contact();
+        $form = $this->createForm(ContactType::class, $contact);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $contact->setCreatedAt(new \DateTime());
+            $em->persist($contact);
+            $em->flush();
+
+            // Envoi de l'email (exemple)
+            $email = (new \Symfony\Component\Mime\Email())
+                ->from($contact->getEmail())
+                ->to('tzlogicsolutions@gmail.com')
+                ->subject($contact->getSujet())
+                ->text($contact->getMessage());
+
+            $mailer->send($email);
+
+            $this->addFlash('success', 'Message envoyé avec succès !');
+            return $this->redirectToRoute('app_contact');
+        }
+
+        return $this->render('contact/index.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+}

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use App\Entity\Category;
 
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
@@ -13,6 +14,9 @@ class Product
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?Category $category = null;
 
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
@@ -30,7 +34,18 @@ class Product
     private ?string $urlvideo = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
-    private ?Category $Category = null;
+
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
+        return $this;
+    }
 
     public function getId(): ?int
     {
@@ -97,15 +112,5 @@ class Product
         return $this;
     }
 
-    public function getCategory(): ?Category
-    {
-        return $this->Category;
-    }
-
-    public function setCategory(?Category $Category): static
-    {
-        $this->Category = $Category;
-
-        return $this;
-    }
+  
 }
