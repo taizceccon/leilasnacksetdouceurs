@@ -95,6 +95,15 @@ final class HomeController extends AbstractController
         ]);
     }
 
+    #[Route('/commander', name: 'order_index')]
+    public function commander(): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        // traites la commande
+        return $this->render('order/index.html.twig');
+    }
+
     #[Route('/contact', name: 'app_contact')]
     public function contact(Request $request, EntityManagerInterface $em, MailerInterface $mailer): Response
     {

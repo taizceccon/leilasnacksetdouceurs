@@ -4,42 +4,174 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} Douceurs & Snacks de Leila {% endblock %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    {# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"> #}
     <link rel="icon" href="/favicon.ico">    
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+            extend: {
+                colors: {
+                roseFonce: '#C4847C',
+                jaunePale: '#EDCC8B',
+                bleuMenthe: '#84D3CE',
+                crème: '#F9F4F2',
+                vertSauge: '#7B9E87',
+                rosé: '#E5C1BD',
+                }
+            }
+            }
+        }
+        </script>
 
     {% block stylesheets %}{% endblock %}
     
 </head>
 <body class="bg-pink-50 text-gray-800 font-sans">    
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <a href="{{ path('app_home') }}"><img src="/images/logo.png" alt="Logo Leila" class="h-40"></a>                
-            </div>
-            <nav class="space-x-4 text-sm">
-                <a href="{{ path('category_snacks') }}" class="text-gray-600 hover:text-pink-600">Snacks</a>
-                <a href="{{ path('category_douceurs') }}" class="text-gray-600 hover:text-pink-600">Douceurs</a>
-                <a href="{{ path('category_packs') }}" class="text-gray-600 hover:text-pink-600">Packs & Coffrets</a>
-                <a href="#" class="text-gray-600 hover:text-pink-600">Inscription</a>
-                <a href="{{ path('app_contact') }}" class="text-gray-600 hover:text-pink-600">Contact</a>
-                <a href="{{ path('cart_show') }}" class="font-bold text-pink-600">Mon Panier</a>
-            </nav>
-        </div>
-    </header>
+   <header class="bg-crème shadow-md py-4">
+  <div class="container mx-auto px-4 flex items-center justify-between">
+
+    <!-- Logo -->
+    <a href="{{ path('app_home') }}">
+    <img src="/images/logo.png" alt="Logo Leila" class="h-40 sm:h-48">  {# ou h-56, h-64, selon ton besoin #}
+    </a>
+    <!-- Menu principal -->
+    <nav class="hidden md:flex items-center space-x-6 text-vertSauge font-medium">
+      <a href="{{ path('category_snacks') }}" class="hover:text-bleuMenthe">Snacks</a>
+      <a href="{{ path('category_douceurs') }}" class="hover:text-bleuMenthe">Douceurs</a>
+      <a href="{{ path('category_packs') }}" class="hover:text-bleuMenthe">Packs & Coffrets</a>
+      <a href="#" class="hover:text-bleuMenthe">Qui sommes-nous</a>
+      <a href="{{ path('app_contact') }}" class="hover:text-bleuMenthe">Contact</a>
+    </nav>
+
+    <!-- Icônes recherche / auth / panier -->
+    <div class="flex items-center space-x-4 text-vertSauge">
+
+      <!-- Recherche -->
+      <button class="hover:text-bleuMenthe transition">
+        <img src="/images/search.png" alt="Rechercher" class="w-6 h-6">
+      </button>
+
+      <!-- Auth -->
+      {# <a href="/login" class="hover:opacity-80 transition">
+        <img src="/images/login-.png" alt="Se connecter" class="w-6 h-6">
+        </a> #}
+        {% if app.user %}
+            <span class="text-sm">Bonjour, {{ app.user.email }}</span>
+            <a href="{{ path('app_logout') }}" class="hover:opacity-80 transition">
+                <img src="/images/logout.png" alt="Se déconnecter" class="w-6 h-6">
+            </a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="hover:opacity-80 transition">
+                <img src="/images/login-.png" alt="Se connecter" class="w-6 h-6">
+            </a>
+        {% endif %}
+
+      <a href="{{ path('cart_show') }}" class="relative hover:opacity-80 transition">
+        <img src="/images/panier-vide.png" alt="Mon panier" class="w-6 h-6">
+
+        {# Badge de nombre d'articles dans le panier
+        <span class="absolute -top-2 -right-2 bg-jaunePale text-crème text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            {# {{ cart.count }} 
+        </span> #}
+        </a>
+
+       <!-- Burger mobile -->
+      <button id="burger-button" class="md:hidden hover:text-bleuMenthe transition">
+        <!-- Menu SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="4" y1="6" x2="20" y2="6"/>
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <line x1="4" y1="18" x2="20" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+ </header>
+    <!-- Menu mobile (masqué par défaut) -->
+    <nav id="mobile-menu" class="md:hidden hidden flex-col bg-crème text-vertSauge text-lg px-6 py-4 space-y-3">
+    <a href="{{ path('category_snacks') }}" class="hover:text-bleuMenthe">Snacks</a>
+    <a href="{{ path('category_douceurs') }}" class="hover:text-bleuMenthe">Douceurs</a>
+    <a href="{{ path('category_packs') }}" class="hover:text-bleuMenthe">Packs & Coffrets</a>
+    <a href="#" class="hover:text-bleuMenthe">Qui sommes-nous</a>
+    <a href="{{ path('app_contact') }}" class="hover:text-bleuMenthe">Contact</a>
+    </nav>
 
     <main>
         {% block body %}{% endblock %}
     </main>
 
-    <footer class="bg-white border-t mt-10 py-4 text-center text-sm text-gray-500">
-        &copy; {{ "now"|date("Y") }} Douceurs & Snacks de Leila. Tous droits réservés.
-        <div class="mt-2">
-            <a href="/contact" class="mx-2">Contact</a> · 
-            <a href="#" class="mx-2">Instagram</a> · 
-            <a href="#" class="mx-2">Commander</a>
+
+    <footer class="bg-[#C4847C] text-[#F9F4F2] text-sm mt-16 pt-12 pb-6 border-t border-[#EDCC8B]">
+    {# <footer class="bg-roseFonce text-crème border-t border-jaunePale"> #}
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-10">
+
+        <!-- Bloc 1 : Logo + newsletter -->
+        <div>
+        <h2 class="text-xl font-semibold text-[#EDCC8B] mb-4">Leila Snacks & Douceurs</h2>
+        <p class="mb-4 text-sm text-[#F9F4F2]">Des douceurs faites avec amour, pour tous vos moments gourmands.</p>
+
+        <!-- Formulaire Newsletter -->
+        <form class="flex flex-col sm:flex-row gap-2 mb-4">
+            <input type="email" placeholder="Votre email" class="px-3 py-2 rounded-md border border-[#EDCC8B] text-sm text-[#7B9E87] bg-white focus:outline-none focus:ring-2 focus:ring-[#84D3CE] w-full sm:w-auto" />
+            <button type="submit" class="bg-[#84D3CE] text-white px-4 py-2 rounded-md hover:bg-[#E5C1BD] transition">S'inscrire</button>
+        </form>
+
+        <!-- Réseaux sociaux -->
+        <div class="flex space-x-4 mt-2">
+            <a href="https://facebook.com" target="_blank" aria-label="Facebook" class="text-[#EDCC8B] hover:text-[#84D3CE] transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.86 7.94 9.8v-6.93H7.1v-2.87h2.84V9.41c0-2.8 1.67-4.34 4.22-4.34 1.22 0 2.5.22 2.5.22v2.74H15.5c-1.4 0-1.83.87-1.83 1.76v2.11h3.12l-.5 2.87h-2.62V21.8C18.56 20.86 22 16.84 22 12z"/>
+            </svg>
+            </a>
+            <a href="https://instagram.com" target="_blank" aria-label="Instagram" class="text-[#EDCC8B] hover:text-[#84D3CE] transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7.75 2A5.75 5.75 0 002 7.75v8.5A5.75 5.75 0 007.75 22h8.5A5.75 5.75 0 0022 16.25v-8.5A5.75 5.75 0 0016.25 2h-8.5zm0 1.5h8.5A4.25 4.25 0 0120.5 7.75v8.5a4.25 4.25 0 01-4.25 4.25h-8.5a4.25 4.25 0 01-4.25-4.25v-8.5A4.25 4.25 0 017.75 3.5zm8.75 2a.75.75 0 100 1.5.75.75 0 000-1.5zM12 7a5 5 0 100 10 5 5 0 000-10zm0 1.5a3.5 3.5 0 110 7 3.5 3.5 0 010-7z"/>
+            </svg>
+            </a>
+            <a href="https://youtube.com" target="_blank" aria-label="YouTube" class="text-[#EDCC8B] hover:text-[#84D3CE] transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 15l5.19-3L10 9v6zm12-3c0-1.6-.13-3.3-.38-4.9-.27-1.72-1.7-3.08-3.45-3.3C15.58 3.5 12 3.5 12 3.5s-3.58 0-6.17.3c-1.76.22-3.18 1.58-3.45 3.3C2.13 8.7 2 10.4 2 12s.13 3.3.38 4.9c.27 1.72 1.7 3.08 3.45 3.3C8.42 20.5 12 20.5 12 20.5s3.58 0 6.17-.3c1.76-.22 3.18-1.58 3.45-3.3.25-1.6.38-3.3.38-4.9z"/>
+            </svg>
+            </a>
         </div>
+        </div>
+
+        <!-- Bloc 2 : Navigation principale -->
+        <div>
+        <h3 class="text-md font-semibold text-[#EDCC8B] mb-3">Navigation</h3>
+        <ul class="space-y-2 text-[#F9F4F2]">
+            <a href="{{ path('order_index') }}" class="hover:text-bleuMenthe">Commander</a>
+            <li><a href="/commander" class="hover:text-[#84D3CE] transition">Commander</a></li>
+            <li><a href="/contact" class="hover:text-[#84D3CE] transition">Contact</a></li>
+            <li><a href="/faq" class="hover:text-[#84D3CE] transition">FAQ</a></li>
+        </ul>
+        </div>
+
+        <!-- Bloc 3 : Informations légales -->
+        <div>
+        <h3 class="text-md font-semibold text-[#EDCC8B] mb-3">Informations</h3>
+        <ul class="space-y-2 text-[#F9F4F2]">
+            <li><a href="#" class="hover:text-[#84D3CE] transition">À propos</a></li>
+            <li><a href="#" class="hover:text-[#84D3CE] transition">Mentions Légales</a></li>
+            <li><a href="#" class="hover:text-[#84D3CE] transition">Tableau des allergènes</a></li>
+        </ul>
+        </div>
+    </div>
+
+    <!-- Bas de page -->
+    <div class="mt-12 text-center text-xs text-[#F9F4F2] border-t border-[#F9F4F2] pt-4">
+        &copy; {{ "now"|date("Y") }} Leila Snacks & Douceurs. Tous droits réservés.
+    </div>
     </footer>
 
-</body>
+    <script>
+    document.getElementById('burger-button').addEventListener('click', function () {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+    });
+    </script>
+
+ </body>
 </html>

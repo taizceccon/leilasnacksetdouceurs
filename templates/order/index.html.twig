@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow">
+        <h1 class="text-xl font-bold mb-4">Passer commande</h1>
+        <p>Bienvenue {{ app.user.email }}, vous pouvez maintenant finaliser votre commande.</p>
+        <!-- TODO : Formulaire ou récap du panier -->
+    </div>
+{% endblock %}
