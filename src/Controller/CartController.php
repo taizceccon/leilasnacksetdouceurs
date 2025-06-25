@@ -81,4 +81,15 @@ class CartController extends AbstractController
         return $this->redirectToRoute('cart_show');
     }
 
+    #[Route('/commander', name: 'order_index')]
+    public function commander(Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        // Récupérer le panier, l’utilisateur, etc.
+        return $this->render('order/index.html.twig', [
+            'user' => $this->getUser(),
+        ]);
+    }
+
 }
