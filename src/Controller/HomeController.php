@@ -64,6 +64,18 @@ final class HomeController extends AbstractController
         ]);
     }
 
+    #[Route('/admin', name: 'admin')]
+    public function admin(ProductRepository $productRepository): Response
+    {
+        // Récupérer tous les produits (ou selon la logique admin)
+        $products = $productRepository->findAll();
+
+        // Rendre une vue spécifique à l’admin
+        return $this->render('admin/index.html.twig', [
+            'products' => $products,
+        ]);
+    }
+
    
     #[Route('/snacks', name: 'category_snacks')]
     public function showSnacks(CategoryRepository $categoryRepository): Response
@@ -133,4 +145,5 @@ final class HomeController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    
 }

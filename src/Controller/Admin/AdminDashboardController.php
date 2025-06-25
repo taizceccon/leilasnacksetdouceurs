@@ -12,13 +12,19 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 
+use App\Controller\Admin\ProductCrudController;
+
+
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class AdminDashboardController extends AbstractDashboardController
 {
     public function index(): Response
     {
-        return parent::index();
+        
+         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
+         return $this->redirect($adminUrlGenerator->setController(ProductCrudController::class)->generateUrl());
 
+        // return parent::index();
         // Option 1. You can make your dashboard redirect to some common page of your backend
         //
         // 1.1) If you have enabled the "pretty URLs" feature:
@@ -51,8 +57,10 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
 
-        yield MenuItem::section('Gestion des Produits');
-        yield MenuItem::linkToCrud('Produits', 'fas fa-box', Product::class);
-        yield MenuItem::linkToCrud('Catégories', 'fas fa-tags', Category::class);
+    yield MenuItem::section('Produits & Catégories');
+    yield MenuItem::linkToCrud('Produits', 'fas fa-box', Product::class);
+    yield MenuItem::linkToCrud('Catégories', 'fas fa-tags', Category::class);
+
+
     }
 }

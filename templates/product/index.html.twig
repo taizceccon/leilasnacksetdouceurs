@@ -56,7 +56,8 @@
                         <h3 class="font-bold hover:underline cursor-pointer">{{ product.titre }}</h3>
                     </a>
                     <p class="text-sm">{{ product.description|length > 100 ? product.description[:100] ~ '...' : product.description }}</p>
-                    <p class="text-green-600 font-semibold mt-2">{{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité</p>
+                    <p class="text-green-600 font-semibold mt-2">
+                    <p>Prix : {{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité </p>
                 </div>
             {% else %}
                 <p>Aucun produit dans cette catégorie.</p>

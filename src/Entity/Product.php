@@ -6,6 +6,9 @@ use App\Entity\Category;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints\File as FileConstraint;
+
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -29,6 +32,19 @@ class Product
 
     #[ORM\Column(length: 255)]
     private ?string $image = null;
+
+    private ?File $imageFile = null;
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(?File $imageFile): static
+    {
+        $this->imageFile = $imageFile;
+        return $this;
+    }
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlvideo = null;

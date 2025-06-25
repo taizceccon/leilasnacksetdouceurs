@@ -9,6 +9,9 @@
         <h1 class="text-2xl font-bold mb-2">{{ product.titre }}</h1>
         <p class="mb-4">{{ product.description }}</p>
         <p class="text-green-600 font-semibold">{{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité</p>
+        {% if product.image %}
+            <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.titre }}" style="max-width: 300px;">
+        {% endif %}
         {% if product.urlvideo %}
             <iframe width="320" height="180" class="mx-auto mt-4" src="{{ product.urlvideo }}" frameborder="0" allowfullscreen></iframe>
         {% endif %}

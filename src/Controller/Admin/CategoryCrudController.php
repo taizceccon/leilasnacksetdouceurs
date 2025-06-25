@@ -15,14 +15,13 @@ class CategoryCrudController extends AbstractCrudController
         return Category::class;
     }
 
-    /*
+    
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+             IdField::new('id')->onlyOnIndex(),
+             TextField::new('category', 'Nom de la catégorie')            
         ];
     }
-    */
+    
 }

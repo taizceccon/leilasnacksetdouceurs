@@ -45,13 +45,36 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-            return new RedirectResponse($targetPath);
-        }
 
+
+        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+                return new RedirectResponse($targetPath);
+            }
+
+            // Vérifie si l'utilisateur est admin
+            $user = $token->getUser();
+            if (in_array('ROLE_ADMIN', $user->getRoles())) {
+                return new RedirectResponse($this->urlGenerator->generate('admin'));
+            }
+
+            // Sinon, redirige vers une page normale (à adapter)
+            return new RedirectResponse($this->urlGenerator->generate('app_home'));
+
+
+        // if (in_array('ROLE_ADMIN', $token->getRoleNames())) {
+        // return new RedirectResponse($this->urlGenerator->generate('admin'));
+        // }
+        // // Sinon, vers une autre page pour les utilisateurs normaux
+        // return new RedirectResponse($this->urlGenerator->generate('app_home'));
+
+        // if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+        //     return new RedirectResponse($targetPath);
+        // }
         // For example:
-        return new RedirectResponse($this->urlGenerator->generate('app_home'));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        // return new RedirectResponse($this->urlGenerator->generate('app_home'));
+        // throw new \Exception('TODO: provide a valid redirect inside '.__FILE__); 
+
+    
     }
 
     protected function getLoginUrl(Request $request): string
