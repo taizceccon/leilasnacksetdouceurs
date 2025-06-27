@@ -101,7 +101,13 @@
     <main>
         {% block body %}{% endblock %}
     </main>
-
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
 
     <footer class="bg-[#C4847C] text-[#F9F4F2] text-sm mt-16 pt-12 pb-6 border-t border-[#EDCC8B]">
     {# <footer class="bg-roseFonce text-crème border-t border-jaunePale"> #}

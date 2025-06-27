@@ -1,6 +1,7 @@
 ### Symfony ###
 /var/
 /vendor/
+/.env
 /.env.local
 .env.*.local
 .env.test

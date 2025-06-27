@@ -4,6 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+
+use App\Repository\CategoryRepository;
+use App\Repository\ProductRepository;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,6 +24,38 @@ class ProductController extends AbstractController
     {
         return $this->render('product/show.html.twig', [
             'product' => $product,
+        ]);
+    }
+
+    #[Route('/admin', name: 'admin_index')]
+    public function index(Request $request, CategoryRepository $categoryRepository, ProductRepository $productRepository): Response
+    {
+        $search = $request->query->get('search');
+        $productSearch = $request->query->get('product_search');
+
+        // Recherche des catégories
+        $categories = $search
+            ? $categoryRepository->createQueryBuilder('c')
+                ->where('c.category LIKE :search')
+                ->setParameter('search', '%' . $search . '%')
+                ->getQuery()
+                ->getResult()
+            : $categoryRepository->findAll();
+
+        // Recherche des produits
+        $products = $productSearch
+            ? $productRepository->createQueryBuilder('p')
+                ->where('p.titre LIKE :productSearch')
+                ->setParameter('productSearch', '%' . $productSearch . '%')
+                ->getQuery()
+                ->getResult()
+            : $productRepository->findAll();
+
+        return $this->render('admin/index.html.twig', [
+            'categories' => $categories,
+            'products' => $products,
+            'search' => $search,
+            'product_search' => $productSearch
         ]);
     }
 

@@ -65,17 +65,16 @@ final class HomeController extends AbstractController
     }
 
     #[Route('/admin', name: 'admin')]
-    public function admin(ProductRepository $productRepository): Response
+    public function admin(ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
     {
-        // Récupérer tous les produits (ou selon la logique admin)
         $products = $productRepository->findAll();
+        $categories = $categoryRepository->findAll(); // ✅ Corrigé : renommé en $categories pour cohérence avec Twig
 
-        // Rendre une vue spécifique à l’admin
         return $this->render('admin/index.html.twig', [
             'products' => $products,
+            'categories' => $categories, // ✅ Ce nom doit correspondre à celui utilisé dans le template Twig
         ]);
     }
-
    
     #[Route('/snacks', name: 'category_snacks')]
     public function showSnacks(CategoryRepository $categoryRepository): Response
