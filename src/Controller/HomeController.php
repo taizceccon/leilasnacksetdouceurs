@@ -25,16 +25,34 @@ final class HomeController extends AbstractController
     // }
 
     #[Route('/', name: 'app_home')]
-    public function index(ProductRepository $productRepository): Response
+    public function index(Request $request, ProductRepository $productRepository): Response
     {
-        $snacks = $productRepository->findByCategoryName('Snacks');
-        $douceurs = $productRepository->findByCategoryName('Douceurs');
+        $query = $request->query->get('q');
+        $isSearch = false;
+        $searchResults = [];
 
-        dump($snacks, $douceurs);
+        if ($query) {
+            $isSearch = true;
+            $searchResults = $productRepository->createQueryBuilder('p')
+                ->leftJoin('p.category', 'c')
+                ->addSelect('c')
+                ->where('p.titre LIKE :q OR p.description LIKE :q')
+                ->setParameter('q', '%' . $query . '%')
+                ->getQuery()
+                ->getResult();
+        }
+
+        // Chargement normal uniquement si pas de recherche
+        $snacks = !$isSearch ? $productRepository->findByCategoryName('Snacks') : [];
+        $douceurs = !$isSearch ? $productRepository->findByCategoryName('Douceurs') : [];
+        $packs = !$isSearch ? $productRepository->findByCategoryName('Packs & Coffrets') : [];
 
         return $this->render('home/index.html.twig', [
+            'isSearch' => $isSearch,
+            'searchResults' => $searchResults,
             'Snacks' => $snacks,
             'Douceurs' => $douceurs,
+            'Packs' => $packs,
         ]);
     }
 

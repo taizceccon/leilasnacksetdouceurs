@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} Douceurs & Snacks de Leila {% endblock %}</title>
     {# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"> #}
-    <link rel="icon" href="/favicon.ico">    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="icon" href="/favicon.ico">   
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;700&family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+ 
     <script>
         tailwind.config = {
             theme: {
@@ -24,20 +25,29 @@
             }
         }
         </script>
-
-    {% block stylesheets %}{% endblock %}
+    <style>
+    header img {
+        max-height: 200px;
+        object-fit: contain;
+    }
+    </style>
+    {% block stylesheets %}
+    <link rel="stylesheet" href="/css/style.css">
+    {# <link rel="stylesheet" href="{{ asset('css/style.css') }}"> #}
+    {% endblock %}
     
 </head>
 <body class="bg-pink-50 text-gray-800 font-sans">    
-   <header class="bg-crème shadow-md py-4">
+  <header class="bg-crème shadow-md py-4 relative">
   <div class="container mx-auto px-4 flex items-center justify-between">
-
+    
     <!-- Logo -->
-    <a href="{{ path('app_home') }}">
-    <img src="/images/logo.png" alt="Logo Leila" class="h-40 sm:h-48">  {# ou h-56, h-64, selon ton besoin #}
+    <a href="{{ path('app_home') }}" class="flex-shrink-0" aria-label="Aller à la page d'accueil">
+      <img src="/images/logo.png" alt="Logo Leila" class="h-48 sm:h-56">
     </a>
+
     <!-- Menu principal -->
-    <nav class="hidden md:flex items-center space-x-6 text-vertSauge font-medium">
+    <nav class="hidden md:flex flex-1 justify-center items-center space-x-6 text-vertSauge font-medium">
       <a href="{{ path('category_snacks') }}" class="hover:text-bleuMenthe">Snacks</a>
       <a href="{{ path('category_douceurs') }}" class="hover:text-bleuMenthe">Douceurs</a>
       <a href="{{ path('category_packs') }}" class="hover:text-bleuMenthe">Packs & Coffrets</a>
@@ -45,41 +55,36 @@
       <a href="{{ path('app_contact') }}" class="hover:text-bleuMenthe">Contact</a>
     </nav>
 
-    <!-- Icônes recherche / auth / panier -->
+    <!-- Recherche + Icônes -->
     <div class="flex items-center space-x-4 text-vertSauge">
 
-      <!-- Recherche -->
-      <button class="hover:text-bleuMenthe transition">
-        <img src="/images/search.png" alt="Rechercher" class="w-6 h-6">
-      </button>
+      <!-- Barre de recherche -->
+      <form method="get" action="{{ path('app_home') }}" class="flex items-center">
+        <input type="text" name="q" value="{{ app.request.get('q') }}" placeholder="Rechercher..." class="border border-gray-300 rounded-l px-3 py-1 text-sm w-36 focus:outline-none focus:ring focus:ring-pink-300">
+        <button type="submit" class="bg-white border border-gray-300 rounded-r px-2 py-1">
+          <img src="/images/search.png" alt="Rechercher" class="w-5 h-5">
+        </button>
+      </form>
 
       <!-- Auth -->
-      {# <a href="/login" class="hover:opacity-80 transition">
-        <img src="/images/login-.png" alt="Se connecter" class="w-6 h-6">
-        </a> #}
-        {% if app.user %}
-            <span class="text-sm">Bonjour, {{ app.user.email }}</span>
-            <a href="{{ path('app_logout') }}" class="hover:opacity-80 transition">
-                <img src="/images/logout.png" alt="Se déconnecter" class="w-6 h-6">
-            </a>
-        {% else %}
-            <a href="{{ path('app_login') }}" class="hover:opacity-80 transition">
-                <img src="/images/login-.png" alt="Se connecter" class="w-6 h-6">
-            </a>
-        {% endif %}
-
-      <a href="{{ path('cart_show') }}" class="relative hover:opacity-80 transition">
-        <img src="/images/panier-vide.png" alt="Mon panier" class="w-6 h-6">
-
-        {# Badge de nombre d'articles dans le panier
-        <span class="absolute -top-2 -right-2 bg-jaunePale text-crème text-xs rounded-full w-5 h-5 flex items-center justify-center">
-            {# {{ cart.count }} 
-        </span> #}
+      {% if app.user %}
+        <span class="text-sm">Bonjour, {{ app.user.email }}</span>
+        <a href="{{ path('app_logout') }}" class="hover:opacity-80 transition">
+          <img src="/images/logout.png" alt="Se déconnecter" class="w-8 h-8">
         </a>
+      {% else %}
+        <a href="{{ path('app_login') }}" class="hover:opacity-80 transition">
+          <img src="/images/login.png" alt="Se connecter" class="w-8 h-8">
+        </a>
+      {% endif %}
 
-       <!-- Burger mobile -->
-      <button id="burger-button" class="md:hidden hover:text-bleuMenthe transition">
-        <!-- Menu SVG -->
+      <!-- Panier -->
+      <a href="{{ path('cart_show') }}" class="relative hover:opacity-80 transition">
+        <img src="/images/panier-vide.png" alt="Mon panier" class="w-8 h-8">
+      </a>
+
+      <!-- Burger menu mobile -->
+      <button id="burger-button" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden hover:text-bleuMenthe transition">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="4" y1="6" x2="20" y2="6"/>
           <line x1="4" y1="12" x2="20" y2="12"/>
@@ -87,27 +92,30 @@
         </svg>
       </button>
     </div>
+
   </div>
- </header>
-    <!-- Menu mobile (masqué par défaut) -->
-    <nav id="mobile-menu" class="md:hidden hidden flex-col bg-crème text-vertSauge text-lg px-6 py-4 space-y-3">
+
+  <!-- Menu mobile -->
+  <nav id="mobile-menu" class="md:hidden hidden flex flex-col items-center bg-crème text-vertSauge text-lg px-6 py-4 space-y-3 text-center">
     <a href="{{ path('category_snacks') }}" class="hover:text-bleuMenthe">Snacks</a>
     <a href="{{ path('category_douceurs') }}" class="hover:text-bleuMenthe">Douceurs</a>
     <a href="{{ path('category_packs') }}" class="hover:text-bleuMenthe">Packs & Coffrets</a>
     <a href="#" class="hover:text-bleuMenthe">Qui sommes-nous</a>
     <a href="{{ path('app_contact') }}" class="hover:text-bleuMenthe">Contact</a>
-    </nav>
+  </nav>
+</header>
+
 
     <main>
         {% block body %}{% endblock %}
     </main>
-{% for label, messages in app.flashes %}
-    {% for message in messages %}
-        <div class="alert alert-{{ label }}">
-            {{ message }}
-        </div>
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
     {% endfor %}
-{% endfor %}
 
     <footer class="bg-[#C4847C] text-[#F9F4F2] text-sm mt-16 pt-12 pb-6 border-t border-[#EDCC8B]">
     {# <footer class="bg-roseFonce text-crème border-t border-jaunePale"> #}
@@ -148,7 +156,6 @@
         <div>
         <h3 class="text-md font-semibold text-[#EDCC8B] mb-3">Navigation</h3>
         <ul class="space-y-2 text-[#F9F4F2]">
-            <a href="{{ path('order_index') }}" class="hover:text-bleuMenthe">Commander</a>
             <li><a href="/commander" class="hover:text-[#84D3CE] transition">Commander</a></li>
             <li><a href="/contact" class="hover:text-[#84D3CE] transition">Contact</a></li>
             <li><a href="/faq" class="hover:text-[#84D3CE] transition">FAQ</a></li>
@@ -173,11 +180,29 @@
     </footer>
 
     <script>
-    document.getElementById('burger-button').addEventListener('click', function () {
-        const menu = document.getElementById('mobile-menu');
-        menu.classList.toggle('hidden');
-    });
-    </script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const burgerButton = document.getElementById('burger-button');
+            const mobileMenu = document.getElementById('mobile-menu');
 
+            if (burgerButton && mobileMenu) {
+                // Toggle menu visibility
+                burgerButton.addEventListener('click', function () {
+                    const isHidden = mobileMenu.classList.contains('hidden');
+                    mobileMenu.classList.toggle('hidden');
+                    burgerButton.setAttribute('aria-expanded', !isHidden);
+                });
+
+                // Fermer le menu si clic à l'extérieur
+                document.addEventListener('click', function (event) {
+                    if (!mobileMenu.contains(event.target) && !burgerButton.contains(event.target)) {
+                        if (!mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                            burgerButton.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
  </body>
 </html>
