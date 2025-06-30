@@ -8,22 +8,14 @@ use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request; 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
-
 
 final class HomeController extends AbstractController
 {
-    // #[Route('/', name: 'app_home')]
-    // public function index(): Response
-    // {
-    //     return $this->render('index.html.twig', [
-    //         'controller_name' => 'HomeController',
-    //     ]);
-    // }
-
     #[Route('/', name: 'app_home')]
     public function index(Request $request, ProductRepository $productRepository): Response
     {
@@ -42,7 +34,6 @@ final class HomeController extends AbstractController
                 ->getResult();
         }
 
-        // Chargement normal uniquement si pas de recherche
         $snacks = !$isSearch ? $productRepository->findByCategoryName('Snacks') : [];
         $douceurs = !$isSearch ? $productRepository->findByCategoryName('Douceurs') : [];
         $packs = !$isSearch ? $productRepository->findByCategoryName('Packs & Coffrets') : [];
@@ -56,9 +47,7 @@ final class HomeController extends AbstractController
         ]);
     }
 
-
-
-   #[Route('/products', name: 'products_index')]
+    #[Route('/products', name: 'products_index')]
     public function products(CategoryRepository $categoryRepository): Response
     {
         $categories = $categoryRepository->findAllWithProducts();
@@ -67,7 +56,6 @@ final class HomeController extends AbstractController
             'categories' => $categories,
         ]);
     }
-
 
     #[Route('/product/{id}', name: 'product_detail')]
     public function productDetail(int $id, ProductRepository $productRepository): Response
@@ -85,20 +73,16 @@ final class HomeController extends AbstractController
     #[Route('/admin', name: 'admin')]
     public function admin(ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
     {
-        $products = $productRepository->findAll();
-        $categories = $categoryRepository->findAll(); // ✅ Corrigé : renommé en $categories pour cohérence avec Twig
-
         return $this->render('admin/index.html.twig', [
-            'products' => $products,
-            'categories' => $categories, // ✅ Ce nom doit correspondre à celui utilisé dans le template Twig
+            'products' => $productRepository->findAll(),
+            'categories' => $categoryRepository->findAll(),
         ]);
     }
-   
+
     #[Route('/snacks', name: 'category_snacks')]
     public function showSnacks(CategoryRepository $categoryRepository): Response
     {
-        $category = $categoryRepository->find(1); // ID de la catégorie "snacks"
-
+        $category = $categoryRepository->find(1); // ID de la catégorie "Snacks"
         return $this->render('product/snacks.html.twig', [
             'category' => $category,
         ]);
@@ -108,7 +92,6 @@ final class HomeController extends AbstractController
     public function showDouceurs(CategoryRepository $categoryRepository): Response
     {
         $category = $categoryRepository->find(2); // ID de la catégorie "Douceurs"
-
         return $this->render('product/douceurs.html.twig', [
             'category' => $category,
         ]);
@@ -118,7 +101,6 @@ final class HomeController extends AbstractController
     public function showPacks(CategoryRepository $categoryRepository): Response
     {
         $category = $categoryRepository->find(3); // ID de la catégorie "Packs & Coffrets"
-
         return $this->render('product/packs_coffrets.html.twig', [
             'category' => $category,
         ]);
@@ -128,8 +110,6 @@ final class HomeController extends AbstractController
     public function commander(): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
-        // traites la commande
         return $this->render('order/index.html.twig');
     }
 
@@ -145,8 +125,7 @@ final class HomeController extends AbstractController
             $em->persist($contact);
             $em->flush();
 
-            // Envoi de l'email (exemple)
-            $email = (new \Symfony\Component\Mime\Email())
+            $email = (new Email())
                 ->from($contact->getEmail())
                 ->to('tzlogicsolutions@gmail.com')
                 ->subject($contact->getSujet())
@@ -162,5 +141,10 @@ final class HomeController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    
+
+    #[Route('/a-propos', name: 'app_about')]
+    public function about(): Response
+    {
+        return $this->render('about.html.twig');
+    }
 }

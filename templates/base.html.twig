@@ -51,7 +51,7 @@
       <a href="{{ path('category_snacks') }}" class="hover:text-bleuMenthe">Snacks</a>
       <a href="{{ path('category_douceurs') }}" class="hover:text-bleuMenthe">Douceurs</a>
       <a href="{{ path('category_packs') }}" class="hover:text-bleuMenthe">Packs & Coffrets</a>
-      <a href="#" class="hover:text-bleuMenthe">Qui sommes-nous</a>
+      <a href="{{ path('app_about') }}" class="hover:text-bleuMenthe">Qui sommes-nous</a>
       <a href="{{ path('app_contact') }}" class="hover:text-bleuMenthe">Contact</a>
     </nav>
 
@@ -73,10 +73,12 @@
           <img src="/images/logout.png" alt="Se déconnecter" class="w-8 h-8">
         </a>
       {% else %}
-        <a href="{{ path('app_login') }}" class="hover:opacity-80 transition">
-          <img src="/images/login.png" alt="Se connecter" class="w-8 h-8">
+        <a href="{{ path('client_login') }}" class="hover:opacity-80 transition">
+        {# <a href="{{ path('app_login') }}" class="hover:opacity-80 transition"> #}
+          <img src="/images/login.png" alt="Se connecter ou s’inscrire" class="w-8 h-8">
         </a>
       {% endif %}
+      
 
       <!-- Panier -->
       <a href="{{ path('cart_show') }}" class="relative hover:opacity-80 transition">
@@ -100,7 +102,7 @@
     <a href="{{ path('category_snacks') }}" class="hover:text-bleuMenthe">Snacks</a>
     <a href="{{ path('category_douceurs') }}" class="hover:text-bleuMenthe">Douceurs</a>
     <a href="{{ path('category_packs') }}" class="hover:text-bleuMenthe">Packs & Coffrets</a>
-    <a href="#" class="hover:text-bleuMenthe">Qui sommes-nous</a>
+    <a href="{{ path('app_about') }}" class="hover:text-bleuMenthe">Qui sommes-nous</a>
     <a href="{{ path('app_contact') }}" class="hover:text-bleuMenthe">Contact</a>
   </nav>
 </header>
@@ -116,6 +118,23 @@
             </div>
         {% endfor %}
     {% endfor %}
+
+{# role client #}
+    {% if is_granted('ROLE_CLIENT') %}
+<nav class="bg-pink-100 p-4 text-pink-800 flex justify-between">
+    <div>
+        <a href="{{ path('client_dashboard') }}" class="font-bold">Mon espace client</a>
+    </div>
+    <div class="space-x-4">
+        <a href="{{ path('client_dashboard') }}">Accueil</a>
+        <a href="{{ path('contact') }}">Contact</a>
+        <form method="post" action="{{ path('client_logout') }}" class="inline">
+            <button class="hover:underline">Déconnexion</button>
+        </form>
+    </div>
+</nav>
+{% endif %}
+{# fini role client #}
 
     <footer class="bg-[#C4847C] text-[#F9F4F2] text-sm mt-16 pt-12 pb-6 border-t border-[#EDCC8B]">
     {# <footer class="bg-roseFonce text-crème border-t border-jaunePale"> #}

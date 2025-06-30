@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Client{% endblock %}
+
+{% block body %}
+    <section class="py-10 text-center">
+        <h1 class="text-3xl font-bold text-pink-600">Bienvenue sur votre espace client 🍰</h1>
+        <p class="mt-4 text-gray-700">Nous sommes ravis de vous revoir !</p>
+    </section>
+    {% if is_granted('ROLE_CLIENT') %}
+    <form method="post" action="{{ path('client_logout') }}">
+        <button type="submit" class="text-pink-600 hover:underline">
+            Déconnexion
+        </button>
+    </form>
+{% endif %}
+{% endblock %}
