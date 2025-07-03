@@ -1,9 +1,39 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Détails de la commande{% endblock %}
+
 {% block body %}
-    <div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow">
-        <h1 class="text-xl font-bold mb-4">Passer commande</h1>
-        <p>Bienvenue {{ app.user.email }}, vous pouvez maintenant finaliser votre commande.</p>
-        <!-- TODO : Formulaire ou récap du panier -->
-    </div>
+    <section class="container mx-auto py-10">
+        <h1 class="text-3xl font-bold text-center mb-6">Détails de votre commande</h1>
+
+        <p class="text-center">Merci pour votre commande ! Voici un récapitulatif de votre commande.</p>
+
+        <table class="w-full table-auto border-collapse mt-6">
+            <thead>
+                <tr class="bg-pink-100">
+                    <th class="p-2 border">Produit</th>
+                    <th class="p-2 border">Quantité</th>
+                    <th class="p-2 border">Sous-total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {# Bouclez sur les items de la commande #}
+                {% for item in order.items %}
+                    <tr class="text-center">
+                        <td class="border p-2">{{ item.product.titre }}</td>
+                        <td class="border p-2">{{ item.quantity }}</td>
+                        <td class="border p-2">{{ (item.subtotal / 100)|number_format(2, ',', ' ') }} €</td>
+                    </tr>
+                {% endfor %}
+                <tr class="font-bold bg-gray-100">
+                    <td colspan="2" class="p-2 text-right">Total :</td>
+                    <td class="p-2">{{ (order.total / 100)|number_format(2, ',', ' ') }} €</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="text-center mt-6">
+            <a href="{{ path('cart_show') }}" class="bg-pink-600 text-white px-6 py-2 rounded hover:bg-pink-700 transition">Retour au panier</a>
+        </div>
+    </section>
 {% endblock %}

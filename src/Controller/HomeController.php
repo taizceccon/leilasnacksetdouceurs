@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
+use App\Form\ProductType;
+use App\Entity\Category;
+use App\Form\CategoryForm;
 use App\Entity\Contact;
 use App\Form\ContactType;
 use App\Repository\ProductRepository;
@@ -14,7 +18,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
-final class HomeController extends AbstractController
+class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
     public function index(Request $request, ProductRepository $productRepository): Response
@@ -70,20 +74,15 @@ final class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/admin', name: 'admin')]
-    public function admin(ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
-    {
-        return $this->render('admin/index.html.twig', [
-            'products' => $productRepository->findAll(),
-            'categories' => $categoryRepository->findAll(),
-        ]);
-    }
 
     #[Route('/snacks', name: 'category_snacks')]
     public function showSnacks(CategoryRepository $categoryRepository): Response
     {
-        $category = $categoryRepository->find(1); // ID de la catégorie "Snacks"
-        return $this->render('product/snacks.html.twig', [
+        $category = $categoryRepository->findOneBy(['category' => 'Snacks']);
+        if (!$category) {
+            throw $this->createNotFoundException('Catégorie Snacks non trouvée.');
+        }
+        return $this->render('snacks.html.twig', [
             'category' => $category,
         ]);
     }
@@ -91,8 +90,11 @@ final class HomeController extends AbstractController
     #[Route('/douceurs', name: 'category_douceurs')]
     public function showDouceurs(CategoryRepository $categoryRepository): Response
     {
-        $category = $categoryRepository->find(2); // ID de la catégorie "Douceurs"
-        return $this->render('product/douceurs.html.twig', [
+        $category = $categoryRepository->findOneBy(['category' => 'Douceurs']);
+        if (!$category) {
+            throw $this->createNotFoundException('Catégorie Douceurs non trouvée.');
+        }
+        return $this->render('douceurs.html.twig', [
             'category' => $category,
         ]);
     }
@@ -100,17 +102,13 @@ final class HomeController extends AbstractController
     #[Route('/packs-coffrets', name: 'category_packs')]
     public function showPacks(CategoryRepository $categoryRepository): Response
     {
-        $category = $categoryRepository->find(3); // ID de la catégorie "Packs & Coffrets"
-        return $this->render('product/packs_coffrets.html.twig', [
+        $category = $categoryRepository->findOneBy(['category' => 'Packs & Coffrets']);
+        if (!$category) {
+            throw $this->createNotFoundException('Catégorie Packs & Coffrets non trouvée.');
+        }
+        return $this->render('packs_coffrets.html.twig', [
             'category' => $category,
         ]);
-    }
-
-    #[Route('/commander', name: 'order_index')]
-    public function commander(): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        return $this->render('order/index.html.twig');
     }
 
     #[Route('/contact', name: 'app_contact')]
@@ -121,13 +119,13 @@ final class HomeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $contact->setCreatedAt(new \DateTime());
+            $contact->setCreatedAt(new \DateTimeImmutable());
             $em->persist($contact);
             $em->flush();
 
             $email = (new Email())
                 ->from($contact->getEmail())
-                ->to('tzlogicsolutions@gmail.com')
+                ->to('taizceccon@hotmail.fr')
                 ->subject($contact->getSujet())
                 ->text($contact->getMessage());
 
@@ -137,7 +135,7 @@ final class HomeController extends AbstractController
             return $this->redirectToRoute('app_contact');
         }
 
-        return $this->render('contact/index.html.twig', [
+        return $this->render('contact.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -147,4 +145,25 @@ final class HomeController extends AbstractController
     {
         return $this->render('about.html.twig');
     }
+
+
+
+    #[Route('/produit/{id}', name: 'product_show')]
+    public function showProduct(Product $product): Response
+    {
+        return $this->render('product/show.html.twig', [
+            'product' => $product,
+        ]);
+    }
+
+    
+    #[Route('category/{id}', name: 'app_category_show', methods: ['GET'])]
+    public function showCategory(Category $category): Response
+    {
+        return $this->render('category/show.html.twig', [
+            'category' => $category,
+        ]);
+    }
+
+
 }

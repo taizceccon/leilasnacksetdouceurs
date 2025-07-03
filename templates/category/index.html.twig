@@ -10,7 +10,7 @@
 
 <section class="container mx-auto py-10">
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-        <form method="get" action="{{ path('admin_category_index') }}" class="flex w-full md:w-1/2">
+        <form method="get" action="{{ path('admin_index') }}" class="flex w-full md:w-1/2">
             <input type="text" name="search" placeholder="Rechercher une catégorie..." value="{{ app.request.get('search') }}"
                 class="flex-grow border border-pink-300 rounded-l px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400">
             <button type="submit" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-r">
@@ -18,7 +18,7 @@
             </button>
         </form>
 
-        <a href="{{ path('admin_category_new') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
+        <a href="{{ path('app_category_new') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
             + Ajouter une catégorie
         </a>
     </div>
@@ -38,9 +38,10 @@
                         <td class="px-6 py-4">{{ category.id }}</td>
                         <td class="px-6 py-4 font-semibold">{{ category.category }}</td>
                         <td class="px-6 py-4 space-x-2">
-                            <a href="{{ path('admin_category_show', { id: category.id }) }}" class="text-blue-600 hover:underline">Voir</a>
-                            <a href="{{ path('admin_category_edit', { id: category.id }) }}" class="text-yellow-600 hover:underline">Modifier</a>
-                            <form method="post" action="{{ path('admin_category_delete', { id: category.id }) }}" class="inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
+                            {# Correction des noms des routes ici #}
+                            <a href="{{ path('app_category_show', { id: category.id }) }}" class="text-blue-600 hover:underline">Voir</a>
+                            <a href="{{ path('app_category_edit', { id: category.id }) }}" class="text-yellow-600 hover:underline">Modifier</a>
+                            <form method="post" action="{{ path('app_category_delete', { id: category.id }) }}" class="inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
                                 <button type="submit" class="text-red-600 hover:underline">Supprimer</button>
                             </form>

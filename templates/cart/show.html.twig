@@ -30,7 +30,12 @@
                             <span>{{ item.product.titre }}</span>
                         </td>
                         <td class="border border-gray-300 p-3">{{ (item.product.prix / 100)|number_format(2, ',', ' ') }} €</td>
-                        <td class="border border-gray-300 p-3">{{ item.quantity }}</td>
+                        <td class="border border-gray-300 p-3">
+                            <form action="{{ path('cart_update', {'id': item.product.id}) }}" method="POST" class="flex items-center justify-center gap-2">
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="w-16 border rounded text-center" />
+                                <button type="submit" class="bg-pink-600 text-white px-3 py-1 rounded hover:bg-pink-700 transition">Modifier</button>
+                            </form>
+                        </td>
                         <td class="border border-gray-300 p-3 font-semibold">{{ (item.subtotal / 100)|number_format(2, ',', ' ') }} €</td>
                         <td class="border border-gray-300 p-3">
                             <form action="{{ path('cart_remove', {'id': item.product.id}) }}" method="POST" onsubmit="return confirm('Supprimer {{ item.product.titre }} du panier ?');">
@@ -41,10 +46,16 @@
                 {% endfor %}
                 <tr class="bg-pink-100 font-bold text-lg">
                     <td colspan="3" class="text-right p-3">Total :</td>
-                    <td colspan="2" class="p-3">{{ (total / 100)|number_format(2, ',', ' ') }} €</td>
+                    <td class="border border-gray-300 p-3 font-semibold">{{ (total / 100)|number_format(2, ',', ' ') }} €</td>
+                    <td></td> {# Colonne vide pour garder la structure #}
                 </tr>
             </tbody>
         </table>
+          <!-- Ajout du bouton Commander -->
+        <div class="text-center mt-6">
+            <a href="{{ path('order_create') }}" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition">Commander</a>
+        </div>
+
     {% endif %}
 </section>
 {% endblock %}

@@ -67,23 +67,23 @@
       </form>
 
       <!-- Auth -->
-      {% if app.user %}
-        <span class="text-sm">Bonjour, {{ app.user.email }}</span>
-        <a href="{{ path('app_logout') }}" class="hover:opacity-80 transition">
-          <img src="/images/logout.png" alt="Se déconnecter" class="w-8 h-8">
-        </a>
-      {% else %}
-        <a href="{{ path('client_login') }}" class="hover:opacity-80 transition">
-        {# <a href="{{ path('app_login') }}" class="hover:opacity-80 transition"> #}
-          <img src="/images/login.png" alt="Se connecter ou s’inscrire" class="w-8 h-8">
-        </a>
-      {% endif %}
-      
 
+    {% if app.user %}
+        <form method="post" action="{{ path('app_logout') }}">
+            <button type="submit" class="flex items-center space-x-2 text-vertSauge hover:opacity-80 transition">
+        {{ app.user.email }}
+                <img src="/images/logout.png" alt="Se déconnecter" class="w-6 h-6">
+            </button>
+        </form>
+    {% else %}
+        <a href="{{ path('app_login') }}" class="flex items-center space-x-2 text-vertSauge hover:opacity-80 transition">
+            <img src="/images/login.png" alt="Se connecter" class="w-6 h-6">
+        </a>
+    {% endif %}
+      
       <!-- Panier -->
-      <a href="{{ path('cart_show') }}" class="relative hover:opacity-80 transition">
-        <img src="/images/panier-vide.png" alt="Mon panier" class="w-8 h-8">
-      </a>
+       <a href="{{ path('cart_show') }}" class="relative hover:opacity-80 transition">
+        <img src="/images/panier-vide.png" alt="Mon panier" class="w-8 h-8"></a>
 
       <!-- Burger menu mobile -->
       <button id="burger-button" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden hover:text-bleuMenthe transition">
@@ -120,7 +120,7 @@
     {% endfor %}
 
 {# role client #}
-    {% if is_granted('ROLE_CLIENT') %}
+ {% if is_granted('ROLE_CLIENT') %}
 <nav class="bg-pink-100 p-4 text-pink-800 flex justify-between">
     <div>
         <a href="{{ path('client_dashboard') }}" class="font-bold">Mon espace client</a>
@@ -133,7 +133,7 @@
         </form>
     </div>
 </nav>
-{% endif %}
+{% endif %} 
 {# fini role client #}
 
     <footer class="bg-[#C4847C] text-[#F9F4F2] text-sm mt-16 pt-12 pb-6 border-t border-[#EDCC8B]">

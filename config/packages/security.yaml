@@ -7,10 +7,6 @@ security:
       entity:
         class: App\Entity\User
         property: email
-    client_provider:
-      entity:
-        class: App\Entity\Client
-        property: email
 
   firewalls:
     dev:
@@ -20,28 +16,19 @@ security:
     main:
       lazy: true
       provider: app_user_provider
-      custom_authenticator: App\Security\UserAuthenticator
+      form_login:
+        login_path: app_login
+        check_path: app_login
+        enable_csrf: true
+        username_parameter: email 
       logout:
         path: app_logout
+        # target: app_home
       remember_me:
         secret: '%kernel.secret%'
         lifetime: 604800
         path: /
 
-    client:
-      pattern: ^/client
-      provider: client_provider
-      custom_authenticator: App\Security\ClientAuthenticator
-      entry_point: App\Security\ClientAuthenticator
-      logout:
-        path: client_logout
-        target: /
-      lazy: true
-
   access_control:
-    - { path: ^/$, roles: PUBLIC_ACCESS }
     - { path: ^/admin, roles: ROLE_ADMIN }
-    - { path: ^/client/register$, roles: PUBLIC_ACCESS }
-    - { path: ^/client/login$, roles: PUBLIC_ACCESS }
-    - { path: ^/client, roles: ROLE_CLIENT }
-    - { path: ^/client/dashboard, roles: ROLE_CLIENT }
+    - { path: ^/client, roles: ROLE_USER }
