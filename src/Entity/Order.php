@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Entity;
-use App\Entity\User;
 
+use App\Entity\User;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -22,7 +22,7 @@ class Order
     private ?User $user = null;
 
     #[ORM\Column]
-    private ?float $total = null;
+    private ?float $total = 0.0;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -31,15 +31,13 @@ class Order
     private ?string $status = null;
 
     // Relation OneToMany pour récupérer les items associés à cette commande
-    // #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class)]
-    // private Collection $orderItems;
-    
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class, cascade: ['persist'])]
     private Collection $orderItems;
 
     public function __construct()
     {
         $this->orderItems = new ArrayCollection();
+        $this->total = 0.0;
     }
 
     public function getId(): ?int
@@ -63,10 +61,13 @@ class Order
         return $this->total;
     }
 
-    public function setTotal(float $total): static
+    // Calculate total price based on order items
+    public function setTotal(): static
     {
-        $this->total = $total;
-
+        $this->total = 0.0;
+        foreach ($this->orderItems as $orderItem) {
+            $this->total += $orderItem->getSubtotal();
+        }
         return $this;
     }
 
@@ -78,7 +79,6 @@ class Order
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -90,9 +90,9 @@ class Order
     public function setStatus(string $status): static
     {
         $this->status = $status;
-
         return $this;
     }
+
     public function addItem(OrderItem $item): self
     {
         if (!$this->orderItems->contains($item)) {
@@ -100,14 +100,14 @@ class Order
             $item->setOrder($this);
         }
 
+        // Recalculate total whenever an item is added
+        $this->setTotal();
+
         return $this;
     }
-
 
     public function getOrderItems(): Collection
     {
         return $this->orderItems;
     }
-
-
 }

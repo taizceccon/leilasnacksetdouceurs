@@ -20,7 +20,6 @@ class CartController extends AbstractController
     public function showCart(SessionInterface $session, ProductRepository $productRepository): Response
     {
         $cart = $session->get('cart', []);
-        dump($cart);
         $products = [];
         $total = 0;
 
@@ -47,9 +46,6 @@ class CartController extends AbstractController
     {
         $productId = $request->request->get('product_id');
         $quantity = max(1, (int) $request->request->get('quantity', 1));
-
-        // Déboguer l'état du panier
-        dump($session->get('cart'));  
 
         $cart = $session->get('cart', []);
         $cart[$productId] = isset($cart[$productId]) ? $cart[$productId] + $quantity : $quantity;
@@ -127,20 +123,31 @@ class CartController extends AbstractController
         // Calculer le total de la commande
         $total = 0;
         foreach ($cart as $productId => $quantity) {
+            // Vérifier que le produit existe
             $product = $productRepository->find($productId);
             if ($product) {
                 $orderItem = new OrderItem();
                 $orderItem->setProduct($product);
                 $orderItem->setQuantity($quantity);
-                $orderItem->setSubtotal($product->getPrix() * $quantity);
+                $orderItem->setItem($product->getTitre());  // Remplir l'attribut 'item' avec le titre du produit
 
+                $subtotal = $product->getPrix() * $quantity;
+                $orderItem->setSubtotal($subtotal);
+
+                // Ajouter l'item à la commande
                 $newOrder->addItem($orderItem);
-                $total += $orderItem->getSubtotal();
+                $total += $subtotal;
             } else {
-                // Si le produit n'est pas trouvé, renvoie une erreur ou continue
+                // Produit introuvable, on ajoute un message d'erreur et on redirige
                 $this->addFlash('error', "Le produit avec l'ID $productId n'existe plus.");
                 return $this->redirectToRoute('cart_show');
             }
+        }
+
+        // Vérifier qu'au moins un item a été ajouté avant de persister
+        if (count($newOrder->getOrderItems()) === 0) {
+            $this->addFlash('error', 'Aucun produit valide dans le panier.');
+            return $this->redirectToRoute('cart_show');
         }
 
         $newOrder->setTotal($total);
@@ -157,7 +164,7 @@ class CartController extends AbstractController
     }
 
     #[Route('/orders', name: 'order_index')]
-    public function index(OrderRepository $orderRepository)
+    public function index(OrderRepository $orderRepository): Response
     {
         $user = $this->getUser();
 
@@ -174,16 +181,33 @@ class CartController extends AbstractController
         ]);
     }
 
+    // Route pour afficher une commande spécifique
     #[Route('/orders/{id}', name: 'order_show')]
-    public function show(OrderRepository $orderRepository, int $id): Response
+    public function show(Order $order = null): Response
     {
-        $order = $orderRepository->find($id);
-        if (!$order) {
-            throw $this->createNotFoundException('Commande introuvable');
+        // Vérifier si la commande existe, sinon afficher une page d'erreur
+        if ($order === null) {
+            throw $this->createNotFoundException('Commande non trouvée.');
         }
 
         return $this->render('order/show.html.twig', [
-            'order' => $order, // Passez 'order', pas 'orders'
+            'order' => $order,
         ]);
     }
+    
+
+    // Route pour lister toutes les commandes
+  #[Route('/orders/all', name: 'order_list')]
+    public function list(OrderRepository $orderRepository)
+    {
+        // Récupérer toutes les commandes depuis la base de données
+        $orders = $orderRepository->findAll();
+
+        // Rendre la vue avec la liste des commandes
+        return $this->render('order/list.html.twig', [
+            'orders' => $orders,
+        ]);
+    }
+
+    
 }

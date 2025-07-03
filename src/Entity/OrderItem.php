@@ -13,7 +13,7 @@ class OrderItem
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: false)]
     private ?string $item = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderItems')]
@@ -75,6 +75,7 @@ class OrderItem
     public function setQuantity(int $quantity): static
     {
         $this->quantity = $quantity;
+        $this->updateSubtotal();
         return $this;
     }
 
@@ -87,5 +88,13 @@ class OrderItem
     {
         $this->subtotal = $subtotal;
         return $this;
+    }
+
+    // Helper method to update the subtotal
+    private function updateSubtotal(): void
+    {
+        if ($this->product) {
+            $this->subtotal = $this->quantity * $this->product->getPrix();
+        }
     }
 }
