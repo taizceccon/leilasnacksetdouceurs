@@ -33,3 +33,4 @@ dist/
 ### Autres ###
 /public/bundles/
 /config/secrets/prod/prod.decrypt.private.php.env
+.env
