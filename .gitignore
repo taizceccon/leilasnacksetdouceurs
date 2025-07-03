@@ -1,4 +1,5 @@
 ### Symfony ###
+/.idea/
 /var/
 /vendor/
 /.env
@@ -8,6 +9,16 @@
 /phpunit.xml
 /phpunit.xml.dist
 /.phpunit.result.cache
+
+.env
+.env.local
+.env.dev.local
+.env.prod.local
+
+/var/cache/
+/var/log/
+/var/sessions/
+/var/routes/
 
 ### Fichiers système ###
 .DS_Store
@@ -34,3 +45,5 @@ dist/
 /public/bundles/
 /config/secrets/prod/prod.decrypt.private.php.env
 .env
+
+docker-compose.override.yml
