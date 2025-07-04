@@ -50,4 +50,15 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    
+    public function searchByKeyword(string $query): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.category', 'c')
+            ->addSelect('c')
+            ->where('p.titre LIKE :q OR p.description LIKE :q')
+            ->setParameter('q', '%' . $query . '%')
+            ->getQuery()
+            ->getResult();
+    }
 }

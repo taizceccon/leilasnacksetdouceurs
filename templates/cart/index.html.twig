@@ -23,7 +23,12 @@
                     <tr class="text-center">
                         <td class="border p-2">{{ item.product.titre }}</td>
                         <td class="border p-2">{{ (item.product.prix / 100)|number_format(2, ',', ' ') }} €</td>
-                        <td class="border p-2">{{ item.quantity }}</td>
+                        <td class="border border-gray-300 p-3">
+                            <form action="{{ path('cart_update', {'id': item.product.id}) }}" method="POST" class="flex items-center justify-center gap-2">
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="w-16 border rounded text-center" />
+                                <button type="submit" class="bg-pink-600 text-white px-3 py-1 rounded hover:bg-pink-700 transition">Modifier</button>
+                            </form>
+                        </td>
                         <td class="border p-2">{{ (item.product.prix * item.quantity / 100)|number_format(2, ',', ' ') }} €</td>
                     </tr>
                 {% endfor %}
@@ -33,6 +38,7 @@
                 </tr>
             </tbody>
         </table>
+        
     {% endif %}
 </section>
 {% endblock %}

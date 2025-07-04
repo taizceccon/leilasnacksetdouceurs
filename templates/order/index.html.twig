@@ -1,9 +1,36 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Liste des commandes{% endblock %}
+
 {% block body %}
-    <div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow">
-        <h1 class="text-xl font-bold mb-4">Passer commande</h1>
-        <p>Bienvenue {{ app.user.email }}, vous pouvez maintenant finaliser votre commande.</p>
-        <!-- TODO : Formulaire ou récap du panier -->
-    </div>
+    <section class="container mx-auto py-10">
+        <h1 class="text-3xl font-bold text-center mb-6">Liste des commandes</h1>
+
+        <table class="w-full table-auto border-collapse">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="p-4 border text-left">ID</th>
+                    <th class="p-4 border text-left">Client</th>
+                    <th class="p-4 border text-left">Total</th>
+                    <th class="p-4 border text-left">Date</th>
+                    <th class="p-4 border text-left">Status</th>
+                    <th class="p-4 border text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-4 border">{{ order.id }}</td>
+                        <td class="p-4 border">{{ order.user.email }}</td>
+                        <td class="p-4 border">{{ (order.total / 100)|number_format(2, ',', ' ') }} €</td>
+                        <td class="p-4 border">{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                        <td class="p-4 border">{{ order.status }}</td>
+                        <td class="p-4 border">
+                            <a href="{{ path('order_show', {'id': order.id}) }}" class="text-blue-600 hover:text-blue-800 transition duration-300">Voir</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
 {% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion Admin{% endblock %}
+
+{% block body %}
+<h1>Connexion Admin</h1>
+
+
+<form method="get" action="{{ path('admin_dashboard') }}">
+    <input type="text" name="product_search" placeholder="Rechercher un produit" value="{{ product_search }}">
+    <input type="text" name="category_search" placeholder="Rechercher une catégorie" value="{{ category_search }}">
+    <button type="submit">Rechercher</button>
+</form>
+
+{% endblock %}

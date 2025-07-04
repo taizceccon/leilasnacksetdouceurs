@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle catégorie - Douceurs & Snacks de Leila{% endblock %}
+
+{% block body %}
+<section class="text-center py-5 bg-pink-100">
+    <h1 class="text-3xl font-cursive">Ajouter une catégorie</h1>
+    <p class="text-pink-800">Créez une nouvelle famille de douceurs 🍭</p>
+</section>
+
+<section class="container mx-auto py-10 max-w-xl">
+    {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+        {{ form_widget(form) }}
+        <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">Créer</button>
+    {{ form_end(form) }}
+
+    <div class="mt-6">
+        <a href="{{ path('admin_category_index') }}" class="text-blue-600 hover:underline">← Retour à la liste</a>
+    </div>
+</section>
+{% endblock %}
