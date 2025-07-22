@@ -1,30 +1,20 @@
 ### Symfony ###
-etc/
-/.idea/
 /var/
 /vendor/
 /.env
-/.env.local
 .env.*.local
-.env.test
+/.env.local
+/.phpunit.result.cache
+/.phpunit.cache/
 /phpunit.xml
 /phpunit.xml.dist
-/.phpunit.result.cache
+/config/secrets/*/*.decrypt.private.php
 
-.env
-.env.local
-.env.dev.local
-.env.prod.local
-
-
+### Cache, logs, sessions ###
 /var/cache/
 /var/log/
 /var/sessions/
 /var/routes/
-
-### Fichiers système ###
-.DS_Store
-Thumbs.db
 
 ### IDEs / éditeurs ###
 .idea/
@@ -32,26 +22,27 @@ Thumbs.db
 *.sublime-project
 *.sublime-workspace
 
-### Node/npm (si tu utilises encore Webpack ou Vite) ###
+### Docker ###
+docker-compose.override.yml
+etc/                # Dossiers SSL/ca certs etc., souvent système
+mongodb/
+mysql/
+php/.bash_history
+
+### Node/npm ###
 node_modules/
 build/
 dist/
-
-### Logs, cache, uploads ###
 *.log
-*.cache
+
+### Fichiers temporaires ###
 *.tmp
 *.bak
+*.cache
+.DS_Store
+Thumbs.db
 
 ### Autres ###
 /public/bundles/
-/config/secrets/prod/prod.decrypt.private.php.env
 .env
-
-
-docker-compose.override.yml
-
-###> phpunit/phpunit ###
-/phpunit.xml
-/.phpunit.cache/
-###< phpunit/phpunit ###
+codes.txt
