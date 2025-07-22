@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la catégorie - Douceurs & Snacks de Leila{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="{{ product.description|striptags|truncate(160) }}">
+{% endblock %}
+
+{% block body %}
+<section class="text-center py-5 bg-pink-100">
+    <h1 class="text-3xl font-cursive">Modifier une catégorie</h1>
+    <p class="text-pink-800">Mettez à jour le nom de votre délicieuse collection ✨</p>
+</section>
+
+<section class="container mx-auto py-10 max-w-xl">
+    {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+        {{ form_widget(form) }}
+        <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded shadow">Enregistrer</button>
+    {{ form_end(form) }}
+
+    <div class="mt-6">
+        <a href="{{ path('admin_category_index') }}" class="text-blue-600 hover:underline">← Retour à la liste</a>
+    </div>
+</section>
+{% endblock %}

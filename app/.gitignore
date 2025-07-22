@@ -1,0 +1,57 @@
+### Symfony ###
+etc/
+/.idea/
+/var/
+/vendor/
+/.env
+/.env.local
+.env.*.local
+.env.test
+/phpunit.xml
+/phpunit.xml.dist
+/.phpunit.result.cache
+
+.env
+.env.local
+.env.dev.local
+.env.prod.local
+
+
+/var/cache/
+/var/log/
+/var/sessions/
+/var/routes/
+
+### Fichiers système ###
+.DS_Store
+Thumbs.db
+
+### IDEs / éditeurs ###
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+### Node/npm (si tu utilises encore Webpack ou Vite) ###
+node_modules/
+build/
+dist/
+
+### Logs, cache, uploads ###
+*.log
+*.cache
+*.tmp
+*.bak
+
+### Autres ###
+/public/bundles/
+/config/secrets/prod/prod.decrypt.private.php.env
+.env
+
+
+docker-compose.override.yml
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###

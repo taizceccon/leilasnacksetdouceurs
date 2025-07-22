@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail de la catégorie - Douceurs & Snacks de Leila{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="{{ product.description|striptags|truncate(160) }}">
+{% endblock %}
+
+{% block body %}
+<section class="text-center py-5 bg-pink-100">
+    <h1 class="text-3xl font-cursive">Détails de la catégorie</h1>
+    <p class="text-pink-800">Voici les informations sur cette douce catégorie </p>
+</section>
+
+<section class="container mx-auto py-10 max-w-xl bg-white shadow rounded p-6">
+    <ul class="space-y-3 text-gray-800">
+        <li><strong>ID :</strong> {{ category.id }}</li>
+        <li><strong>Nom :</strong> {{ category.category }}</li>
+    </ul>
+
+    <div class="mt-6 flex space-x-4">
+        <a href="{{ path('admin_category_edit', { id: category.id }) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded shadow">Modifier</a>
+        <a href="{{ path('admin_category_index') }}" class="text-rose-400 hover:underline self-center">← Retour à la liste</a>
+    </div>
+</section>
+{% endblock %}

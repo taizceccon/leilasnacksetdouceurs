@@ -1,0 +1,48 @@
+{# templates/category/packs_coffrets.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %} Packs & Coffrets de Leila{% endblock %}
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+<section class="text-center py-16 bg-[#C4847C]">
+    <h1 class="text-4xl font-cursive text-rose-800">{{ category.category }} </h1>
+    <p class="text-rose-700 mt-2">Des assortiments gourmands pour faire plaisir ou se faire plaisir</p>
+</section>
+
+<section class="container mx-auto py-10">
+    {% if category %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for product in category.products %}
+            <div class="card bg-white dark:bg-[#2c2c2c] text-[#333] dark:text-white rounded shadow p-4 text-center hover:shadow-lg transition">
+                {# <div class="bg-white rounded shadow p-4 text-center hover:shadow-xl transition"> #}
+                   <a href="{{ path('product_detail', {'id': product.id}) }}">
+                   <img src="/images/{{ product.image }}" alt="{{ product.titre }}" srcset="/images/{{ product.image|replace({'.webp':'-small.webp'}) }} 400w,
+             /images/{{ product.image }} 800w" sizes="(max-width: 600px) 100vw, 25vw" width="300" height="200" loading="lazy" decoding="async" class="mx-auto rounded mb-2"></a>
+                    <h3 class="font-bold text-lg hover:underline">{{ product.titre }}</h3>                    
+                    <p class="text-sm text-gray-600">
+                     {{ product.description|length > 100 ? product.description[:100] ~ '...' : product.description }}
+                    </p>
+                    {% if product.urlvideo %}
+                        <a href="{{ product.urlvideo }}" target="_blank" class="text-blue-500 underline block mt-2">Voir en vidéo</a>
+                    {% endif %}
+                    <p class="text-green-600 font-semibold mt-2">{{ (product.prix / 100)|number_format(2, ',', ' ') }} € unité</p>
+                    <form action="{{ path('cart_add') }}" method="POST" class="mt-2">
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <p class="text-sm">Quantité: <input type="number" name="quantity" value="1" min="1" class="border rounded w-16 text-center"></p>
+                        <button type="submit" class="bg-rose-400 text-white rounded px-4 py-1 mt-2">Ajouter au panier</button>
+                    </form>
+                </div>
+
+    {% else %}
+        <p class="text-center col-span-4 text-gray-500">Aucun produit disponible pour le moment.</p>
+    {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-gray-600">La catégorie {{ category.category }}  n'existe pas ou a été désactivée.</p>
+    {% endif %}
+</section>
+{% endblock %}

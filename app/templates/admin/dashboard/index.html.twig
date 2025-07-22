@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+   <div class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Tableau de bord administrateur</h1>        
+    </div>
+
+
+        <div class="stats d-flex gap-4 mb-5">
+            <div class="card bg-primary text-white p-4 rounded shadow">
+                {# <h2>{{ productCount }}</h2> #}
+                <p>Produits</p>
+            </div>
+            <div class="card bg-success text-white p-4 rounded shadow">
+                {# <h2>{{ categoryCount }}</h2> #}
+                <p>Catégories</p>
+            </div>
+            <div class="card bg-warning text-white p-4 rounded shadow">
+                {# <h2>{{ clientCount }}</h2> #}
+                <p>Clients</p>
+            </div>
+        </div>
+      
+    </div>
+
+
+
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Admin des produits</h1>        
+    </div>
+
+    {# Catégories #}
+    <div class="mt-16">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+            <h2 class="text-2xl font-bold text-gray-800">Catégories</h2>
+            <form method="get" action="{{ path(app.request.attributes.get('_route')) }}" class="flex items-center space-x-2">
+                <input type="text" name="search" placeholder="Rechercher une catégorie..."
+                       value="{{ app.request.get('search') }}"
+                       class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring focus:ring-pink-300 w-64">
+                <button type="submit"
+                        class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-1 rounded-md text-sm font-semibold transition">
+                    Rechercher
+                </button>
+            </form>
+            <a href="{{ path('app_category_new') }}"
+                class="inline-block bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-md shadow-sm text-sm font-semibold transition">
+                    + Nouvelle Catégorie
+                </a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                <thead class="bg-pink-100">
+                    <tr>
+                        <th class="text-left py-3 px-6 font-semibold text-gray-700 uppercase tracking-wider">Categorie</th>
+                        <th class="text-center py-3 px-6 font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                        <tr class="border-t border-gray-200 hover:bg-pink-50 transition duration-150">
+                            <td class="py-4 px-6 whitespace-nowrap text-gray-900 font-medium">{{ category.category }}</td>
+                            <td class="py-4 px-6 whitespace-nowrap text-center space-x-3">
+                                <a href="{{ path('app_category_edit', {'id': category.id}) }}" 
+                                   class="inline-block bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md text-sm transition">
+                                    Modifier
+                                </a>
+                                <form method="post" action="{{ path('app_category_delete', {'id': category.id}) }}"
+                                      class="inline-block"
+                                      onsubmit="return confirm('Confirmer la suppression ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                                    <button type="submit"
+                                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm transition">
+                                        Supprimer
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="2" class="py-6 text-center text-gray-500">Aucune catégorie trouvée.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{# Produits #}
+
+<div class="mt-16">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <h2 class="text-2xl font-bold text-gray-800">Produits</h2>
+        <form method="get" action="{{ path(app.request.attributes.get('_route')) }}" class="flex items-center space-x-2">
+            <input type="text" name="product_search" placeholder="Rechercher un produit..."
+                   value="{{ app.request.get('product_search') }}"
+                   class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring focus:ring-pink-300 w-64">
+            {% if app.request.get('search') %}
+                <input type="hidden" name="search" value="{{ app.request.get('search') }}">
+            {% endif %}
+            <button type="submit"
+                    class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-1 rounded-md text-sm font-semibold transition">
+                Rechercher
+            </button>
+        </form>
+           <a href="{{ path('admin_product_new') }}"
+           class="inline-block bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-md shadow-sm text-sm font-semibold transition">
+            + Nouveau Produit
+        </a>
+    </div>
+ 
+    <div class="overflow-x-auto mt-16">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+            <thead class="bg-pink-200">
+                <tr>
+                    <th class="text-left py-3 px-6 font-semibold text-gray-700 uppercase tracking-wider"> Titre Produit </th>
+                    <th class="text-left py-3 px-6 font-semibold text-gray-700 uppercase tracking-wider"> Prix </th>
+                    <th class="text-center py-3 px-6 font-semibold text-gray-700 uppercase tracking-wider"> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr class="border-t border-gray-200 hover:bg-pink-50 transition duration-150">
+                        <td class="py-4 px-6 whitespace-nowrap text-gray-900 font-medium">{{ product.titre }}</td>
+                        <td class="py-4 px-6 whitespace-nowrap text-pink-700 font-semibold">
+                            {{ (product.prix / 100)|number_format(2, ',', ' ') }} €
+                        </td>
+                        <td class="py-4 px-6 whitespace-nowrap text-center space-x-3">
+                            <a href="{{ path('admin_product_edit', {'id': product.id}) }}"
+                               class="inline-block bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md text-sm transition">
+                                Modifier
+                            </a>
+                            <form method="post" action="{{ path('admin_product_delete', {'id': product.id}) }}"
+                                  class="inline-block"
+                                  onsubmit="return confirm('Confirmer la suppression ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_product_' ~ product.id) }}">
+                                <button type="submit"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm transition">
+                                    Supprimer
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="py-6 text-center text-gray-500">Aucun produit trouvé.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% endblock %}

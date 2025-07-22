@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Douceurs & Snacks de Leila {% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
+
+{% block body %}
+
+<section class="text-center py-16 bg-[#E5C1BD]">
+    <h1 class="text-4xl font-cursive text-rose-800">Snacks & Douceurs de Leila</h1>
+    <p class="text-rose-800">Des saveurs de fait maison pour tous les moments – faites avec amour et une touche spéciale de Leila.</p>
+</section>
+
+{% if isSearch %}
+    <section class="container mx-auto py-10">
+        <h2 class="text-2xl font-bold text-center mb-6">Résultats de la recherche</h2>
+        {% if searchResults is empty %}
+            <p class="text-center text-gray-600">Aucun produit trouvé.</p>
+        {% else %}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for product in searchResults %}
+                <div class="card bg-white dark:bg-[#2c2c2c] text-[#333] dark:text-white rounded shadow p-4 text-center hover:shadow-lg transition">
+                    {# <div class="bg-white rounded shadow p-4 text-center hover:shadow-lg transition"> #}
+                        <img src="/images/{{ product.image }}" alt="{{ product.titre }}" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300">
+                        <a href="{{ path('product_show', {'id': product.id}) }}">
+                            <h3 class="font-bold hover:underline cursor-pointer">{{ product.titre }}</h3>
+                        </a>
+                        <p class="text-sm">{{ product.description|length > 100 ? product.description[:100] ~ '...' : product.description }}</p>
+                        {% if product.urlvideo %}
+                            <a href="{{ product.urlvideo }}" target="_blank" class="text-blue-500 underline block mt-2">Voir en vidéo</a>
+                        {% endif %}
+                        <form action="{{ path('cart_add') }}" method="POST">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <p class="text-green-600 font-semibold mt-2">{{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité</p>
+                            <input type="number" name="quantity" value="1" min="1" class="border rounded w-16 text-center mx-auto mt-2">
+                            <button type="submit" class="bg-rose-400 text-white rounded mt-2 px-4 py-1">Ajouter au panier</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </section>
+{% else %}
+    <section class="container mx-auto py-10">
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for product in randomProducts %}
+                <div class="bg-white dark:bg-[#333] rounded shadow p-4 text-center hover:shadow-lg transition">
+                <img src="/images/{{ product.image }}" alt="{{ product.titre }}"  srcset="/images/{{ product.image|replace({'.webp':'-small.webp'}) }} 400w,
+             /images/{{ product.image }} 800w" sizes="(max-width: 600px) 100vw, 25vw" loading="lazy" decoding="async" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer"
+     width="300" height="200">                    
+                    <a href="{{ path('product_show', {'id': product.id}) }}">
+                        <h3 class="font-bold hover:underline cursor-pointer">{{ product.titre }}</h3>
+                    </a>
+                    <p class="text-sm">{{ product.description|length > 100 ? product.description[:100] ~ '...' : product.description }}</p>
+                    {% if product.urlvideo %}
+                        <a href="{{ product.urlvideo }}" target="_blank" class="text-blue-500 underline block mt-2">Voir en vidéo</a>
+                    {% endif %}
+                    <form action="{{ path('cart_add') }}" method="POST">
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <p class="text-green-600 font-semibold mt-2">{{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité</p>
+                        <p class="text-sm">Quantité: <input type="number" name="quantity" value="1" min="1" class="border rounded w-16 text-center"></p>
+                        <button type="submit" class="bg-rose-400 text-white rounded px-4 py-1 mt-2">Ajouter au panier</button>
+                    </form>
+                </div>
+            {% else %}
+                <p class="text-center text-gray-600">Aucun produit disponible pour le moment.</p>
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
+
+{% endblock %}

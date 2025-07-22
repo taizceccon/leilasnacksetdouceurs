@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  {% block meta %}
+    <meta name="description" content="Douceurs & Snacks de Leila - Des gourmandises artisanales livrées chez vous avec amour." />
+    <meta name="keywords" content="snacks, douceurs, sucreries, artisanales, Leila, confiseries, livraison" />
+    <meta name="author" content="Leila Snacks" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="Douceurs & Snacks de Leila" />
+    <meta property="og:description" content="Des snacks et douceurs faits avec amour pour tous vos moments gourmands." />
+    <meta property="og:image" content="{{ asset('images/meta-preview.jpg') }}" />
+    <meta property="og:url" content="{{ app.request.uri }}" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+  {% endblock %}
+
+  <title>{% block title %}Douceurs & Snacks de Leila{% endblock %}</title>
+
+  <link rel="icon" href="{{ asset('favicon.ico') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;700&family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  {% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/theme.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+  {% endblock %}
+</head>
+
+<body class="transition duration-300 font-sans" data-theme="light">
+  <header class="bg-crème shadow-md py-4 relative">
+    <div class="container mx-auto px-4 flex items-center justify-between">
+      <a href="{{ path('app_home') }}" class="flex-shrink-0" aria-label="Page d'accueil">
+        <img src="{{ asset('images/logo.webp') }}" alt="Logo Leila Snacks" width="150" height="150" loading="lazy" decoding="async" class="mx-auto rounded mb-2" />
+      </a>
+
+      <nav role="navigation" aria-label="Menu principal" class="hidden md:flex flex-1 justify-center items-center space-x-6 text-sauge font-medium">
+        <a href="{{ path('category_snacks') }}" class="hover:text-menthe transition">Snacks</a>
+        <a href="{{ path('category_douceurs') }}" class="hover:text-menthe transition">Douceurs</a>
+        <a href="{{ path('category_packs') }}" class="hover:text-menthe transition">Packs & Coffrets</a>
+        <a href="{{ path('app_about') }}" class="hover:text-menthe transition">Qui sommes-nous</a>
+        <a href="{{ path('app_contact') }}" class="hover:text-menthe transition">Contact</a>
+      </nav>
+
+      <div class="flex items-center space-x-4 text-sauge">
+        <form method="get" action="{{ path('app_home') }}" class="flex items-center">
+          <input type="search" name="q" value="{{ app.request.get('q') }}" placeholder="Rechercher..." class="border border-gray-300 rounded-l px-3 py-1 text-sm w-36 focus:outline-none focus:ring focus:ring-roseFonce" aria-label="Recherche" />
+          <button type="submit" class="bg-white border border-gray-300 rounded-r px-2 py-1" aria-label="Lancer la recherche">
+            <img src="{{ asset('images/search.webp') }}" alt="Icône de recherche" loading="lazy" width="24" height="24" class="w-6 h-6" />
+          </button>
+        </form>
+
+        {% if app.user %}
+          <form method="post" action="{{ path('app_logout') }}">
+            <button type="submit" class="flex items-center space-x-2 text-sauge hover:opacity-80 transition" aria-label="Se déconnecter">
+              <span>{{ app.user.email }}</span>
+              <img src="{{ asset('images/logout.webp') }}" alt="Se déconnecter" loading="lazy" width="24" height="24" class="w-6 h-6" />
+            </button>
+          </form>
+        {% else %}
+          <a href="{{ path('app_login') }}" class="flex items-center space-x-2 text-sauge hover:opacity-80 transition" aria-label="Se connecter à l’espace client">
+            <img src="{{ asset('images/login.webp') }}" alt="Se connecter" loading="lazy" width="24" height="24" class="w-6 h-6" />
+          </a>
+        {% endif %}
+
+        <a href="{{ path('cart_show') }}" class="relative hover:opacity-80 transition" aria-label="Mon panier">
+          <img src="{{ asset('images/panier-vide.webp') }}" alt="Mon panier" loading="lazy" width="24" height="24" class="w-6 h-6" />
+        </a>
+
+        <button id="burger-button" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden hover:text-menthe transition" aria-label="Ouvrir le menu mobile">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+            <line x1="4" y1="6" x2="20" y2="6" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="18" x2="20" y2="18" />
+          </svg>
+        </button>
+
+        <button id="theme-toggle" aria-label="Changer de thème" aria-pressed="false" class="w-6 h-6 flex items-center justify-center rounded-full bg-white dark:bg-[#333] shadow-md transition">
+          <span id="theme-icon" class="text-xl">🌙</span>
+        </button>
+      </div>
+    </div>
+
+    <nav id="mobile-menu" role="navigation" aria-label="Menu principal" class="md:hidden hidden flex-col items-center bg-crème text-sauge text-lg px-6 py-4 space-y-3 text-center">
+      <a href="{{ path('category_snacks') }}" class="hover:text-menthe transition">Snacks</a>
+      <a href="{{ path('category_douceurs') }}" class="hover:text-menthe transition">Douceurs</a>
+      <a href="{{ path('category_packs') }}" class="hover:text-menthe transition">Packs & Coffrets</a>
+      <a href="{{ path('app_about') }}" class="hover:text-menthe transition">Qui sommes-nous</a>
+      <a href="{{ path('app_contact') }}" class="hover:text-menthe transition">Contact</a>
+    </nav>
+  </header>
+
+  {% if is_granted('ROLE_CLIENT') %}
+    <nav role="navigation" aria-label="Menu espace client" class="bg-pink-100 p-4 text-pink-800 flex justify-between">
+      <div><a href="{{ path('client_dashboard') }}" class="font-bold">Mon espace client</a></div>
+      <div class="space-x-4">
+        <a href="{{ path('client_dashboard') }}">Accueil</a>
+        <a href="{{ path('contact') }}">Contact</a>
+        <form method="post" action="{{ path('client_logout') }}" class="inline">
+          <button class="hover:underline">Déconnexion</button>
+        </form>
+      </div>
+    </nav>
+  {% endif %}
+
+  <main id="main-content" role="main" tabindex="-1" class="focus:outline-none">
+    {% block body %}
+      <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-white text-black p-2 z-50">Aller au contenu principal</a>
+    {% endblock %}
+  </main>
+
+  {% for label, messages in app.flashes %}
+    {% for message in messages %}
+      <div class="alert alert-{{ label }}" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endfor %}
+
+  <footer class="bg-[#C4847C] text-[#F9F4F2] text-sm mt-16 pt-12 pb-6 border-t border-[#EDCC8B]">
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-10">
+      <div>
+        <h2 class="text-xl font-semibold text-[#EDCC8B] mb-4">Leila Snacks & Douceurs</h2>
+        <p class="mb-4 text-sm">Des douceurs faites avec amour, pour tous vos moments gourmands.</p>
+        <p class="text-xs">© {{ "now"|date("Y") }} Leila Snacks. Tous droits réservés.</p>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-4">Menu</h3>
+        <ul class="space-y-2">
+          <li><a href="{{ path('category_snacks') }}" class="hover:underline">Snacks</a></li>
+          <li><a href="{{ path('category_douceurs') }}" class="hover:underline">Douceurs</a></li>
+          <li><a href="{{ path('category_packs') }}" class="hover:underline">Packs & Coffrets</a></li>
+          <li><a href="{{ path('app_about') }}" class="hover:underline">Qui sommes-nous</a></li>
+          <li><a href="{{ path('app_contact') }}" class="hover:underline">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-4">Contact</h3>
+        <address class="not-italic text-sm space-y-1">
+          <p>Leila Snacks & Douceurs</p>
+          <p>123 Rue Gourmande, 75000 Paris</p>
+          <p>Téléphone : <a href="tel:+33123456789" class="underline hover:text-menthe">01 23 45 67 89</a></p>
+          <p>Email : <a href="mailto:contact@leilasnacks.fr" class="underline hover:text-menthe">contact@leilasnacks.fr</a></p>
+        </address>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Burger menu toggle
+    const burgerButton = document.getElementById('burger-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    burgerButton.addEventListener('click', () => {
+      const expanded = burgerButton.getAttribute('aria-expanded') === 'true' || false;
+      burgerButton.setAttribute('aria-expanded', !expanded);
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Theme toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const body = document.body;
+
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        body.classList.add('dark');
+        themeIcon.textContent = '☀️';
+        themeToggle.setAttribute('aria-pressed', 'true');
+      } else {
+        body.classList.remove('dark');
+        themeIcon.textContent = '🌙';
+        themeToggle.setAttribute('aria-pressed', 'false');
+      }
+    }
+
+    themeToggle.addEventListener('click', () => {
+      if (body.classList.contains('dark')) {
+        setTheme('light');
+        localStorage.setItem('theme', 'light');
+      } else {
+        setTheme('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    // Initial theme setup
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else {
+      // Default to light or system preference
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(prefersDark ? 'dark' : 'light');
+    }
+  </script>
+
+  {% block javascripts %}{% endblock %}
+</body>
+</html>
