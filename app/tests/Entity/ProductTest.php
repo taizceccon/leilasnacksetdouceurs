@@ -21,14 +21,14 @@ class ProductTest extends TestCase
             ->setTitre('Produit Test')
             ->setDescription('Description de test')
             ->setPrix(1999)
-            ->setImage('image.jpg')
+            ->setImage('image.webp')
             ->setUrlvideo('https://example.com/video.mp4')
             ->setCategory($category);
 
         $this->assertSame('Produit Test', $product->getTitre());
         $this->assertSame('Description de test', $product->getDescription());
         $this->assertSame(1999, $product->getPrix());
-        $this->assertSame('image.jpg', $product->getImage());
+        $this->assertSame('image.webp', $product->getImage());
         $this->assertSame('https://example.com/video.mp4', $product->getUrlvideo());
         $this->assertSame($category, $product->getCategory());
 

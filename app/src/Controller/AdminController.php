@@ -9,6 +9,7 @@ use App\Form\ProductType;
 
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
+use App\Repository\UserRepository;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +27,7 @@ class AdminController extends AbstractController
 {
  
     #[Route('/admin', name: 'admin_index')]
-    public function indexAdmin(Request $request, CategoryRepository $categoryRepository, ProductRepository $productRepository): Response
+    public function indexAdmin(Request $request, CategoryRepository $categoryRepository, ProductRepository $productRepository, UserRepository $userRepository): Response
     {
         $search = $request->query->get('search');
         $productSearch = $request->query->get('product_search');
@@ -50,27 +51,33 @@ class AdminController extends AbstractController
             : $productRepository->findAll();
 
         return $this->render('admin/dashboard/index.html.twig', [
-            'categories' => $categories,
-            'products' => $products,
-            'search' => $search,
-            'product_search' => $productSearch
-        ]);
+        'categories' => $categories,
+        'products' => $products,
+        'search' => $search,
+        'product_search' => $productSearch,
+
+        // 👇 Données statistiques pour ton tableau de bord
+        'productCount' => $productRepository->count([]),
+        'categoryCount' => $categoryRepository->count([]),
+        'clientCount' => $userRepository->count([]), // à adapter si tu as une entité User/Client
+    ]);
     }
 
-    #[Route('/admin/new', name: 'admin_product_new')]
-    public function newProduct(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+     #[Route('/admin/new', name: 'admin_product_new')]
+    public function newProduct(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $imageFile */
             $imageFile = $form->get('imageFile')->getData();
 
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
                 try {
                     $imageFile->move(
@@ -78,16 +85,18 @@ class AdminController extends AbstractController
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    // gérer l'erreur ici, par ex. loguer ou afficher un message
+                    $this->addFlash('error', 'Erreur lors du téléchargement de l\'image.');
+                    return $this->redirectToRoute('admin_new');
                 }
 
                 $product->setImage($newFilename);
             }
 
-            $em->persist($product);
-            $em->flush();
+            $entityManager->persist($product);
+            $entityManager->flush();
 
-            return $this->redirectToRoute('admin_index');
+            $this->addFlash('success', 'Produit ajouté avec succès !');
+            return $this->redirectToRoute('admin_products');
         }
 
         return $this->render('product/new.html.twig', [
@@ -146,7 +155,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_index');
     }
 
-    #[Route('admin/category/new', name: 'app_category_new', methods: ['GET', 'POST'])]
+    #[Route('admin/category/new', name: 'admin_category_new', methods: ['GET', 'POST'])]
     public function newCategory(Request $request, EntityManagerInterface $entityManager): Response
     {
         $category = new Category();
@@ -166,7 +175,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('admin/category/edit/{id}', name: 'app_category_edit', methods: ['GET', 'POST'])]
+    #[Route('admin/category/edit/{id}', name: 'admin_category_edit', methods: ['GET', 'POST'])]
     public function editCategory(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CategoryForm::class, $category);
@@ -185,7 +194,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('admin/category/delete/{id}', name: 'app_category_delete', methods: ['POST'])]
+    #[Route('admin/category/delete/{id}', name: 'admin_category_delete', methods: ['POST'])]
     public function deleteCategory(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {

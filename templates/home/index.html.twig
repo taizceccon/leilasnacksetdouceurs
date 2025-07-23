@@ -18,7 +18,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {% for product in searchResults %}
                     <div class="bg-white rounded shadow p-4 text-center hover:shadow-lg transition">
-                        <img src="/images/{{ product.image }}" alt="{{ product.titre }}" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300">
+                        <img src="/uploads/images/{{ product.image }}" alt="{{ product.titre }}" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300">
                         <a href="{{ path('product_show', {'id': product.id}) }}">
                             <h3 class="font-bold hover:underline cursor-pointer">{{ product.titre }}</h3>
                         </a>

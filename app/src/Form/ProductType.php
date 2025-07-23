@@ -38,8 +38,9 @@ class ProductType extends AbstractType
                             'image/jpeg',
                             'image/png',
                             'image/gif',
+                            'image/webp',
                         ],
-                        'mimeTypesMessage' => 'Veuillez uploader une image valide (JPEG, PNG, GIF)',
+                        'mimeTypesMessage' => 'Veuillez uploader une image valide (JPEG, PNG, GIF, WEBP)',
                     ])
                 ],
                 'attr' => ['class' => 'border border-pink-300 rounded w-full p-2'],

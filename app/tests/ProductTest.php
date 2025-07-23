@@ -6,9 +6,9 @@ class ProductTest extends WebTestCase
 {
     public function testHomepage(): void
     {
-        $client = static::createClient(); // Crée un navigateur simulé (client HTTP)
-        $crawler = $client->request('GET', '/'); // Fait une requête GET sur la page d'accueil
-        $this->assertResponseIsSuccessful(); // Vérifie que la réponse HTTP est 200 (OK)
+        $client = static::createClient(); //Crée un navigateur simulé (client HTTP)
+        $crawler = $client->request('GET', '/'); //Fait une requête GET sur la page d'accueil
+        $this->assertResponseIsSuccessful(); //Vérif que la réponse HTTP est 200 (OK)
         $this->assertSelectorTextContains('h1', 'Snacks & Douceurs de Leila'); // Vérifie que le h1 contient le bon texte
     }
 
@@ -17,7 +17,7 @@ class ProductTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/');
 
-        // Vérifie que le mot "Snacks" existe quelque part, sans erreur si absent
+        // Vérif le mot "Snacks" existe quelque part 
         $this->assertTrue(
             str_contains($crawler->filter('body')->text(), 'Snacks'),
             'Catégorie "Snacks" non trouvée sur la page.'
@@ -41,7 +41,7 @@ class ProductTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/');
 
-        // Cherche le premier lien vers un produit, supposé être dans un <a> avec un titre
+        // Cherche le premier lien vers un produit, normalment dans un <a> avec un titre
         $productLinkNode = $crawler->filter('a')->reduce(function ($node) {
             return str_contains(strtolower($node->text()), 'product');
         });

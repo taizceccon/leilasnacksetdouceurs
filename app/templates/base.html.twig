@@ -19,11 +19,13 @@
 
   <title>{% block title %}Douceurs & Snacks de Leila{% endblock %}</title>
 
-  <link rel="icon" href="/favicon.ico">   
-  <link  rel="preconnect" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;700&family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;700&family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+
   <script src="https://cdn.tailwindcss.com"></script>
   {# <link href="/build/tailwind.css" rel="stylesheet"> #}
-
   <script>
     tailwind.config = {
       darkMode: ['class', '[data-theme="dark"]'],
@@ -46,32 +48,64 @@
     <link rel="stylesheet" href="/css/style.css">
   {% endblock %}
 </head>
-<body class="transition duration-300 font-sans bg-crème text-[#333] dark:bg-[#1b1b1b] dark:text-[#f3f3f3]" data-theme="light">
-{# <body class="transition duration-300 font-sans" data-theme="light"> #}
-  <header class="bg-crème dark:bg-gray-900 shadow-md py-4 relative text-vertSauge dark:text-gray-100">
-    <div class="container mx-auto px-4 flex items-center justify-between">
-      <a href="{{ path('app_home') }}" class="flex-shrink-0" aria-label="Page d'accueil">
-        <img src="/images/logo.webp" alt="Logo Leila Snacks et Douceurs" width="150" height="150" loading="lazy" decoding="async" class="mx-auto rounded mb-2">
+<body class="bg-creme text-gray-800 dark:bg-fondDark dark:text-texteClair font-sans">
+  <header class="bg-creme dark:bg-[#3A322F]">
+
+  <!-- MOBILE: Version responsive spécifique -->
+      <div class="md:hidden flex flex-col items-center text-center space-y-4 w-full">
+
+        <!-- Logo centré -->
+        <a href="{{ path('app_home') }}">
+          <img src="/images/logo.webp" alt="Logo Leila Snacks et Douceurs" width="150" height="150" class="mx-auto rounded">
+        </a>
+
+        <!-- Bouton burger -->
+        <button id="burger-button" aria-expanded="false" aria-controls="mobile-menu" class="hover:text-bleuMenthe transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="6" x2="20" y2="6"/>
+            <line x1="4" y1="12" x2="20" y2="12"/>
+            <line x1="4" y1="18" x2="20" y2="18"/>
+          </svg>
+        </button>
+
+          <!-- Menu mobile déroulant -->
+          <nav id="mobile-menu" role="navigation" aria-label="Menu principal" class="md:hidden hidden flex flex-col items-center bg-crème dark:bg-[#333] text-vertSauge dark:text-[#f3f3f3] text-lg px-6 py-4 space-y-3 text-center">
+            <a href="{{ path('category_snacks') }}" class="hover:text-bleuMenthe">Snacks</a>
+            <a href="{{ path('category_douceurs') }}" class="hover:text-bleuMenthe">Douceurs</a>
+            <a href="{{ path('category_packs') }}" class="hover:text-bleuMenthe">Packs & Coffrets</a>
+            <a href="{{ path('app_about') }}" class="hover:text-bleuMenthe">Qui sommes-nous</a>
+            <a href="{{ path('app_contact') }}" class="hover:text-bleuMenthe">Contact</a>
+          </nav>
+
+       </div>
+  
+    <div class="container mx-auto px-4 flex items-center justify-between">       
+
+      <!-- Logo desktop -->
+      <a href="{{ path('app_home') }}" class="flex-shrink-0 hidden md:block" aria-label="Page d'accueil">
+        <img src="/images/logo.webp" alt="Logo Leila Snacks et Douceurs" width="150" height="150" class="mx-auto rounded mb-2">
       </a>
 
-      <nav role="navigation" aria-label="Menu principal" class="hidden md:flex flex-1 justify-center items-center space-x-6 text-vertSauge font-medium">
-        <a href="{{ path('category_snacks') }}" class="hover:text-bleuMenthe">Snacks</a>
-        <a href="{{ path('category_douceurs') }}" class="hover:text-bleuMenthe">Douceurs</a>
-        <a href="{{ path('category_packs') }}" class="hover:text-bleuMenthe">Packs & Coffrets</a>
-        <a href="{{ path('app_about') }}" class="hover:text-bleuMenthe">Qui sommes-nous</a>
-        <a href="{{ path('app_contact') }}" class="hover:text-bleuMenthe">Contact</a>
-      </nav>
+      <!-- Menu principal desktop -->
+    <nav role="navigation" aria-label="Menu principal" class="text-vertSauge dark:text-jaunePale hidden md:flex flex-1 justify-center items-center space-x-6 font-medium">
+      <a href="{{ path('category_snacks') }}" class="hover:text-roseFonce dark:hover:text-menthe transition-colors duration-200">Snacks</a>
+      <a href="{{ path('category_douceurs') }}" class="hover:text-roseFonce dark:hover:text-menthe transition-colors duration-200">Douceurs</a>
+      <a href="{{ path('category_packs') }}" class="hover:text-roseFonce dark:hover:text-menthe transition-colors duration-200">Packs & Coffrets</a>
+      <a href="{{ path('app_about') }}" class="hover:text-roseFonce dark:hover:text-menthe transition-colors duration-200">Qui sommes-nous</a>
+      <a href="{{ path('app_contact') }}" class="hover:text-roseFonce dark:hover:text-menthe transition-colors duration-200">Contact</a>
+    </nav>
 
+    <!-- Zone droite (desktop) -->
       <div class="flex items-center space-x-4 text-vertSauge">
-        <form method="get" action="{{ path('app_home') }}" class="flex items-center">
-          <input type="text" name="q" value="{{ app.request.get('q') }}" placeholder="Rechercher..." class="border border-gray-300 dark:border-[#555] rounded-l px-3 py-1 text-sm w-36 focus:outline-none focus:ring focus:ring-rose-300">
-          <button type="submit" class="bg-white dark:bg-[#333] border border-gray-700 rounded-r px-2 py-1">
+        <form method="get" action="{{ path('app_home') }}" class="bg-white dark:bg-[#4A403D]  flex items-center">
+          <input type="text" name="q" value="{{ app.request.get('q') }}" placeholder="Rechercher..." class="border border-gray-300 dark:border-[#4A403D] rounded-l px-3 py-1 text-sm w-36 focus:outline-none focus:ring focus:ring-rose-300">
+          <button type="submit" class="bg-white dark:bg-[#333] border border-gray-300 rounded-r px-2 py-1">
             <img src="/images/search.webp" alt="Rechercher" loading="lazy" width="36" height="36" class="w-5 h-5 dark:bg-[#333]">
           </button>
         </form>
 
         {% if app.user %}
-          <form method="post" action="{{ path('app_logout') }}">
+          <form method="post" action="{{ path('app_logout') }} ">
             <button type="submit" class="flex items-center space-x-2 text-vertSauge hover:opacity-80 transition">
               {{ app.user.email }}
               <img src="/images/logout.webp" alt="Se déconnecter" loading="lazy" width="36" height="36" class="w-6 h-6">
@@ -87,36 +121,15 @@
           <img src="/images/panier-vide.webp" alt="Mon panier" loading="lazy" width="36" height="36" class="w-6 h-6">
         </a>
 
-        <button id="burger-button" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden hover:text-bleuMenthe transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="4" y1="6" x2="20" y2="6"/>
-            <line x1="4" y1="12" x2="20" y2="12"/>
-            <line x1="4" y1="18" x2="20" y2="18"/>
-          </svg>
+        <button id="theme-toggle" aria-label="Changer de thème" aria-pressed="false" class="w-6 h-6 flex items-center justify-center rounded-full bg-white dark:bg-[#333] shadow-md transition text-black dark:text-white">
+          <span id="theme-icon" class="text-lg">🌙</span>
         </button>
 
-        {# <button id="theme-toggle" aria-label="Activer/désactiver le mode sombre" aria-pressed="false" ...>
-        🌙 Mode sombre
-      </button> #}
-      {# <button id="theme-toggle" aria-label="Changer de thème" aria-pressed="false" class="w-6 h-6 flex items-center justify-center rounded-full bg-white dark:bg-[#333] shadow-md transition">
-      <span id="theme-icon" class="text-xl">🌙</span>
-    </button> #}
-    <button id="theme-toggle"
-        aria-label="Changer de thème"
-        aria-pressed="false"
-        class="w-6 h-6 flex items-center justify-center rounded-full bg-white dark:bg-[#333] shadow-md transition text-black dark:text-white">
-  <span id="theme-icon" class="text-lg">🌙</span>
-</button>
       </div>
-    </div>
 
-    <nav id="mobile-menu" role="navigation" aria-label="Menu principal" class="md:hidden hidden flex flex-col items-center bg-crème dark:bg-[#333] text-vertSauge dark:text-[#f3f3f3] text-lg px-6 py-4 space-y-3 text-center">
-      <a href="{{ path('category_snacks') }}" class="hover:text-bleuMenthe">Snacks</a>
-      <a href="{{ path('category_douceurs') }}" class="hover:text-bleuMenthe">Douceurs</a>
-      <a href="{{ path('category_packs') }}" class="hover:text-bleuMenthe">Packs & Coffrets</a>
-      <a href="{{ path('app_about') }}" class="hover:text-bleuMenthe">Qui sommes-nous</a>
-      <a href="{{ path('app_contact') }}" class="hover:text-bleuMenthe">Contact</a>
-    </nav>
+    </div>    
+  </div>
+
   </header>
 
   {% if is_granted('ROLE_CLIENT') %}
@@ -194,46 +207,6 @@
       &copy; {{ "now"|date("Y") }} Leila Snacks & Douceurs. Tous droits réservés.
     </div>
   </footer>
-
-  {# <script> 
-  //   document.addEventListener('DOMContentLoaded', function () {
-  //     const burgerButton = document.getElementById('burger-button');
-  //     const mobileMenu = document.getElementById('mobile-menu');
-
-  //     burgerButton?.addEventListener('click', () => {
-  //       mobileMenu.classList.toggle('hidden');
-  //       burgerButton.setAttribute('aria-expanded', mobileMenu.classList.contains('hidden') ? 'false' : 'true');
-  //     });
-
-  //     document.addEventListener('click', (e) => {
-  //       if (!mobileMenu.contains(e.target) && !burgerButton.contains(e.target)) {
-  //         if (!mobileMenu.classList.contains('hidden')) {
-  //           mobileMenu.classList.add('hidden');
-  //           burgerButton.setAttribute('aria-expanded', 'false');
-  //         }
-  //       }
-  //     });
-  //   });
-
-  //   const themeToggle = document.getElementById('theme-toggle');
-  //   const root = document.body;
-
-  //   const setTheme = (theme) => {
-  //     root.setAttribute('data-theme', theme);
-  //     localStorage.setItem('theme', theme);
-  //     themeToggle.setAttribute('aria-pressed', theme === 'dark');
-  //     themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
-  //   };
-
-  //   const savedTheme = localStorage.getItem('theme') || 'light';
-  //   setTheme(savedTheme);
-
-  //   themeToggle.addEventListener('click', () => {
-  //     const current = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  //     setTheme(current);
-  //   });
-  
-  // </script> #}
 
   <script>
   document.addEventListener('DOMContentLoaded', function () {

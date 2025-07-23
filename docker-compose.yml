@@ -1,6 +1,8 @@
+version: '3.8'
+
 services:
-  database:
-    container_name: database
+  mysql:
+    container_name: mysql
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -11,31 +13,41 @@ services:
       - '4306:3306'
     volumes:
       - ./mysql:/var/lib/mysql
+    networks:
+      - leilasd
+
   php:
     container_name: php
     build:
       context: ./php
     ports:
       - 8080:80
-    
     volumes:
       - ./apache/default.conf:/etc/apache2/sites-enabled/000-default.conf
       - ./apache/default-ssl.conf:/etc/apache2/sites-enabled/000-default-ssl.conf
       - ./etc/ssl:/etc/ssl
       - ./app:/var/www
     depends_on:
-      - database
+      - mysql
+    networks:
+      - leilasd
+
   phpma:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     environment:
       PMA_ARBITRARY: 1
-      PMA_HOST: database
+      PMA_HOST: mysql
       PMA_USER: root
-      PMA_PASSWORD: passwordbdd
+      PMA_PASSWORD: root
       UPLOAD_LIMIT: 20M
     ports:
       - 8899:80
+    depends_on:
+      - mysql
+    networks:
+      - leilasd
+
   mongodb:
     container_name: mongodb
     image: mongo:latest
@@ -43,5 +55,9 @@ services:
       - '27018:27017'
     volumes:
       - ./mongodb:/data/db
+    networks:
+      - leilasd
 
-           
+networks:
+  leilasd:
+    driver: bridge

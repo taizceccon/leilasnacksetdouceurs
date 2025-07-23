@@ -29,15 +29,15 @@ class AppFixtures extends Fixture
         
         // User
         $user = new User();
-        $user->setEmail('test@example.com');
-        $hashedPassword = $this->passwordHasher->hashPassword($user, 'password123');
+        $user->setEmail('test@test.com');
+        $hashedPassword = $this->passwordHasher->hashPassword($user, '123456');
         $user->setPassword($hashedPassword);
         $user->setRoles(['ROLE_ADMIN']);
         $user->setIsVerified(true);
         $manager->persist($user);
 
         // Creer plusieurs Categories
-        $categoryNames = ['Snacks', 'Douceurs', 'Packs Coffrets'];
+        $categoryNames = ['Snacks', 'Douceurs', 'Packs & Coffrets'];
         $categories = [];
 
         foreach ($categoryNames as $name){        
@@ -52,7 +52,7 @@ class AppFixtures extends Fixture
             $product->setTitre('product '.$i);
             $product->setDescription('test description'.$i);
             $product->setPrix(mt_rand(500, 2500));
-            $product->setImage("produit$i.webp");  
+            $product->setImage("test.webp");  
             $product->setUrlvideo("http://www.youtube.com/v=product.$i"); 
             
             $randomCategory = $categories[array_rand($categories)];

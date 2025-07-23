@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ product.titre }} - Douceurs & Snacks{% endblock %}
+{% block title %} Douceurs & Snacks de Leila {% endblock %}
 
 {% block meta %}
   <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
@@ -11,9 +11,7 @@
 <section class="container mx-auto py-10">
     <div class="bg-white p-6 rounded shadow text-center">
         {% if product.image %}
-       <img src="{{ asset('images/' ~ product.image) }}" alt="{{ product.titre }}" srcset="/images/{{ product.image|replace({'.webp':'-small.webp'}) }} 400w,
-             /images/{{ product.image }} 800w" sizes="(max-width: 600px) 100vw, 25vw" loading="lazy" decoding="async" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer"
-     width="300" height="200" >
+         <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.titre }}" loading="lazy" decoding="async" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer" width="300" height="200" >
         {% endif %}
         <h1 class="text-2xl font-bold mb-2">{{ product.titre }}</h1>
         <p class="mb-4">{{ product.description }}</p>

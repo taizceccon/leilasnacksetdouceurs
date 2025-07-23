@@ -101,8 +101,10 @@ class HomeController extends AbstractController
     public function showSnacks(CategoryRepository $categoryRepository): Response
     {
         $category = $categoryRepository->findOneBy(['category' => 'Snacks']);
-        if (!$category) {
-            throw $this->createNotFoundException('Catégorie Snacks non trouvée.');
+       
+        if (!$category || $category->getProducts()->isEmpty()) {
+            $this->addFlash('warning', 'Il n\'y a pas de produits dans la catégorie Snacks.');
+            return $this->redirectToRoute('app_home');
         }
         return $this->render('snacks.html.twig', [
             'category' => $category,
@@ -113,8 +115,9 @@ class HomeController extends AbstractController
     public function showDouceurs(CategoryRepository $categoryRepository): Response
     {
         $category = $categoryRepository->findOneBy(['category' => 'Douceurs']);
-        if (!$category) {
-            throw $this->createNotFoundException('Catégorie Douceurs non trouvée.');
+        if (!$category || $category->getProducts()->isEmpty()) {
+            $this->addFlash('warning', 'Il n\'y a pas de produits dans la catégorie Douceurs.');
+            return $this->redirectToRoute('app_home');
         }
         return $this->render('douceurs.html.twig', [
             'category' => $category,
@@ -125,8 +128,9 @@ class HomeController extends AbstractController
     public function showPacks(CategoryRepository $categoryRepository): Response
     {
         $category = $categoryRepository->findOneBy(['category' => 'Packs & Coffrets']);
-        if (!$category) {
-            throw $this->createNotFoundException('Catégorie Packs & Coffrets non trouvée.');
+        if (!$category || $category->getProducts()->isEmpty()) {
+           $this->addFlash('warning', 'Il n\'y a pas de produits dans la catégorie Packs & Coffrets.');
+           return $this->redirectToRoute('app_home');
         }
         return $this->render('packs_coffrets.html.twig', [
             'category' => $category,
