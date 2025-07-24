@@ -1,8 +1,0 @@
-easy_admin:
-  design:
-    brand_color: '#ff6600'
-  entities:
-    - App\Entity\Product
-    - App\Entity\Category
-  dashboard:
-    route: admin_dashboard

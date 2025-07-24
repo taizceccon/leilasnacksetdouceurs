@@ -1,9 +1,0 @@
-controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
-
-client_login:
-  path: /client/login
-  controller: App\Controller\ClientController::login
