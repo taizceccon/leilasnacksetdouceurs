@@ -1,0 +1,48 @@
+### Symfony ###
+/var/
+/vendor/
+/.env
+.env.*.local
+/.env.local
+/.phpunit.result.cache
+/.phpunit.cache/
+/phpunit.xml
+/phpunit.xml.dist
+/config/secrets/*/*.decrypt.private.php
+
+### Cache, logs, sessions ###
+/var/cache/
+/var/log/
+/var/sessions/
+/var/routes/
+
+### IDEs / éditeurs ###
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+### Docker ###
+docker-compose.override.yml
+etc/                # Dossiers SSL/ca certs etc., souvent système
+mongodb/
+mysql/
+php/.bash_history
+
+### Node/npm ###
+node_modules/
+build/
+dist/
+*.log
+
+### Fichiers temporaires ###
+*.tmp
+*.bak
+*.cache
+.DS_Store
+Thumbs.db
+
+### Autres ###
+/public/bundles/
+.env
+codes.txt

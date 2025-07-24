@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  {% block meta %}
+    <meta name="description" content="Douceurs & Snacks de Leila - Des gourmandises artisanales livrées chez vous avec amour.">
+    <meta name="keywords" content="snacks, douceurs, sucreries, artisanales, Leila, confiseries, livraison">
+    <meta name="author" content="Leila Snacks">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Douceurs & Snacks de Leila" />
+    <meta property="og:description" content="Des snacks et douceurs faits avec amour pour tous vos moments gourmands." />
+    <meta property="og:image" content="{{ asset('images/meta-preview.jpg') }}" />
+    <meta property="og:url" content="{{ app.request.uri }}" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+  {% endblock %}
+
+  <title>{% block title %}Douceurs & Snacks de Leila{% endblock %}</title>
+
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;700&family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  {# <link href="/build/tailwind.css" rel="stylesheet"> #}
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          colors: {
+            roseFonce: '#C4847C',
+            jaunePale: '#CCAA5C',
+            bleuMenthe: '#469CAD',
+            crème: '#F9F4F2',
+            vertSauge: '#7B9E87',
+            rosé: '#E5C1BD',
+          }
+        }
+      }
+    }
+  </script>
+
+  {% block stylesheets %}
+    <link rel="stylesheet" href="/css/style.css">
+  {% endblock %}
+</head>
+<body class="bg-creme text-gray-800 dark:bg-fondDark dark:text-texteClair font-sans">
+  <header class="bg-creme dark:bg-[#3A322F]">
+
+  <!-- MOBILE: Version responsive spécifique -->
+      <div class="md:hidden flex flex-col items-center text-center space-y-4 w-full">
+
+        <!-- Logo centré -->
+        <a href="{{ path('app_home') }}">
+          <img src="/images/logo.webp" alt="Logo Leila Snacks et Douceurs" width="150" height="150" class="mx-auto rounded">
+        </a>
+
+        <!-- Bouton burger -->
+        <button id="burger-button" aria-expanded="false" aria-controls="mobile-menu" class="hover:text-bleuMenthe transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="6" x2="20" y2="6"/>
+            <line x1="4" y1="12" x2="20" y2="12"/>
+            <line x1="4" y1="18" x2="20" y2="18"/>
+          </svg>
+        </button>
+
+          <!-- Menu mobile déroulant -->
+          <nav id="mobile-menu" role="navigation" aria-label="Menu principal" class="md:hidden hidden flex flex-col items-center bg-crème dark:bg-[#333] text-vertSauge dark:text-[#f3f3f3] text-lg px-6 py-4 space-y-3 text-center">
+            <a href="{{ path('category_snacks') }}" class="hover:text-bleuMenthe">Snacks</a>
+            <a href="{{ path('category_douceurs') }}" class="hover:text-bleuMenthe">Douceurs</a>
+            <a href="{{ path('category_packs') }}" class="hover:text-bleuMenthe">Packs & Coffrets</a>
+            <a href="{{ path('app_about') }}" class="hover:text-bleuMenthe">Qui sommes-nous</a>
+            <a href="{{ path('app_contact') }}" class="hover:text-bleuMenthe">Contact</a>
+          </nav>
+
+       </div>
+  
+    <div class="container mx-auto px-4 flex items-center justify-between">       
+
+      <!-- Logo desktop -->
+      <a href="{{ path('app_home') }}" class="flex-shrink-0 hidden md:block" aria-label="Page d'accueil">
+        <img src="/images/logo.webp" alt="Logo Leila Snacks et Douceurs" width="150" height="150" class="mx-auto rounded mb-2">
+      </a>
+
+      <!-- Menu principal desktop -->
+    <nav role="navigation" aria-label="Menu principal" class="text-vertSauge dark:text-jaunePale hidden md:flex flex-1 justify-center items-center space-x-6 font-medium">
+      <a href="{{ path('category_snacks') }}" class="hover:text-roseFonce dark:hover:text-menthe transition-colors duration-200">Snacks</a>
+      <a href="{{ path('category_douceurs') }}" class="hover:text-roseFonce dark:hover:text-menthe transition-colors duration-200">Douceurs</a>
+      <a href="{{ path('category_packs') }}" class="hover:text-roseFonce dark:hover:text-menthe transition-colors duration-200">Packs & Coffrets</a>
+      <a href="{{ path('app_about') }}" class="hover:text-roseFonce dark:hover:text-menthe transition-colors duration-200">Qui sommes-nous</a>
+      <a href="{{ path('app_contact') }}" class="hover:text-roseFonce dark:hover:text-menthe transition-colors duration-200">Contact</a>
+    </nav>
+
+    <!-- Zone droite (desktop) -->
+      <div class="flex items-center space-x-4 text-vertSauge">
+        <form method="get" action="{{ path('app_home') }}" class="bg-white dark:bg-[#4A403D]  flex items-center">
+          <input type="text" name="q" value="{{ app.request.get('q') }}" placeholder="Rechercher..." class="border border-gray-300 dark:border-[#4A403D] rounded-l px-3 py-1 text-sm w-36 focus:outline-none focus:ring focus:ring-rose-300">
+          <button type="submit" class="bg-white dark:bg-[#333] border border-gray-300 rounded-r px-2 py-1">
+            <img src="/images/search.webp" alt="Rechercher" loading="lazy" width="36" height="36" class="w-5 h-5 dark:bg-[#333]">
+          </button>
+        </form>
+
+        {% if app.user %}
+          <form method="post" action="{{ path('app_logout') }} ">
+            <button type="submit" class="flex items-center space-x-2 text-vertSauge hover:opacity-80 transition">
+              {{ app.user.email }}
+              <img src="/images/logout.webp" alt="Se déconnecter" loading="lazy" width="36" height="36" class="w-6 h-6">
+            </button>
+          </form>
+        {% else %}
+          <a href="{{ path('app_login') }}" class="flex items-center space-x-2 text-vertSauge hover:opacity-80 transition">
+            <img src="/images/login.webp" alt="Se connecter" loading="lazy" width="36" height="36" class="w-6 h-6">
+          </a>
+        {% endif %}
+
+        <a href="{{ path('cart_show') }}" class="relative hover:opacity-80 transition">
+          <img src="/images/panier-vide.webp" alt="Mon panier" loading="lazy" width="36" height="36" class="w-6 h-6">
+        </a>
+
+        <button id="theme-toggle" aria-label="Changer de thème" aria-pressed="false" class="w-6 h-6 flex items-center justify-center rounded-full bg-white dark:bg-[#333] shadow-md transition text-black dark:text-white">
+          <span id="theme-icon" class="text-lg">🌙</span>
+        </button>
+
+      </div>
+
+    </div>    
+  </div>
+
+  </header>
+
+  {% if is_granted('ROLE_CLIENT') %}
+    <nav role="navigation" aria-label="Menu principal" class="bg-rose-100 dark:bg-[#1b1b1b] text-black dark:text-white p-4 text-rose-800 flex justify-between">
+      <div><a href="{{ path('client_dashboard') }}" class="font-bold">Mon espace client</a></div>
+      <div class="space-x-4">
+        <a href="{{ path('client_dashboard') }}">Accueil</a>
+        <a href="{{ path('contact') }}">Contact</a>
+        <form method="post" action="{{ path('client_logout') }}" class="inline">
+          <button class="hover:underline">Déconnexion</button>
+        </form>
+      </div>
+    </nav>
+  {% endif %}
+
+ 
+<main id="main-content" role="main" class="bg-white dark:bg-[#1b1b1b] text-black dark:text-white min-h-screen p-4">
+    {% block body %}
+     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-white text-black p-2 z-50 dark:bg-gray-800 dark:text-white">Aller au contenu principal</a>
+    {% endblock %}
+</main>
+
+  {% for label, messages in app.flashes %}
+    {% for message in messages %}
+      <div class="alert alert-{{ label }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endfor %}
+
+  <footer class="bg-[#C4847C] dark:bg-[#2c2c2c] text-[#F9F4F2] dark:text-gray-300 text-sm mt-16 pt-12 pb-6 border-t border-[#EDCC8B] dark:border-[#555]">
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-10">
+      <div>
+        <h2 class="text-xl font-semibold text-[#EDCC8B]  dark:text-rose-400 mb-4">Leila Snacks & Douceurs</h2>
+        <p class="mb-4 text-sm">Des douceurs faites avec amour, pour tous vos moments gourmands.</p>
+        <form action="/register" method="get" class="flex flex-col sm:flex-row gap-2 mb-4">
+          <input type="email" name="email" placeholder="Votre email" aria-label="Votre adresse email pour s’inscrire" class="px-3 py-2 rounded-md border border-[#EDCC8B] dark:border-[#555] text-sm text-[#7B9E87] dark:text-white bg-white dark:bg-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-[#84D3CE] w-full sm:w-auto" />
+          <button type="submit" class="bg-[#84D3CE] text-white px-4 py-2 rounded-md hover:bg-[#E5C1BD] transition">S'inscrire</button>
+        </form>       
+      </div>
+
+      <div>
+        <h3 class="text-md font-semibold text-[#EDCC8B] dark:text-rose-400 mb-3">Navigation</h3>
+        <ul class="space-y-2">
+          <li><a href="/orders" class="hover:text-[#84D3CE] transition">Commander</a></li>
+          <li><a href="/contact" class="hover:text-[#84D3CE] transition">Contact</a></li>
+          <li><a href="/faq" class="hover:text-[#84D3CE] transition">FAQ</a></li>
+        </ul>        
+      </div>
+
+      <div>
+        <h3 class="text-md font-semibold text-[#EDCC8B] dark:text-rose-400 mb-3">Informations</h3>
+        <ul class="space-y-2">
+          <li><a href="{{ path('app_about') }}" class="hover:text-[#84D3CE] transition">À propos</a></li>
+          <li><a href="#" class="hover:text-[#84D3CE] transition">Mentions Légales</a></li>
+          <li><a href="/avis" class="hover:text-[#84D3CE] transition">Avis</a></li>
+        </ul>
+         <div class="flex space-x-4 mt-2">
+          <!-- icônes des réseaux sociaux ici -->
+          <a href="https://facebook.com" target="_blank" aria-label="Facebook" class="text-[#EDCC8B] hover:text-[#84D3CE] transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.86 7.94 9.8v-6.93H7.1v-2.87h2.84V9.41c0-2.8 1.67-4.34 4.22-4.34 1.22 0 2.5.22 2.5.22v2.74H15.5c-1.4 0-1.83.87-1.83 1.76v2.11h3.12l-.5 2.87h-2.62V21.8C18.56 20.86 22 16.84 22 12z"/>
+            </svg>
+            </a>
+            <a href="https://instagram.com" target="_blank" aria-label="Instagram" class="text-[#EDCC8B] hover:text-[#84D3CE] transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7.75 2A5.75 5.75 0 002 7.75v8.5A5.75 5.75 0 007.75 22h8.5A5.75 5.75 0 0022 16.25v-8.5A5.75 5.75 0 0016.25 2h-8.5zm0 1.5h8.5A4.25 4.25 0 0120.5 7.75v8.5a4.25 4.25 0 01-4.25 4.25h-8.5a4.25 4.25 0 01-4.25-4.25v-8.5A4.25 4.25 0 017.75 3.5zm8.75 2a.75.75 0 100 1.5.75.75 0 000-1.5zM12 7a5 5 0 100 10 5 5 0 000-10zm0 1.5a3.5 3.5 0 110 7 3.5 3.5 0 010-7z"/>
+            </svg>
+            </a>            
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 text-center text-xs border-t border-[#F9F4F2] pt-4 dark:text-rose-400 ">
+      &copy; {{ "now"|date("Y") }} Leila Snacks & Douceurs. Tous droits réservés.
+    </div>
+  </footer>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const burgerButton = document.getElementById('burger-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const root = document.body;
+
+    burgerButton?.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      burgerButton.setAttribute('aria-expanded', mobileMenu.classList.contains('hidden') ? 'false' : 'true');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu.contains(e.target) && !burgerButton.contains(e.target)) {
+        if (!mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+          burgerButton.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+
+    const setTheme = (theme) => {
+      root.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      themeToggle.setAttribute('aria-pressed', theme === 'dark');
+      themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    };
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      setTheme(newTheme);
+    });
+  });
+</script>
+</body>
+</html>

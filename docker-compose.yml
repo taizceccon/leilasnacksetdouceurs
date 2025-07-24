@@ -1,0 +1,91 @@
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: leilasd
+      MYSQL_USER: symfony
+      MYSQL_PASSWORD: symfony
+    ports:
+      - '4306:3306'
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - leilasd
+
+  php:
+    container_name: php
+    build:
+      context: ./php
+    environment:
+      MAILER_DSN: smtp://mailpit:1025
+    ports:
+      - 8080:80
+    volumes:
+      - ./apache/default.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./apache/default-ssl.conf:/etc/apache2/sites-enabled/000-default-ssl.conf
+      - ./etc/ssl:/etc/ssl
+      - ./app:/var/www
+    depends_on:
+      - mysql
+      - mailpit
+    networks:
+      - leilasd
+
+  phpma:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: root
+      UPLOAD_LIMIT: 20M
+    ports:
+      - 8899:80
+    depends_on:
+      - mysql
+    networks:
+      - leilasd
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    ports:
+      - '27018:27017'
+    volumes:
+      - ./mongodb:/data/db
+    networks:
+      - leilasd
+
+# frontend:
+#     container_name: frontend
+#     image: node:18
+#     working_dir: /app
+#     volumes:
+#       - ./app:/app
+#     command: tail -f /dev/null
+#     networks:
+#       - leilasd
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    ports:
+      - 8025:8025
+      - 1025:1025
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1 
+    networks:
+      - leilasd
+      
+networks:
+  leilasd:
+    driver: bridge

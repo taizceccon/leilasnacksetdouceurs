@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Détails de la commande {% endblock %}
+{% block meta %}
+  <meta name="description" content="Commander">
+{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto px-4 py-6">
+        <h1 class="text-3xl font-bold text-center mb-6">Détails de la commande #{{ order.id }}</h1>
+
+        <div class="bg-white dark:bg-[#2c2c2c] text-[#F9F4F2] dark:text-gray-300 shadow-lg rounded-lg p-6 mb-6">
+            <table class="min-w-full table-auto border-collapse ">
+                <tbody>
+                    <tr class="border-b">
+                        <th class="p-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 ">Produit</th>
+                        <td class="p-4 text-sm text-gray-700 dark:text-gray-300 ">
+                            <ul>
+                                {% for item in order.orderItems %}
+                                    <li>{{ item.product.titre }} - {{ item.quantity }} x {{ (item.subtotal / 100)|number_format(2, ',', ' ') }}€</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <th class="p-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 ">Date de la commande</th>
+                        <td class="p-4 text-sm text-gray-700 dark:text-gray-300 ">{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                    </tr>
+                    <tr class="border-b">
+                        <th class="p-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 ">Total</th>
+                        <td class="p-4 text-sm text-gray-700 dark:text-gray-300 ">{{ (order.total / 100)|number_format(2, ',', ' ') }} €</td>
+                    </tr>
+                    <tr class="border-b">
+                        <th class="p-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300 ">Status</th>
+                        <td class="p-4 text-sm text-gray-700 dark:text-gray-300 ">{{ order.status }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex justify-between items-center mt-6">
+            <a href="{{ path('order_index') }}" class="bg-rose-400 text-white dark:text-gray-300 px-6 py-2 rounded-md hover:bg-rose-400 transition duration-300">
+                Retour à la liste des commandes
+            </a>
+            <a href="{{ path('cart_show') }}" class="bg-gray-300 dark:bg-[#2c2c2c] text-gray-700 px-6 py-2 rounded-md hover:bg-gray-400 transition duration-300">
+                Retour au panier
+            </a>
+        </div>
+    </div>
+{% endblock %}

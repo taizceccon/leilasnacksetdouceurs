@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Liste des commandes - Leila Snacks{% endblock %}
+{% block meta %}
+  <meta name="description" content="Commandes">
+{% endblock %}
+
+{% block body %}
+    <h1 class="text-3xl font-bold text-center mb-6">Liste des commandes</h1>
+
+    <table class="w-full table-auto dark:bg-[#2c2c2c] text-[#F9F4F2] dark:text-gray-300  border-collapse">
+        <thead class="bg-gray-200 dark:bg-[#2c2c2c] text-[#F9F4F2] dark:text-gray-300 ">
+            <tr>
+                <th class="p-2 border">ID</th>
+                <th class="p-2 border">Client</th>
+                <th class="p-2 border">Total</th>
+                <th class="p-2 border">Date</th>
+                <th class="p-2 border">Status</th>
+                <th class="p-2 border">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td class="p-2 border">{{ order.id }}</td>
+                    <td class="p-2 border">{{ order.user.username }}</td>
+                    <td class="p-2 border">{{ (order.total / 100)|number_format(2, ',', ' ') }} €</td>
+                    <td class="p-2 border">{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                    <td class="p-2 border">{{ order.status }}</td>
+                    <td class="p-2 border"><a href="{{ path('order_show', {'id': order.id}) }}" class="text-rose-400 hover:text-rose-100">Voir</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

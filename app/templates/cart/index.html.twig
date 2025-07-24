@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre panier - Leila{% endblock %}
+
+{% block body %}
+<section class="container mx-auto py-10 px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-roseFonce dark:text-jaunePale">Votre Panier</h1>
+
+    {% if items is empty %}
+        <p class="text-center text-sauge dark:text-jaunePale text-lg">Votre panier est vide.</p>
+    {% else %}
+        <!-- Table visible à partir de md -->
+        <div class="hidden md:block overflow-x-auto">
+            <table class="w-full table-auto border-collapse border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm">
+                <thead class="bg-rosé dark:bg-roseFonce">
+                    <tr>
+                        <th class="p-3 border border-gray-300 dark:border-gray-700 text-left text-sm font-semibold text-rose-900 dark:text-rose-300">Produit</th>
+                        <th class="p-3 border border-gray-300 dark:border-gray-700 text-center text-sm font-semibold text-rose-900 dark:text-rose-300">Prix unitaire</th>
+                        <th class="p-3 border border-gray-300 dark:border-gray-700 text-center text-sm font-semibold text-rose-900 dark:text-rose-300">Quantité</th>
+                        <th class="p-3 border border-gray-300 dark:border-gray-700 text-center text-sm font-semibold text-rose-900 dark:text-rose-300">Sous-total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr class="text-center border-b border-gray-200 dark:border-gray-700 hover:bg-rose-50 dark:hover:bg-rose-800 transition">
+                        <td class="p-3 border border-gray-300 dark:border-gray-700 text-left font-medium text-rose-900 dark:text-rose-100">{{ item.product.titre }}</td>
+                        <td class="p-3 border border-gray-300 dark:border-gray-700 font-semibold text-rose-800 dark:text-rose-200">{{ (item.product.prix / 100)|number_format(2, ',', ' ') }} €</td>
+                        <td class="p-3 border border-gray-300 dark:border-gray-700">
+                            <form action="{{ path('cart_update', {'id': item.product.id}) }}" method="POST" class="flex items-center justify-center gap-2">
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="w-16 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" />
+                                <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded text-sm font-semibold transition">Modifier</button>
+                            </form>
+                        </td>
+                        <td class="p-3 border border-gray-300 dark:border-gray-700 font-bold text-green-700 dark:text-green-400">{{ (item.product.prix * item.quantity / 100)|number_format(2, ',', ' ') }} €</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="bg-gray-100 dark:bg-gray-800 font-bold text-lg text-right text-rose-900 dark:text-rose-100">
+                        <td colspan="3" class="p-3 pr-6">Total :</td>
+                        <td class="p-3">{{ (total / 100)|number_format(2, ',', ' ') }} €</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Cartes pour mobile -->
+        <div class="md:hidden space-y-6">
+            {% for item in items %}
+            <div class="bg-white dark:bg-[#222] rounded-lg shadow p-4 flex flex-col gap-4">
+                <h3 class="font-semibold text-lg text-rose-900 dark:text-rose-100">{{ item.product.titre }}</h3>
+                <p class="text-green-700 dark:text-green-400 font-bold">{{ (item.product.prix * item.quantity / 100)|number_format(2, ',', ' ') }} €</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300"><strong>Prix unitaire :</strong> {{ (item.product.prix / 100)|number_format(2, ',', ' ') }} €</p>
+                <form action="{{ path('cart_update', {'id': item.product.id}) }}" method="POST" class="flex items-center gap-2">
+                    <label for="quantity-{{ item.product.id }}" class="sr-only">Quantité</label>
+                    <input id="quantity-{{ item.product.id }}" type="number" name="quantity" value="{{ item.quantity }}" min="1" class="w-20 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" />
+                    <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-1 rounded text-sm font-semibold transition">Modifier</button>
+                </form>
+            </div>
+            {% endfor %}
+
+            <div class="text-right font-bold text-lg text-rose-900 dark:text-rose-100">
+                Total : {{ (total / 100)|number_format(2, ',', ' ') }} €
+            </div>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

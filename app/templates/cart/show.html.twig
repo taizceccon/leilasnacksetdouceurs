@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Mon Panier - Douceurs & Snacks de Leila {% endblock %}
+
+{% block body %}
+<section class="container mx-auto py-10 px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-roseFonce dark:text-jaunePale">Votre panier</h1>
+
+    {% if products is empty %}
+        <p class="text-center text-sauge dark:text-jaunePale text-lg">Votre panier est vide.</p>
+        <div class="text-center mt-8">
+            <a href="{{ path('app_home') }}" class="inline-block bg-rose-600 hover:bg-creme dark:hover:bg-[#3A322F] text-white font-semibold px-8 py-3 rounded shadow transition">
+                Retour à l'accueil
+            </a>
+        </div>
+    {% else %}
+
+        <!-- TABLEAU visible à partir de md (≥768px) -->
+        <div class="hidden md:block overflow-x-auto">
+            <table class="min-w-full border-collapse border border-gray-300 dark:border-gray-700 shadow-sm rounded-lg">
+                <thead class="bg-rosé dark:bg-roseFonce">
+                    <tr>
+                        <th class="border border-gray-300 dark:border-gray-700 p-3 text-left text-sm font-semibold text-rose-900 dark:text-rose-300">Produit</th>
+                        <th class="border border-gray-300 dark:border-gray-700 p-3 text-center text-sm font-semibold text-rose-900 dark:text-rose-300">Prix unitaire</th>
+                        <th class="border border-gray-300 dark:border-gray-700 p-3 text-center text-sm font-semibold text-rose-900 dark:text-rose-300">Quantité</th>
+                        <th class="border border-gray-300 dark:border-gray-700 p-3 text-center text-sm font-semibold text-rose-900 dark:text-rose-300">Sous-total</th>
+                        <th class="border border-gray-300 dark:border-gray-700 p-3 text-center text-sm font-semibold text-rose-900 dark:text-rose-300">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in products %}
+                        <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-creme dark:hover:bg-[#3A322F] transition">
+                            <td class="p-3 flex items-center gap-4 max-w-xs">
+                                {% if item.product.image %}
+                                    <img src="{{ asset('uploads/images/' ~ item.product.image) }}" alt="{{ item.product.titre }}" loading="lazy" decoding="async" class="w-20 h-12 object-cover rounded-md shadow-sm" />
+                                {% else %}
+                                    <div class="w-20 h-12 bg-gray-200 dark:bg-gray-600 rounded-md flex items-center justify-center text-gray-400 italic text-xs">Pas d'image</div>
+                                {% endif %}
+                                <span class="font-medium text-rose-900 dark:text-rose-100 truncate">{{ item.product.titre }}</span>
+                            </td>
+                            <td class="p-3 text-center text-rose-800 dark:text-rose-200 font-semibold">{{ (item.product.prix / 100)|number_format(2, ',', ' ') }} €</td>
+                            <td class="p-3 text-center">
+                                <form action="{{ path('cart_update', {'id': item.product.id}) }}" method="POST" class="flex items-center justify-center gap-2">
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="w-16 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" />
+                                    <button type="submit" class="bg-menthe hover:bg-rosé text-white dark:bg-roseFonce dark:hover:bg-jaunePale text-white px-3 py-1 rounded text-sm transition font-semibold">Modifier</button>
+                                </form>
+                            </td>
+                            <td class="p-3 text-center text-green-700 dark:text-green-400 font-bold">{{ (item.subtotal / 100)|number_format(2, ',', ' ') }} €</td>
+                            <td class="p-3 text-center">
+                                <form action="{{ path('cart_remove', {'id': item.product.id}) }}" method="POST" onsubmit="return confirm('Supprimer {{ item.product.titre }} du panier ?');">
+                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition font-semibold">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="bg-rosé dark:bg-roseFonce font-bold text-lg text-rose-900 dark:text-rose-200">
+                        <td colspan="3" class="text-right p-3">Total :</td>
+                        <td class="p-3 text-center">{{ (total / 100)|number_format(2, ',', ' ') }} €</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- LISTE CARTES visible sous md (<768px) -->
+        <div class="md:hidden space-y-6">
+            {% for item in products %}
+                <div class="bg-white dark:bg-[#222] rounded-lg shadow p-4 flex flex-col gap-4">
+                    <div class="flex items-center gap-4">
+                        {% if item.product.image %}
+                            <img src="{{ asset('uploads/images/' ~ item.product.image) }}" alt="{{ item.product.titre }}" loading="lazy" decoding="async" class="w-24 h-16 object-cover rounded-md shadow-sm" />
+                        {% else %}
+                            <div class="w-24 h-16 bg-gray-200 dark:bg-gray-600 rounded-md flex items-center justify-center text-gray-400 italic text-xs">Pas d'image</div>
+                        {% endif %}
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-lg text-rose-900 dark:text-rose-100">{{ item.product.titre }}</h3>
+                            <p class="text-green-700 dark:text-green-400 font-bold mt-1">{{ (item.subtotal / 100)|number_format(2, ',', ' ') }} €</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <p class="text-sm text-gray-700 dark:text-gray-300"><strong>Prix unitaire :</strong> {{ (item.product.prix / 100)|number_format(2, ',', ' ') }} €</p>
+                        <form action="{{ path('cart_update', {'id': item.product.id}) }}" method="POST" class="flex items-center gap-2">
+                            <label for="quantity-{{ item.product.id }}" class="sr-only">Quantité</label>
+                            <input id="quantity-{{ item.product.id }}" type="number" name="quantity" value="{{ item.quantity }}" min="1" class="w-20 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" />
+                            <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-1 rounded text-sm transition font-semibold">Modifier</button>
+                        </form>
+                    </div>
+                    <form action="{{ path('cart_remove', {'id': item.product.id}) }}" method="POST" onsubmit="return confirm('Supprimer {{ item.product.titre }} du panier ?');" class="text-right">
+                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded text-sm transition font-semibold">Supprimer</button>
+                    </form>
+                </div>
+            {% endfor %}
+
+            <div class="text-right font-bold text-lg text-rose-900 dark:text-rose-100">
+                Total : {{ (total / 100)|number_format(2, ',', ' ') }} €
+            </div>
+        </div>
+
+        <div class="text-center mt-8">
+            <a href="{{ path('order_create') }}" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded shadow transition">
+                Commander
+            </a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
