@@ -1,6 +1,4 @@
 <?php
-// tests/Entity/UserTest.php
-
 namespace App\Tests\Entity;
 
 use App\Entity\User;

@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-class AppFixturesTest extends TestCase
+class CategoryFormTest extends TestCase
 {
     public function testSomething(): void
     {

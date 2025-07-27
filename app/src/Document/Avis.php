@@ -22,6 +22,12 @@ class Avis
     #[MongoDB\Field(type: "date")]
     private ?\DateTime $createdAt = null;
 
+    #[MongoDB\Field(type: "int")]
+    private ?int $note = null;  // Ajout de la note
+
+    #[MongoDB\Field(type: "bool")]
+    private bool $isModerated = false;  // Ajout du champ pour la modération
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -75,4 +81,27 @@ class Avis
         $this->createdAt = $createdAt;
         return $this;
     }
+
+    public function getNote(): ?int
+    {
+        return $this->note;
+    }
+
+    public function setNote(?int $note): self
+    {
+        $this->note = $note;
+        return $this;
+    }
+
+    public function getIsModerated(): bool
+    {
+        return $this->isModerated;
+    }
+
+    public function setIsModerated(bool $isModerated): self
+    {
+        $this->isModerated = $isModerated;
+        return $this;
+    }
 }
+

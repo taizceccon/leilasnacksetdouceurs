@@ -18,7 +18,7 @@ class AppFixtures extends Fixture
 
      // Injecte le service de hashage
     public function __construct(UserPasswordHasherInterface $passwordHasher)
-    {
+    {   
         $this->passwordHasher = $passwordHasher;
     }
 

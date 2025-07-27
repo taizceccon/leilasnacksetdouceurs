@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Document\Avis;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Form\AvisType;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 class AvisController extends AbstractController
 {
@@ -43,6 +46,28 @@ class AvisController extends AbstractController
         return $this->render('avis/list.html.twig', [
             'avis' => $avisList,
         ]);
+    }
+
+    #[Route('/delete/{id}', name: 'app_avis_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete(Request $request, DocumentManager $dm, string $id): RedirectResponse
+    {
+        $avis = $dm->getRepository(Avis::class)->find($id);
+
+        if (!$avis) {
+            $this->addFlash('error', 'Avis non trouvé.');
+            return $this->redirectToRoute('app_avis_list');
+        }
+
+        if ($this->isCsrfTokenValid('delete-avis' . $avis->getId(), $request->request->get('_token'))) {
+            $dm->remove($avis);
+            $dm->flush();
+            $this->addFlash('success', 'Avis supprimé avec succès.');
+        } else {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+        }
+
+        return $this->redirectToRoute('app_avis_list');
     }
 
     #[Route('/mongo-test', name: 'mongo_test')]
