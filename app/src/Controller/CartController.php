@@ -13,9 +13,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CartController extends AbstractController
 {
+    private function formatPrice(int $amount): string
+    {
+        return number_format($amount / 100, 2, ',', ' ');
+    }
+
+    private function getCartItemCount(array $cart): int
+    {
+        return array_sum($cart);
+    }
+    
+
     #[Route('/cart', name: 'cart_show')]
     public function showCart(SessionInterface $session, ProductRepository $productRepository): Response
     {
@@ -48,43 +60,82 @@ class CartController extends AbstractController
         $quantity = max(1, (int) $request->request->get('quantity', 1));
 
         $cart = $session->get('cart', []);
-        $cart[$productId] = isset($cart[$productId]) ? $cart[$productId] + $quantity : $quantity;
+        $cart[$productId] = ($cart[$productId] ?? 0) + $quantity;
 
         $session->set('cart', $cart);
 
-        $this->addFlash('success', 'Produit ajouté au panier !');
+        $this->addFlash('success', 'Produit ajouté au panier.');
         return $this->redirectToRoute('cart_show');
     }
 
     #[Route('/cart/update/{id}', name: 'cart_update', methods: ['POST'])]
-    public function update(Request $request, SessionInterface $session, $id): Response
+    public function update(Request $request, SessionInterface $session, ProductRepository $productRepository, int $id): JsonResponse
     {
         $quantity = max(1, (int) $request->request->get('quantity', 1));
         $cart = $session->get('cart', []);
 
-        if (isset($cart[$id])) {
-            $cart[$id] = $quantity;
-            $session->set('cart', $cart);
-            $this->addFlash('success', 'Quantité mise à jour.');
-        } else {
-            $this->addFlash('error', 'Produit non trouvé dans le panier.');
+        if (!isset($cart[$id])) {
+            return new JsonResponse(['success' => false, 'message' => 'Produit introuvable.'], 404);
         }
 
-        return $this->redirectToRoute('cart_show');
+        $cart[$id] = $quantity;
+        $session->set('cart', $cart);
+
+        $product = $productRepository->find($id);
+        if (!$product) {
+            return new JsonResponse(['success' => false, 'message' => 'Produit non trouvé en base.'], 404);
+        }
+
+        $subtotal = $product->getPrix() * $quantity;
+
+        // Recalcul du total
+        $total = 0;
+        foreach ($cart as $productId => $qty) {
+            $p = $productRepository->find($productId);
+            if ($p) {
+                $total += $p->getPrix() * $qty;
+            }
+        }
+
+        return new JsonResponse([
+            'success' => true,
+            'quantity' => $quantity,
+            'subtotal' => $this->formatPrice($subtotal),
+            'total' => $this->formatPrice($total),
+            'cartItemCount' => $this->getCartItemCount($cart)
+        ]);
     }
 
-    #[Route('/cart/remove/{id}', name: 'cart_remove')]
-    public function removeCart(string $id, SessionInterface $session): Response
+    #[Route('/cart/remove/{id}', name: 'cart_remove', methods: ['POST'])]
+    public function removeCart(int $id, SessionInterface $session, ProductRepository $productRepository): JsonResponse
     {
         $cart = $session->get('cart', []);
 
         if (isset($cart[$id])) {
             unset($cart[$id]);
             $session->set('cart', $cart);
-            $this->addFlash('success', 'Produit supprimé du panier.');
+
+            // Recalcul total
+            $total = 0;
+            foreach ($cart as $productId => $qty) {
+                $product = $productRepository->find($productId);
+                if ($product) {
+                    $total += $product->getPrix() * $qty;
+                }
+            }
+
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Produit supprimé du panier.',
+                'total' => $this->formatPrice($total),
+                'cartItemCount' => $this->getCartItemCount($cart)
+            ]);
         }
 
-        return $this->redirectToRoute('cart_show');
+        return new JsonResponse([
+            'success' => false,
+            'message' => 'Produit non trouvé dans le panier.'
+        ], 404);
     }
 
     #[Route('/cart/clear', name: 'cart_clear')]
@@ -98,82 +149,54 @@ class CartController extends AbstractController
     #[Route('/commander', name: 'order_create')]
     public function createOrder(SessionInterface $session, ProductRepository $productRepository, EntityManagerInterface $em): Response
     {
-        // Vérifie que l'utilisateur est connecté
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $user = $this->getUser();
-        if (!$user instanceof User || !$user->getEmail()) {
-            $this->addFlash('error', 'Utilisateur non valide ou email introuvable.');
+        if (!$user instanceof User) {
+            $this->addFlash('error', 'Utilisateur invalide.');
             return $this->redirectToRoute('cart_show');
         }
 
-        // Récupérer le panier
         $cart = $session->get('cart', []);
         if (empty($cart)) {
             $this->addFlash('error', 'Votre panier est vide.');
             return $this->redirectToRoute('cart_show');
         }
 
-        // Créer la nouvelle commande
-        $newOrder = new Order();
-        $newOrder->setUser($user);
-        $newOrder->setCreatedAt(new \DateTimeImmutable());
-        $newOrder->setStatus('en attente'); // Par exemple
+        $order = new Order();
+        $order->setUser($user);
+        $order->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris')));
+        $order->setStatus('en vérification');
 
-        // Calculer le total de la commande
-        $total = 0;
         foreach ($cart as $productId => $quantity) {
-            // Vérifier que le produit existe
             $product = $productRepository->find($productId);
-            if ($product) {
-                $orderItem = new OrderItem();
-                $orderItem->setProduct($product);
-                $orderItem->setQuantity($quantity);
-                $orderItem->setItem($product->getTitre());  // Remplir l'attribut 'item' avec le titre du produit
-
-                $subtotal = $product->getPrix() * $quantity;
-                $orderItem->setSubtotal($subtotal);
-
-                // Ajouter l'item à la commande
-                $newOrder->addItem($orderItem);
-                $total += $subtotal;
-            } else {
-                // Produit introuvable, on ajoute un message d'erreur et on redirige
-                $this->addFlash('error', "Le produit avec l'ID $productId n'existe plus.");
+            if (!$product) {
+                $this->addFlash('error', "Produit ID $productId introuvable.");
                 return $this->redirectToRoute('cart_show');
             }
+
+            $orderItem = new OrderItem();
+            $orderItem->setProduct($product);
+            $orderItem->setQuantity($quantity);
+            $orderItem->setUnitPrice($product->getPrix());
+
+            $order->addItem($orderItem);
         }
 
-        // Vérifier qu'au moins un item a été ajouté avant de persister
-        if (count($newOrder->getOrderItems()) === 0) {
-            $this->addFlash('error', 'Aucun produit valide dans le panier.');
-            return $this->redirectToRoute('cart_show');
-        }
-
-        $newOrder->setTotal($total);
-
-        // Persister la commande et ses items
-        $em->persist($newOrder);
+        $em->persist($order);
         $em->flush();
 
-        // Vider le panier
         $session->remove('cart');
 
-        // Rediriger vers la page de la commande
-        return $this->redirectToRoute('order_show', ['id' => $newOrder->getId()]);
+        return $this->redirectToRoute('order_show', ['id' => $order->getId()]);
     }
 
     #[Route('/orders', name: 'order_index')]
     public function index(OrderRepository $orderRepository): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
 
-        if (!$user) {
-            $this->addFlash('error', 'Vous devez être connecté pour voir vos commandes.');
-            return $this->redirectToRoute('cart_show');
-        }
-
-        // Récupérer toutes les commandes liées à l'utilisateur connecté
         $orders = $orderRepository->findBy(['user' => $user]);
 
         return $this->render('order/index.html.twig', [
@@ -181,33 +204,25 @@ class CartController extends AbstractController
         ]);
     }
 
-    // Route pour afficher une commande spécifique
     #[Route('/orders/{id}', name: 'order_show')]
-    public function show(Order $order = null): Response
+    public function show(Order $order): Response
     {
-        // Vérifier si la commande existe, sinon afficher une page d'erreur
-        if ($order === null) {
-            throw $this->createNotFoundException('Commande non trouvée.');
+        if ($this->getUser() !== $order->getUser()) {
+            throw $this->createAccessDeniedException();
         }
 
         return $this->render('order/show.html.twig', [
             'order' => $order,
         ]);
     }
-    
 
-    // Route pour lister toutes les commandes
-  #[Route('/orders/all', name: 'order_list')]
-    public function list(OrderRepository $orderRepository)
+    #[Route('/orders/all', name: 'order_list')]
+    public function list(OrderRepository $orderRepository): Response
     {
-        // Récupérer toutes les commandes depuis la base de données
         $orders = $orderRepository->findAll();
 
-        // Rendre la vue avec la liste des commandes
         return $this->render('order/list.html.twig', [
             'orders' => $orders,
         ]);
     }
-
-    
 }

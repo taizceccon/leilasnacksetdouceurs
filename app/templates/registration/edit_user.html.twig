@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon compte{% endblock %}
+
+{% block body %}
+<h1>Modifier mon compte</h1>
+
+{{ form_start(registrationForm) }}
+    {{ form_widget(registrationForm) }}
+    <button class="btn btn-primary" type="submit">Enregistrer</button>
+{{ form_end(registrationForm) }}
+{% endblock %}

@@ -8,28 +8,31 @@
 {% block body %}
     <h1 class="text-3xl font-bold text-center mb-6">Liste des commandes</h1>
 
-    <table class="w-full table-auto dark:bg-[#2c2c2c] text-[#F9F4F2] dark:text-gray-300  border-collapse">
-        <thead class="bg-gray-200 dark:bg-[#2c2c2c] text-[#F9F4F2] dark:text-gray-300 ">
+    <table class="w-full table-auto border-collapse">
+        <thead class="bg-gray-100 dark:bg-[#2c2c2c] text-gray-900 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600">
             <tr>
-                <th class="p-2 border">ID</th>
-                <th class="p-2 border">Client</th>
-                <th class="p-2 border">Total</th>
-                <th class="p-2 border">Date</th>
-                <th class="p-2 border">Status</th>
-                <th class="p-2 border">Actions</th>
+                <th class="p-2 border border-gray-300 dark:border-gray-600">ID</th>
+                <th class="p-2 border border-gray-300 dark:border-gray-600">Client</th>
+                <th class="p-2 border border-gray-300 dark:border-gray-600">Total</th>
+                <th class="p-2 border border-gray-300 dark:border-gray-600">Date</th>
+                <th class="p-2 border border-gray-300 dark:border-gray-600">Status</th>
+                <th class="p-2 border border-gray-300 dark:border-gray-600">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for order in orders %}
-                <tr>
-                    <td class="p-2 border">{{ order.id }}</td>
-                    <td class="p-2 border">{{ order.user.username }}</td>
-                    <td class="p-2 border">{{ (order.total / 100)|number_format(2, ',', ' ') }} €</td>
-                    <td class="p-2 border">{{ order.createdAt|date('d/m/Y H:i') }}</td>
-                    <td class="p-2 border">{{ order.status }}</td>
-                    <td class="p-2 border"><a href="{{ path('order_show', {'id': order.id}) }}" class="text-rose-400 hover:text-rose-100">Voir</a></td>
+                <tr class="bg-white dark:bg-[#2c2c2c] text-gray-900 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#3a3a3a]">
+                    <td class="p-2 border border-gray-300 dark:border-gray-600">{{ order.id }}</td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-600">{{ order.user.email }}</td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-600">{{ order.totalInEuros|number_format(2, ',', ' ') }} €</td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-600">{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-600">{{ order.status }}</td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-600">
+                        <a href="{{ path('order_show', {'id': order.id}) }}" class="text-rose-600 hover:text-rose-400 transition duration-300">Voir</a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 {% endblock %}
+

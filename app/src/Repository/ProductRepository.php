@@ -63,7 +63,7 @@ class ProductRepository extends ServiceEntityRepository
     //                 ->findBy(['id' => array_column($results, 'id')]);
     // }
 
-    public function findAllRandom(int $limit = 9): array
+    public function findAllRandom(int $limit = 8): array
     {
         $conn = $this->getEntityManager()->getConnection();
 
@@ -102,14 +102,64 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
     
-    public function searchByKeyword(string $query): array
+    // public function searchByKeyword(string $query): array
+    // {
+    //     return $this->createQueryBuilder('p')
+    //         ->leftJoin('p.category', 'c')
+    //         ->addSelect('c')
+    //         ->where('p.titre LIKE :q OR p.description LIKE :q')
+    //         ->setParameter('q', '%' . $query . '%')
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+    public function searchByKeyword(string $keyword): array
     {
-        return $this->createQueryBuilder('p')
+        $conn = $this->getEntityManager()->getConnection();
+
+        // Préparer la recherche en mode BOOLEAN avec les mots séparés par espace
+        // Ajouter un '*' pour recherche "wildcard" sur chaque mot
+        $words = array_filter(preg_split('/\s+/', $keyword));
+        $searchString = implode(' ', array_map(fn($w) => $w . '*', $words));
+
+        $sql = "
+            SELECT p.id
+            FROM product p
+            WHERE MATCH(p.titre, p.description) AGAINST (:search IN BOOLEAN MODE)
+            ORDER BY MATCH(p.titre, p.description) AGAINST (:search IN BOOLEAN MODE) DESC
+        ";
+
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['search' => $searchString]);
+
+        $ids = array_column($resultSet->fetchAllAssociative(), 'id');
+
+        if (empty($ids)) {
+            return [];
+        }
+
+        // Charger les entités Product correspondantes
+        $products = $this->createQueryBuilder('p')
             ->leftJoin('p.category', 'c')
             ->addSelect('c')
-            ->where('p.titre LIKE :q OR p.description LIKE :q')
-            ->setParameter('q', '%' . $query . '%')
+            ->where('p.id IN (:ids)')
+            ->setParameter('ids', $ids)
             ->getQuery()
             ->getResult();
+
+        // Réordonner les entités pour respecter l'ordre des ids
+        $productsById = [];
+        foreach ($products as $product) {
+            $productsById[$product->getId()] = $product;
+        }
+
+        $orderedProducts = [];
+        foreach ($ids as $id) {
+            if (isset($productsById[$id])) {
+                $orderedProducts[] = $productsById[$id];
+            }
+        }
+
+        return $orderedProducts;
     }
 }

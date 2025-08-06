@@ -8,6 +8,11 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<OrderItem>
+ *
+ * @method OrderItem|null find($id, $lockMode = null, $lockVersion = null)
+ * @method OrderItem|null findOneBy(array $criteria, array $orderBy = null)
+ * @method OrderItem[]    findAll()
+ * @method OrderItem[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class OrderItemRepository extends ServiceEntityRepository
 {
@@ -15,6 +20,23 @@ class OrderItemRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, OrderItem::class);
     }
+
+    /**
+     * Retourne les lignes de commande associées à une commande donnée.
+     *
+     * @param int $orderId
+     * @return OrderItem[]
+     */
+    public function findByOrderId(int $orderId): array
+    {
+        return $this->createQueryBuilder('oi')
+            ->andWhere('oi.order = :orderId')
+            ->setParameter('orderId', $orderId)
+            ->orderBy('oi.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+}
 
     //    /**
     //     * @return OrderItem[] Returns an array of OrderItem objects
@@ -40,4 +62,3 @@ class OrderItemRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-}

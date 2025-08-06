@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints\File as FileConstraint;
 
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\Index(columns:['titre','description'],name:'product',flags:['fulltext'])]
 class Product
 {
     #[ORM\Id]

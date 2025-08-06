@@ -39,7 +39,8 @@
                         <input type="hidden" name="product_id" value="{{ product.id }}">
                         <p class="text-green-600 font-semibold mt-2">{{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité</p>
                         <p><input type="number" name="quantity" value="1" min="1" class="border rounded w-16 text-center mx-auto mt-2"></p>
-                        <button type="submit" class="bg-rose-400 text-white rounded mt-2 px-4 py-1">Ajouter au panier</button>
+                        <button type="submit" class="bg-rose-400 text-white rounded mt-2 px-4 py-1">
+                        <i class="fas fa-basket-shopping mr-2"></i>Ajouter </button>
                     </form>
                 </div>
                 {% endfor %}
@@ -49,7 +50,7 @@
 {% else %}
     <section class="container mx-auto py-10">    
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {% for product in randomProducts %}
                 <div class="bg-white dark:bg-[#333] rounded shadow p-4 text-center hover:shadow-lg transition">
                   {% if product.image %}
@@ -69,8 +70,10 @@
                     <form action="{{ path('cart_add') }}" method="POST">
                         <input type="hidden" name="product_id" value="{{ product.id }}">
                         <p class="text-green-600 font-semibold mt-2">{{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité</p>
-                        <p class="text-sm">Quantité: <input type="number" name="quantity" value="1" min="1" class="border rounded w-16 text-center"></p>
-                        <button type="submit" class="bg-rose-400 text-white rounded px-4 py-1 mt-2">Ajouter au panier</button>
+                        <p class="text-sm">Quantité: <input type="number" name="quantity" value="1" min="1" class="dark:bg-[#1e1e1e] dark:text-gray-200 border rounded w-16 text-center"></p>
+                        {# <button type="submit" class="bg-rose-400 text-white rounded px-4 py-1 mt-2">Ajouter au panier</button> #}
+                        <button type="submit" class="bg-red-300 hover:bg-red-400 text-white font-semibold px-4 py-2 rounded w-full sm:w-auto" title="Ajouter au panier">
+                                <i class="fas fa-basket-shopping mr-2"></i>Ajouter</button>
                     </form>
                 </div>
             {% else %}

@@ -7,6 +7,8 @@ parameters:
     images_directory: '%kernel.project_dir%/public/uploads/images'
     env(MONGODB_URL): ''
     env(MONGODB_DB): ''
+    stripe.secret_key: '%env(STRIPE_SECRET_KEY)%'
+    stripe.public_key: '%env(STRIPE_PUBLIC_KEY)%'
 
 services:
     # default configuration for services in *this* file
@@ -26,3 +28,11 @@ services:
     App\DataFixtures\AppFixtures:
         arguments:
             $passwordHasher: '@security.user_password_hasher'
+
+    App\Service\StripeService:
+        arguments:
+            $stripeSecretKey: '%stripe.secret_key%'
+    
+    App\EventSubscriber\CartSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }

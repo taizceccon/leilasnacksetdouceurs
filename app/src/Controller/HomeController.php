@@ -3,13 +3,20 @@
 namespace App\Controller;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use App\Entity\Product;
-use App\Form\ProductType;
+use App\Entity\User;
 use App\Entity\Category;
-use App\Form\CategoryForm;
 use App\Entity\Contact;
+
+use App\Form\ProductType;
+use App\Form\CategoryForm;
 use App\Form\ContactType;
+use App\Form\RegistrationForm;
+
 use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\UserRepository;
+use App\Repository\OrderRepository; 
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,40 +25,17 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
+
+
+use Symfony\Component\Form\FormError;
+
+
+
 class HomeController extends AbstractController
 {
-    // #[Route('/', name: 'app_home')]
-    // public function index(Request $request, ProductRepository $productRepository): Response
-    // {
-    //     $query = $request->query->get('q');
-    //     $isSearch = false;
-    //     $searchResults = [];
-
-    //     if ($query) {
-    //         $isSearch = true;
-    //         $searchResults = $productRepository->createQueryBuilder('p')
-    //             ->leftJoin('p.category', 'c')
-    //             ->addSelect('c')
-    //             ->where('p.titre LIKE :q OR p.description LIKE :q')
-    //             ->setParameter('q', '%' . $query . '%')
-    //             ->getQuery()
-    //             ->getResult();
-    //     }
-
-    //     $snacks = !$isSearch ? $productRepository->findByCategoryName('Snacks') : [];
-    //     $douceurs = !$isSearch ? $productRepository->findByCategoryName('Douceurs') : [];
-    //     $packs = !$isSearch ? $productRepository->findByCategoryName('Packs & Coffrets') : [];
-
-    //     return $this->render('home/index.html.twig', [
-    //         'isSearch' => $isSearch,
-    //         'searchResults' => $searchResults,
-    //         'Snacks' => $snacks,
-    //         'Douceurs' => $douceurs,
-    //         'Packs' => $packs,
-    //     ]);
-    // }
-
-     #[Route('/', name: 'app_home')]
+    #[Route('/', name: 'app_home')]
     public function index(Request $request, ProductRepository $productRepository): Response
     {
         $query = $request->query->get('q');
@@ -63,8 +47,7 @@ class HomeController extends AbstractController
             $searchResults = $productRepository->searchByKeyword($query);
         }
 
-        // Remplace les snacks/douceurs/packs par une sélection aléatoire
-        $randomProducts = !$isSearch ? $productRepository->findAllRandom(9) : [];
+        $randomProducts = !$isSearch ? $productRepository->findAllRandom(8) : [];
 
         return $this->render('home/index.html.twig', [
             'isSearch' => $isSearch,
@@ -150,14 +133,19 @@ class HomeController extends AbstractController
             $em->flush();
 
             $email = (new Email())
-                ->from($contact->getEmail())
-                ->to('taizceccon@gmail.com')
+                ->from('no-reply@leila-snacks.fr') // recommandé pour ne pas tomber en spam
+                ->replyTo($contact->getEmail())    // vraie adresse de l'utilisateur
+                ->to('taizceccon@hotmail.fr')
                 ->subject($contact->getSujet())
                 ->text($contact->getMessage());
 
-            $mailer->send($email);
+            try {
+                $mailer->send($email);
+                $this->addFlash('success', 'Message envoyé avec succès !');
+            } catch (TransportExceptionInterface $e) {
+                $this->addFlash('error', 'Une erreur est survenue lors de l’envoi du message.');
+            }
 
-            $this->addFlash('success', 'Message envoyé avec succès !');
             return $this->redirectToRoute('app_contact');
         }
 
@@ -192,12 +180,12 @@ class HomeController extends AbstractController
         ]);
     }
 
-#[Route('/mail-test', name: 'mail_test')]
+    #[Route('/mail-test', name: 'mail_test')]
     public function sendTestMail(MailerInterface $mailer)
     {
        $email = (new Email())
-            ->from('hello@example.com')
-            ->to('someone@example.com')
+            ->from('hello@leilasd.fr')
+            ->to('someone@leilasd.fr')
             ->subject('Test Mailpit')
             ->text('Ceci est un test')
             ->html('<p>Ceci est un <strong>test</strong> Mailpit.</p>');
@@ -213,4 +201,36 @@ class HomeController extends AbstractController
         }
     }
 
+    #[Route('/mentions-legales', name: 'mentions_legales')]
+    public function mentions(): Response {
+        return $this->render('mentions_legales.html.twig');
+    }
+
+    #[Route('/conditions-generales', name: 'cgv')]
+    public function cgv(): Response {
+        return $this->render('cgv.html.twig');
+    }
+
+    #[Route('/mon-compte', name: 'app_user_dashboard')]
+    public function userDashboard(OrderRepository $orderRepository): Response
+    {
+        $user = $this->getUser(); // Récupérer l'utilisateur connecté
+
+        if (!$user) {
+            // Si l'utilisateur n'est pas connecté, on redirige
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Récupérer les commandes de l'utilisateur
+        $orders = $orderRepository->findBy(['user' => $user]);
+
+        // Passer les commandes et le formulaire au template
+        return $this->render('registration/user.html.twig', [
+            'user' => $user,
+            'orders' => $orders,
+            'form' => $this->createForm(RegistrationForm::class, $user)->createView(),
+        ]);
+    }
+
+         
 }

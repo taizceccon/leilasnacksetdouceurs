@@ -13,36 +13,23 @@ class OrderItem
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: false)]
-    private ?string $item = null;
-
     #[ORM\ManyToOne(inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $order = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderItems')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
     #[ORM\Column]
     private ?int $quantity = null;
 
     #[ORM\Column]
-    private ?float $subtotal = null;
+    private ?int $unitPrice = null;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getItem(): ?string
-    {
-        return $this->item;
-    }
-
-    public function setItem(string $item): static
-    {
-        $this->item = $item;
-        return $this;
     }
 
     public function getOrder(): ?Order
@@ -74,27 +61,32 @@ class OrderItem
 
     public function setQuantity(int $quantity): static
     {
-        $this->quantity = $quantity;
-        $this->updateSubtotal();
-        return $this;
-    }
-
-    public function getSubtotal(): ?float
-    {
-        return $this->subtotal;
-    }
-
-    public function setSubtotal(float $subtotal): static
-    {
-        $this->subtotal = $subtotal;
-        return $this;
-    }
-
-    // Helper method to update the subtotal
-    private function updateSubtotal(): void
-    {
-        if ($this->product) {
-            $this->subtotal = $this->quantity * $this->product->getPrix();
+        if ($quantity < 1) {
+            throw new \InvalidArgumentException('La quantité doit être positive.');
         }
+        $this->quantity = $quantity;
+        return $this;
+    }
+
+    public function getUnitPrice(): ?int
+    {
+        return $this->unitPrice;
+    }
+
+    public function setUnitPrice(int $unitPrice): static
+    {
+        if ($unitPrice < 0) {
+            throw new \InvalidArgumentException('Le prix unitaire doit être positif ou nul.');
+        }
+        $this->unitPrice = $unitPrice;
+        return $this;
+    }
+
+    /**
+     * Calcule le subtotal en centimes
+     */
+    public function getSubtotal(): int
+    {
+        return ($this->unitPrice ?? 0) * ($this->quantity ?? 0);
     }
 }

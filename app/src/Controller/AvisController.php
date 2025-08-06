@@ -38,14 +38,31 @@ class AvisController extends AbstractController
     #[Route('/avis', name: 'app_avis_list')]
     public function avis_list(DocumentManager $dm): Response
     {
-        // Récupère tous les avis avec findAll
-        $avisList = $dm->getRepository(Avis::class)->findAll();
-     
-
+         // Récupère tous les avis avec findAll
+         //$avisList = $dm->getRepository(Avis::class)->findAll(); 
         // Passe la liste des avis à la vue Twig
+        // return $this->render('avis/list.html.twig', [
+       //    'avis' => $avisList,  ]);
+        $avisList = $dm->getRepository(Avis::class)->findBy(['isModerated' => true]);
         return $this->render('avis/list.html.twig', [
             'avis' => $avisList,
         ]);
+    }
+    #[Route('/admin/avis/{id}/valider', name: 'admin_avis_valider')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function validerAvis(DocumentManager $dm, string $id): RedirectResponse
+    {
+        $avis = $dm->getRepository(Avis::class)->find($id);
+
+        if (!$avis) {
+            $this->addFlash('error', 'Avis non trouvé.');
+        } else {
+            $avis->setIsModerated(true);
+            $dm->flush();
+            $this->addFlash('success', 'Avis modéré avec succès.');
+        }
+
+        return $this->redirectToRoute('admin_index');
     }
 
     #[Route('/delete/{id}', name: 'app_avis_delete', methods: ['POST'])]

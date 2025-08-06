@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conditions Générales de Vente - Leila Snacks{% endblock %}
+
+{% block body %}
+<section class="max-w-4xl mx-auto p-6 bg-white dark:bg-[#1e1e1e] rounded shadow">
+  <h1 class="text-3xl font-bold mb-6 text-red-400">Conditions Générales de Vente</h1>
+
+  <h2 class="text-xl font-semibold mb-2">1. Objet</h2>
+  <p>Les présentes conditions régissent la vente de produits par Leila Snacks via le site leilasnacks.fr.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">2. Produits</h2>
+  <p>Les produits proposés sont décrits et présentés avec la plus grande exactitude. Toutefois, des erreurs ou omissions peuvent se produire.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">3. Prix</h2>
+  <p>Les prix sont indiqués en euros, toutes taxes comprises (TTC). Leila Snacks se réserve le droit de modifier ses prix à tout moment.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">4. Commande</h2>
+  <p>La commande est confirmée après validation du paiement. Vous recevrez un email de confirmation récapitulant votre achat.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">5. Paiement</h2>
+  <p>Les paiements sont sécurisés via Stripe. Aucune donnée bancaire n’est conservée par Leila Snacks.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">6. Livraison</h2>
+  <p>Les produits sont expédiés sous 2 à 5 jours ouvrés. Les délais peuvent varier selon la destination.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">7. Droit de rétractation</h2>
+  <p>Conformément à l’article L221-28 du Code de la consommation, les denrées périssables (alimentaires) ne sont pas soumises au droit de rétractation.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">8. Données personnelles</h2>
+  <p>Les données collectées sont utilisées uniquement pour la gestion des commandes. Elles sont traitées selon notre <a href="{{ path('mentions_legales') }}" class="text-blue-500 underline">politique de confidentialité</a>.</p>
+
+  <h2 class="text-xl font-semibold mt-6 mb-2">9. Contact</h2>
+  <p>Pour toute question, contactez-nous à <a href="mailto:contact@leilasnacks.fr" class="text-blue-500 underline">contact@leilasnacks.fr</a>.</p>
+</section>
+{% endblock %}

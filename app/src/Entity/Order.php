@@ -22,7 +22,7 @@ class Order
     private ?User $user = null;
 
     #[ORM\Column]
-    private ?float $total = 0.0;
+    private ?int $total = 0; // montant en centimes
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -30,14 +30,16 @@ class Order
     #[ORM\Column(length: 255)]
     private ?string $status = null;
 
-    // Relation OneToMany pour récupérer les items associés à cette commande
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeSessionId = null;
+
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class, cascade: ['persist'])]
     private Collection $orderItems;
 
     public function __construct()
     {
         $this->orderItems = new ArrayCollection();
-        $this->total = 0.0;
+        $this->total = 0;
     }
 
     public function getId(): ?int
@@ -56,19 +58,29 @@ class Order
         return $this;
     }
 
-    public function getTotal(): ?float
+    public function getTotal(): ?int
     {
         return $this->total;
     }
 
-    // Calculate total price based on order items
-    public function setTotal(): static
+    /**
+     * Recalcule le total à partir des OrderItems
+     */
+    public function recalculateTotal(): static
     {
-        $this->total = 0.0;
+        $this->total = 0;
         foreach ($this->orderItems as $orderItem) {
             $this->total += $orderItem->getSubtotal();
         }
         return $this;
+    }
+
+    /**
+     * Retourne le total en euros pour affichage (float)
+     */
+    public function getTotalInEuros(): float
+    {
+        return $this->total / 100;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
@@ -93,6 +105,17 @@ class Order
         return $this;
     }
 
+    public function getStripeSessionId(): ?string
+    {
+        return $this->stripeSessionId;
+    }
+
+    public function setStripeSessionId(?string $stripeSessionId): static
+    {
+        $this->stripeSessionId = $stripeSessionId;
+        return $this;
+    }
+
     public function addItem(OrderItem $item): self
     {
         if (!$this->orderItems->contains($item)) {
@@ -100,8 +123,8 @@ class Order
             $item->setOrder($this);
         }
 
-        // Recalculate total whenever an item is added
-        $this->setTotal();
+        // Recalcule le total à chaque ajout
+        $this->recalculateTotal();
 
         return $this;
     }
@@ -109,5 +132,18 @@ class Order
     public function getOrderItems(): Collection
     {
         return $this->orderItems;
+    }
+
+    public function removeItem(OrderItem $item): self
+    {
+        if ($this->orderItems->removeElement($item)) {
+            if ($item->getOrder() === $this) {
+                $item->setOrder(null);
+            }
+            // Recalcule le total après suppression
+            $this->recalculateTotal();
+        }
+
+        return $this;
     }
 }

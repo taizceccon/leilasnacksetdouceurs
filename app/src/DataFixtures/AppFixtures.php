@@ -49,8 +49,8 @@ class AppFixtures extends Fixture
         // Products avec category aleatoire        
         for ($i = 0; $i< 20; $i++){        
             $product = new Product();
-            $product->setTitre('product '.$i);
-            $product->setDescription('test description'.$i);
+            $product->setTitre('Product '.$i);
+            $product->setDescription('Découvrez le produit -  description.'.$i);
             $product->setPrix(mt_rand(500, 2500));
             $product->setImage("test.webp");  
             $product->setUrlvideo("http://www.youtube.com/v=product.$i"); 

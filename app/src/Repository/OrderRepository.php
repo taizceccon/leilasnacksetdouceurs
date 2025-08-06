@@ -8,6 +8,11 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Order>
+ *
+ * @method Order|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Order|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Order[]    findAll()
+ * @method Order[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class OrderRepository extends ServiceEntityRepository
 {
@@ -15,6 +20,23 @@ class OrderRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Order::class);
     }
+
+    /**
+     * Retourne les commandes d’un utilisateur, les plus récentes en premier.
+     *
+     * @param int $userId
+     * @return Order[]
+     */
+    public function findByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.user = :user')
+            ->setParameter('user', $userId)
+            ->orderBy('o.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+}
 
     //    /**
     //     * @return Order[] Returns an array of Order objects
@@ -40,4 +62,3 @@ class OrderRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-}
