@@ -8,14 +8,13 @@
 {% endblock %}
 
 {% block body %}
-
-<section class="text-center py-16 bg-[#E5C1BD]">
-    <h1 class="text-4xl font-cursive text-rose-800">Snacks & Douceurs de Leila</h1>
-    <p class="text-rose-800">Des saveurs de fait maison pour tous les moments – faites avec amour et une touche spéciale de Leila.</p>
+<section class="text-center py-16 bg-[#E5C1BD] w-full py-10">
+    <h1 class="text-4xl font-cursive text-rose-100">Snacks & Douceurs de Leila</h1>
+    <p class="text-amber-100">Des saveurs de fait maison pour tous les moments – faites avec amour et une touche spéciale de Leila.</p>
 </section>
 
 {% if isSearch %}
-    <section class="container mx-auto py-10">
+    <section class="px-4 mx-auto max-w-7xl py-10">
         <h2 class="text-2xl font-bold text-center mb-6">Résultats de la recherche</h2>
         {% if searchResults is empty %}
             <p class="text-center text-gray-600">Aucun produit trouvé.</p>
@@ -24,7 +23,7 @@
                 {% for product in searchResults %}
                 <div class="card border bg-white rounded shadow p-4 text-center">   
                     {% if product.image %}
-                    <a href="{{ path('product_detail', {'id': product.id}) }}">
+                    <a href="{{ path('product_show', {'id': product.id}) }}">
                       <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.titre }}" loading="lazy" decoding="async" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer" width="300" height="200"> 
                     </a>
                     {% else %}
@@ -48,13 +47,13 @@
         {% endif %}
     </section>
 {% else %}
-    <section class="container mx-auto py-10">    
+    <section class="px-4 mx-auto max-w-7xl py-10">    
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {% for product in randomProducts %}
                 <div class="bg-white dark:bg-[#333] rounded shadow p-4 text-center hover:shadow-lg transition">
                   {% if product.image %}
-                    <a href="{{ path('product_detail', {'id': product.id}) }}">
+                    <a href="{{ path('product_show', {'id': product.id}) }}">
                       <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.titre }}" loading="lazy" decoding="async" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer" width="300" height="200"> 
                     </a>
                     {% else %}

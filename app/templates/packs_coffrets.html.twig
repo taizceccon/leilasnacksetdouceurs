@@ -13,13 +13,13 @@
     <p class="text-rose-700 mt-2">Des assortiments gourmands pour faire plaisir ou se faire plaisir.</p>
 </section>
 
-<section class="container mx-auto py-10">
+<section class="px-4 mx-auto max-w-7xl py-10">
     {% if category %}
        <div class="dark:bg-[#1e1e1e] dark:text-gray-200 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {% for product in category.products %}
                   <div class="bg-white dark:bg-[#333] rounded shadow p-4 text-center hover:shadow-lg transition">       
                     {% if product.image %}
-                    <a href="{{ path('product_detail', {'id': product.id}) }}">
+                    <a href="{{ path('product_show', {'id': product.id}) }}">
                       <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.titre }}" loading="lazy" decoding="async" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer" width="300" height="200"> 
                     </a>
                     {% else %}

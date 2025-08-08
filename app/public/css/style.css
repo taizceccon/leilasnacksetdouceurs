@@ -1,38 +1,81 @@
-*,::before, 
-::after{     
-    margin: 0;     
-    padding: 0;     
-    box-sizing: border-box; 
+*, ::before, ::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body, header, footer, section {
+    margin: 0;
+    padding: 0;
+}
+
+#banner {
+    width: 100%;
+    height: 100vh;
+}
+
+main, footer {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+section {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .banner-contact {
-    background: #FADADD; /* Un rose très doux */
+    background: #FADADD;
     box-shadow: 0 4px 12px rgba(234, 143, 169, 0.3);
 }
 
-:root {
-  --font-primary: 'Poppins', sans-serif;
-  --font-script: 'Jost', sans-serif;
+.banner-produit {
+    background: #E5C1BD;
+    box-shadow: 0 4px 12px rgba(234, 143, 169, 0.3);
+    margin: 0;  /* Assure-toi qu'il n'y a pas de marge */
+    padding: 0; /* Pas de padding par défaut */
+    width: 100%; /* Largeur à 100% */
+    height: auto; /* Ajuste la hauteur selon le contenu */
+    box-sizing: border-box; /* Important pour éviter des décalages */
+}
 
-  --color-rose: #E5C1BD;
-  --color-menthe: #84D3CE;
-  --color-roseFonce: #C4847C;
-  --color-jaunePale: #EDCC8B;
-  --color-sauge: #7B9E87;
-  --color-crème: #F9F4F2;
+.text-center.py-20 {
+    min-height: 250px; 
+    margin-top: -20px;
+}
+
+:root {
+    --font-primary: 'Poppins', sans-serif;
+    --font-script: 'Jost', sans-serif;
+
+    --color-rose: #E5C1BD;
+    --color-menthe: #84D3CE;
+    --color-roseFonce: #C4847C;
+    --color-jaunePale: #EDCC8B;
+    --color-sauge: #7B9E87;
+    --color-crème: #F9F4F2;
 }
 
 body {
-  font-family: var(--font-primary);
-  background-color: var(--color-crème);
-  color: #333;
+    font-family: var(--font-primary);
+    background-color: var(--color-crème);
+    color: #333;
 }
 
-
 .logo-script {
-  font-family: var(--font-script);
-  font-size: 2.5rem;
-  color: var(--color-roseFonce);
+    font-family: var(--font-script);
+    font-size: 2.5rem;
+    color: var(--color-roseFonce);
 }
 
 /* Titres principaux (h1, h2...) */
@@ -52,11 +95,11 @@ h3, h4, .sub-title {
 }
 
 h2 {
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
-  font-size: 2rem; /* ou ce qui convient */
-  color: #7B9E87; /* ou ta couleur verte sauge */
-  margin-bottom: 1rem;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 2rem; /* ou ce qui convient */
+    color: #7B9E87; /* ou ta couleur verte sauge */
+    margin-bottom: 1rem;
 }
 
 .contact-form {
@@ -136,7 +179,6 @@ h2 {
     to {opacity: 1;}
 }
 
-
 .contact-form input:focus,
 .contact-form textarea:focus {
     border-color: #84D3CE;
@@ -175,19 +217,19 @@ h2 {
 
 /* 🌗 MODE DARK AVEC data-theme */
 body[data-theme='dark'] {
-  --color-crème: #1b1b1b;
-  --color-roseFonce: #eecfc9;
-  --color-sauge: #B5D3C9;
-  --color-jaunePale: #ffeeaa;
-  --color-menthe: #78cfc9;
-  --color-rose: #f4dad7;
-  background-color: var(--color-crème);
-  color: #f3f3f3;
+    --color-crème: #1b1b1b;
+    --color-roseFonce: #eecfc9;
+    --color-sauge: #B5D3C9;
+    --color-jaunePale: #ffeeaa;
+    --color-menthe: #78cfc9;
+    --color-rose: #f4dad7;
+    background-color: var(--color-crème);
+    color: #f3f3f3;
 }
 
 body[data-theme='dark'] .card {
-  background-color: #2c2c2c;
-  color: #f3f3f3;
+    background-color: #2c2c2c;
+    color: #f3f3f3;
 }
 
 /* Adaptation globale */
@@ -197,31 +239,45 @@ body[data-theme='dark'] footer,
 body[data-theme='dark'] .form-container,
 body[data-theme='dark'] input,
 body[data-theme='dark'] textarea {
-  background-color: #2c2c2c !important;
-  color: #f3f3f3 !important;
-  border-color: #444 !important;
+    background-color: #2c2c2c !important;
+    color: #f3f3f3 !important;
+    border-color: #444 !important;
 }
+
 body[data-theme='dark'] .contact-form {
-  background-color: var(--color-crème);
-  color: #f3f3f3;
+    background-color: var(--color-crème);
+    color: #f3f3f3;
 }
+
 body[data-theme='dark'] ::placeholder {
-  color: #aaa;
+    color: #aaa;
 }
 
 /* Boutons dark mode */
 body[data-theme='dark'] #theme-toggle {
-  background-color: var(--color-roseFonce);
-  color: #1b1b1b;
+    background-color: var(--color-roseFonce);
+    color: #1b1b1b;
 }
 
 body[data-theme='dark'] input,
 body[data-theme='dark'] textarea {
-  background-color: #333;
-  color: #fff;
-  border-color: var(--color-roseFonce);
+    background-color: #333;
+    color: #fff;
+    border-color: var(--color-roseFonce);
 }
 
 body[data-theme='dark'] a {
-  color: var(--color-menthe);
+    color: var(--color-menthe);
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }

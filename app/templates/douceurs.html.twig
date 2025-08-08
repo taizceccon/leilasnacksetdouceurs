@@ -14,13 +14,13 @@
     <p class="text-rose-700 mt-2">Des délices sucrés d’exception, pensés pour combler les palais les plus raffinés.</p>
 </section>
 
-<section class="container mx-auto py-10">
+<section class="px-4 mx-auto max-w-7xl py-10">
     {% if category %}
        <div class="dark:bg-[#1e1e1e] dark:text-gray-200 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {% for product in category.products %}
                <div class="bg-white dark:bg-[#333] rounded shadow p-4 text-center hover:shadow-lg transition">                     
                     {% if product.image %}
-                    <a href="{{ path('product_detail', {'id': product.id}) }}">
+                    <a href="{{ path('product_show', {'id': product.id}) }}">
                       <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.titre }}" loading="lazy" decoding="async" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer" width="300" height="200"> 
                     </a>
                     {% else %}
@@ -29,15 +29,21 @@
                     <h3 class="font-bold text-lg hover:underline">{{ product.titre }}</h3>                   
                     <p class="text-sm"> {{ product.description|length > 100 ? product.description[:100] ~ '...' : product.description }}</p>
                     {% if product.urlvideo %}
-                        <a href="{{ product.urlvideo }}" target="_blank" class="text-blue-500 underline block mt-2">Voir la vidéo</a>
+                        <a href="{{ product.urlvideo }}" target="_blank" class="text-blue-500 underline block mt-2" aria-label="Voir la vidéo du produit {{ product.titre }}">Voir la vidéo</a>
                     {% endif %}
                     <p class="text-green-600 font-semibold mt-2">{{ (product.prix / 100)|number_format(2, ',', ' ') }} € / unité</p>
 
                     <form action="{{ path('cart_add') }}" method="POST" class="mt-2">
-                        <input type="hidden" name="product_id" value="{{ product.id }}">
-                        <p class="text-sm">Quantité: <input type="number" name="quantity" value="1" min="1" class="dark:bg-[#1e1e1e] dark:text-gray-200 border rounded w-16 text-center"></p>
-                        <button type="submit" class="bg-rose-400 text-white rounded px-4 py-1 mt-2"><i class="fas fa-basket-shopping mr-2"></i> Ajouter</button>
-                    </form>          
+                      <input type="hidden" name="product_id" value="{{ product.id }}">
+                      <label for="quantity-{{ product.id }}" class="sr-only">Quantité pour {{ product.titre }}</label>
+                      <p class="text-sm">
+                        Quantité: 
+                        <input id="quantity-{{ product.id }}" type="number" name="quantity" value="1" min="1" class="dark:bg-[#1e1e1e] dark:text-gray-200 border rounded w-16 text-center">
+                      </p>
+                      <button type="submit" class="bg-rose-400 text-white rounded px-4 py-1 mt-2">
+                        <i class="fas fa-basket-shopping mr-2"></i> Ajouter
+                      </button>
+                  </form>          
                 
                   </div>
             {% endfor %}

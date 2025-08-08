@@ -1,7 +1,12 @@
 <?php
 
 namespace App\Controller;
+
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Entity\Category;
@@ -66,7 +71,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/product/{id}', name: 'product_detail')]
+    #[Route('/product/{id}', name: 'product_show')]
     public function productDetail(int $id, ProductRepository $productRepository): Response
     {
         $product = $productRepository->find($id);
@@ -74,7 +79,7 @@ class HomeController extends AbstractController
             throw $this->createNotFoundException('Produit non trouvé');
         }
 
-        return $this->render('detail.html.twig', [
+        return $this->render('show.html.twig', [
             'product' => $product,
         ]);
     }
@@ -161,17 +166,12 @@ class HomeController extends AbstractController
         return $this->render('about.html.twig');
     }
 
-
-
-    #[Route('/produit/{id}', name: 'product_show')]
-    public function showProduct(Product $product): Response
+    #[Route('/faq', name: 'app_faq')]
+    public function faq(): Response
     {
-        return $this->render('show.html.twig', [
-            'product' => $product,
-        ]);
+        return $this->render('faq.html.twig');
     }
-
-    
+   
     #[Route('category/{id}', name: 'app_category_show', methods: ['GET'])]
     public function showCategory(Category $category): Response
     {
@@ -232,5 +232,17 @@ class HomeController extends AbstractController
         ]);
     }
 
+    // #[Route('/error', name: 'app_error')]
+    // public function error(Request $request): Response
+    // {
+    //     $exception = $request->attributes->get('exception');
+
+    //     // Exemple de traitement de type d’erreur
+    //     if ($exception instanceof NotFoundHttpException) {
+    //         return $this->render('error/404.html.twig');
+    //     }
+
+    //     return $this->render('error/error.html.twig');
+    // }
          
 }

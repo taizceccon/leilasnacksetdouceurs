@@ -87,8 +87,6 @@ class CartController extends AbstractController
         }
 
         $subtotal = $product->getPrix() * $quantity;
-
-        // Recalcul du total
         $total = 0;
         foreach ($cart as $productId => $qty) {
             $p = $productRepository->find($productId);
@@ -115,7 +113,6 @@ class CartController extends AbstractController
             unset($cart[$id]);
             $session->set('cart', $cart);
 
-            // Recalcul total
             $total = 0;
             foreach ($cart as $productId => $qty) {
                 $product = $productRepository->find($productId);

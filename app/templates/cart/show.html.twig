@@ -10,7 +10,6 @@
 
     {% if products is empty %}
         <p id="empty-cart-message" class="text-center text-gray-500 dark:text-gray-400 hidden">Votre panier est vide.</p>
-        {# <p class="text-center text-sauge dark:text-jaunePale text-lg">Votre panier est vide.</p> #}
         <div class="text-center mt-8">
             <a href="{{ path('app_home') }}" class="inline-block bg-rose-600 hover:bg-creme dark:hover:bg-[#3A322F] text-white font-semibold px-8 py-3 rounded shadow transition">
                 Retour à l'accueil
@@ -20,9 +19,9 @@
 
         <!-- TABLEAU DESKTOP -->
         <div id="cart-content" class="hidden md:block overflow-x-auto">
-            <table class="min-w-full border-collapse border border-gray-300 dark:border-gray-700 shadow-sm rounded-lg">
+            <table class="min-w-full border-separate border-spacing-0 border border-gray-300 dark:border-gray-700 shadow-sm overflow-hidden">            
                 <thead class="bg-rosé dark:bg-roseFonce">
-                    <tr>
+                    <tr class="rounded-t-lg">
                         <th class="p-3">Produit</th>
                         <th class="p-3 text-center">Prix unitaire</th>
                         <th class="p-3 text-center">Quantité</th>
@@ -43,10 +42,10 @@
                             </td>                                             
                             <td>{{ (item.product.prix / 100) | number_format(2, ',', ' ') }} € / unité</td>
                             <td class="p-3 text-center">
-                            <form action="{{ path('cart_update', { id: item.product.id }) }}" method="POST" class="inline-block js-update-form" data-product-id="{{ item.product.id }}">
-                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="dark:bg-[#1e1e1e] dark:text-gray-200 border px-2 py-1 w-16 text-sm rounded" />
-                            <button type="submit"class="bg-roseFonce hover:bg-rosé text-white px-3 py-1 rounded text-sm font-semibold"> Modifier </button>
-                            </form>
+                                <form action="{{ path('cart_update', { id: item.product.id }) }}" method="POST" class="inline-block js-update-form" data-product-id="{{ item.product.id }}">
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="dark:bg-[#1e1e1e] dark:text-gray-200 border px-2 py-1 w-16 text-sm rounded" />
+                                    <button type="submit"class="bg-roseFonce hover:bg-rosé text-white px-3 py-1 rounded text-sm font-semibold"> Modifier </button>
+                                </form>
                             </td>
                             <td class="p-3 text-center font-bold text-green-700 dark:text-green-400 js-subtotal">
                                 {{ (item.subtotal / 100)|number_format(2, ',', ' ') }} €
@@ -108,7 +107,7 @@
            
             <a href="{{ path('order_create') }}"
             class="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded shadow transition text-center">
-                Demander un devis
+                Payer sur place
             </a>
 
             <form action="{{ path('checkout') }}" method="POST">

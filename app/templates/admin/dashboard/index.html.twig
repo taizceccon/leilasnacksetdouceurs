@@ -3,10 +3,10 @@
 {% block body %}
 
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="flex items-center justify-between mb-8">
-        <h1 class="text-3xl font-bold dark:text-white" id="dashboard-title">Tableau de bord Admin</h1>
-        <p class="text-gray-600 dark:text-gray-300" aria-describedby="dashboard-title">Bienvenue sur votre tableau de bord administrateur !</p>
-    </div>
+    <header class="flex items-center justify-between mb-8" role="banner">
+      <h1 class="text-3xl font-bold dark:text-white" id="dashboard-title">Tableau de bord Admin</h1>
+      <h2 class="text-gray-600 dark:text-gray-300" aria-describedby="dashboard-title">Bienvenue sur votre tableau de bord administrateur !</h2>
+    </header>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
         
@@ -70,8 +70,7 @@
             </h3>
             <a href="{{ path('admin_avis_index') }}" aria-label="Voir les avis du site">
               <p class="text-3xl font-bold" aria-live="polite">{{ avisCount }}</p>
-            </a>
-            {# <p class="text-1xl font-bold" aria-live="polite">Vérifier les Avis</p> #}        
+            </a>    
          </div>
         </div>
     </div>
@@ -121,9 +120,8 @@
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="mt-12">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white" id="orders-title">Commandes</h3>
-                <a href="{{ path('admin_order_index') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-semibold transition shadow" aria-label="Voir toutes les commandes">
-                    <i class="fas fa-eye" aria-hidden="true"></i> Voir les commandes
+            <a href="{{ path('admin_order_index') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-semibold transition shadow" aria-label="Voir toutes les commandes">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white" id="orders-title">Commandes</h3>                
                 </a>
             </div>
 
@@ -161,7 +159,7 @@
         </div>
     </section>
 
-    <!-- Formulaire de recherche et table de catégories avec accessibilité améliorée -->
+    <!-- CATEGORIES -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="mt-12">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">

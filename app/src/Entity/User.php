@@ -8,6 +8,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\Order;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -23,15 +26,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(length: 100)]
-    #[Assert\NotBlank(message: "Le nom est obligatoire.")]
+    #[Assert\NotBlank(message: "L'nom est obligatoire.", groups: ['registration'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(message: "L'adresse est obligatoire.")]
+    #[Assert\NotBlank(message: "L'adresse est obligatoire.", groups: ['registration'])]
     private ?string $adresse = null;
 
     #[ORM\Column(length: 20, nullable: true)]
-    #[Assert\NotBlank(message: "Le téléphone est obligatoire.")]
+    #[Assert\NotBlank(message: "L'téléphone est obligatoire.", groups: ['registration'])]
     #[Assert\Regex(
         pattern: '/^\+?[0-9\s\-]{7,20}$/',
         message: "Le numéro de téléphone n'est pas valide."
@@ -52,6 +55,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isAnonymized = false;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Order::class)]
+    private Collection $orders;
+
+    public function __construct()
+    {
+        $this->orders = new ArrayCollection();
+    }
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function isAnonymized(): bool
+    {
+        return $this->isAnonymized;
+    }
+
+    public function setIsAnonymized(bool $isAnonymized): self
+    {
+        $this->isAnonymized = $isAnonymized;
+        return $this;
+    }
 
     public function getId(): ?int
     {
@@ -172,4 +201,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function anonymize(): self
+    {
+        $random = bin2hex(random_bytes(4)); //ex: a3f2c9e1
+        $this->setEmail("anonyme{$random}@exemple.com");
+        $this->setNom("Anonyme{$random}");
+        $this->setAdresse(null);
+        $this->setTelephone(null);
+        $this->setRoles(['ROLE_ANONYMOUS']);
+        $this->setIsAnonymized(true);
+
+        return $this;
+    }
+
 }

@@ -14,7 +14,7 @@
     <p class="text-rose-800">Des saveurs de fait maison pour tous les moments – faites avec amour et une touche spéciale de Leila.</p>
 </section>
 
-<section class="container mx-auto py-10">
+<section class="px-4 mx-auto max-w-7xl py-10">
     <h1 class="text-3xl font-cursive text-center mb-10">Nos Produits:</h1>
 
     {% for category in categories %}
@@ -22,9 +22,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {% for product in category.products %}
                 <div class="bg-white rounded shadow p-4 text-center hover:shadow-lg transition">
-                    <a href="{{ path('product_detail', {'id': product.id}) }}">                    
-                    <img src="/images/{{ product.image }}" alt="{{ product.titre }}" loading="lazy" decoding="async"
-     class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer"
+                    <a href="{{ path('product_show', {'id': product.id}) }}">                    
+                    <img src="/images/{{ product.image }}" alt="{{ product.titre }}" loading="lazy" decoding="async" class="mx-auto rounded mb-2 transform hover:scale-105 transition duration-300 cursor-pointer"
      width="300" height="200">
                         <h3 class="font-bold hover:underline cursor-pointer">{{ product.titre }}</h3>
                     </a>

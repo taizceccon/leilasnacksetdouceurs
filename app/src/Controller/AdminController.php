@@ -181,7 +181,7 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('admin_index');
         }
 
-        return $this->render('product/new.html.twig', [
+        return $this->render('admin/product/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -218,7 +218,7 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('admin_index');
         }
 
-        return $this->render('product/edit.html.twig', [
+        return $this->render('admin/product/edit.html.twig', [
             'form' => $form->createView(),
             'product' => $product,
         ]);
@@ -252,7 +252,7 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('admin_category_index');
         }
 
-        return $this->render('category/new.html.twig', [
+        return $this->render('admin/category/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -270,7 +270,7 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('admin_category_index');
         }
 
-        return $this->render('category/edit.html.twig', [
+        return $this->render('admin/category/edit.html.twig', [
             'form' => $form->createView(),
             'category' => $category,
         ]);
@@ -293,7 +293,7 @@ class AdminController extends AbstractController
     {
         $categories = $categoryRepository->findAll();
 
-        return $this->render('category/index.html.twig', [
+        return $this->render('admin/category/index.html.twig', [
             'categories' => $categories,
         ]);
     }
@@ -327,7 +327,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/moderate/{id}', name: 'admin_avis_moderate')]
+    #[Route('/admin/avis/moderate/{id}', name: 'admin_avis_moderate')]
     public function moderate(string $id, DocumentManager $dm): Response
     {
         $avis = $dm->getRepository(Avis::class)->find($id);
@@ -422,11 +422,20 @@ class AdminController extends AbstractController
             throw $this->createNotFoundException('Utilisateur introuvable.');
         }
 
-        if ($this->isCsrfTokenValid('delete-user-' . $user->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('delete-user-' . $user->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token CSRF invalide.');
+            return $this->redirectToRoute('admin_users');
+        }
+
+        if (count($user->getOrders()) > 0) {
+            $user->anonymize();
+            $this->addFlash('success', 'Utilisateur anonymisé car des commandes sont associées.');
+        } else {
             $em->remove($user);
-            $em->flush();
             $this->addFlash('success', 'Utilisateur supprimé.');
         }
+
+        $em->flush();
 
         return $this->redirectToRoute('admin_users');
     }

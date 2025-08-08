@@ -17,7 +17,7 @@ Bienvenue sur le dépôt GitHub du projet **Leila Snacks & Douceurs**, un site e
 ## Technologies utilisées
 
 - **Front-end** : HTML5, CSS3, Bootstrap, JavaScript
-- **Back-end** : PHP 8.2, Symfony 6
+- **Back-end** : PHP 8.2, Symfony 7.3.2 
 - **Base de données** : MySQL via Doctrine ORM
 - **Environnement** : Docker / Docker Compose
 - **Outils** : GitHub, Trello, Figma

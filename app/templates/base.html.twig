@@ -38,26 +38,28 @@
 
   <script>
     tailwind.config = {
-      darkMode: 'class', // Simplification ici
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             roseFonce: '#C4847C',
-            jaunePale: '#CCAA5C',
-            bleuMenthe: '#469CAD',
-            crème: '#F9F4F2',
-            vertSauge: '#7B9E87',
+            jaunePale: '#caa449ff',
+            bleuMenthe: '#259bb3ff',
+            crème: '#fff9cdff',
+            vertSauge: '#30a459ff',
             rosé: '#E5C1BD',
             fondDark: '#1b1b1b',
             texteClair: '#f3f3f3',
-            menthe: '#469CAD',
+            menthe: '#1494adff',
           },
         },
       },
     };
   </script>
 
-  {% block stylesheets %}    <link rel="stylesheet" href="/css/style.css" />  {% endblock %}
+  {% block stylesheets %}    
+     <link rel="stylesheet" href="/css/style.css" />  
+  {% endblock %}
 
 </head>
 
@@ -72,10 +74,12 @@
   {% endfor %}
 
 
-  <main id="main-content" class="flex-grow bg-white dark:bg-[#1b1b1b] text-black dark:text-white p-4">
+  <main id="main-content" class="flex-grow bg-white dark:bg-[#1b1b1b] text-black dark:text-white ">
+
     {% block body %}
       <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-white text-black p-2 z-50">Aller au contenu principal</a>
     {% endblock %}
+    
   </main>
 
  {% include 'footer.html.twig' %}
@@ -92,31 +96,7 @@
           burgerBtn.setAttribute('aria-expanded', !expanded);
           mobileMenu.classList.toggle('hidden');
         });
-      }
-
-      // Gestion cookies RGPD
-      const cookieBanner = document.getElementById('cookie-banner');
-      const acceptBtn = document.getElementById('accept-cookies');
-      const rejectBtn = document.getElementById('reject-cookies');
-
-      // Affiche la bannière si pas déjà acceptée/refusée
-      if (!localStorage.getItem('cookies-consent')) {
-        cookieBanner.classList.remove('hidden');
-      }
-
-      // Clic sur Accepter
-      acceptBtn?.addEventListener('click', () => {
-        localStorage.setItem('cookies-consent', 'accepted');
-        cookieBanner.classList.add('hidden');
-        // Ici, tu peux déclencher les scripts de suivi (Google Analytics, etc.)
-      });
-
-      // Clic sur Refuser
-      rejectBtn?.addEventListener('click', () => {
-        localStorage.setItem('cookies-consent', 'rejected');
-        cookieBanner.classList.add('hidden');
-      });
-
+      }  
       // Dark mode toggle
       const themeToggleBtn = document.getElementById('theme-toggle');
       const themeIcon = document.getElementById('theme-icon');
@@ -129,8 +109,7 @@
           themeIcon.textContent = isDark ? '☀️' : '🌙';
         });
       }
-
-      // Update cart quantity avec AJAX
+      // Update panier ity avec AJAX
       document.querySelectorAll('form[action*="cart/update"]').forEach(form => {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
@@ -167,7 +146,7 @@
         });
       });
 
-      // Simuler un ajout pour test du compteur panier
+      // compteur panier
       document.querySelectorAll('.add-to-cart-button').forEach(button => {
         button.addEventListener('click', () => {
           const countEl = document.getElementById('cart-count');
@@ -180,14 +159,6 @@
     });
   </script>
   {% endblock %}
-
-<div id="cookie-banner" role="alert" aria-live="assertive" class="fixed bottom-0 left-0 w-full bg-white dark:bg-gray-800 text-black dark:text-white p-4 shadow-lg flex justify-between items-center z-50 hidden">
-  <p class="mr-4">Nous utilisons des cookies pour améliorer votre expérience. Acceptez-vous ?</p>
-  <div class="flex gap-2">
-    <button id="accept-cookies" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Accepter</button>
-    <button id="reject-cookies" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Refuser</button>
-  </div>
-</div>
 
 </body>
 </html>
