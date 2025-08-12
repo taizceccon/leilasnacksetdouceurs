@@ -19,6 +19,8 @@ class RegistrationForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $emailReadonly = $options['email_readonly'] ?? false;
+
         $builder
             ->add('email', TextType::class, [
                 'label' => 'Adresse e-mail',
@@ -26,7 +28,11 @@ class RegistrationForm extends AbstractType
                     new NotBlank(['message' => 'Veuillez entrer une adresse e-mail']),
                     new Email(['message' => 'L\'adresse e-mail n\'est pas valide']),
                 ],
-                'attr' => ['placeholder' => 'exemple@domaine.com'],
+                'attr' => [
+                    'placeholder' => 'exemple@domaine.com',
+                    'readonly' => $emailReadonly,
+                    'class' => $emailReadonly ? 'readonly-email' : '',
+                ],
             ])
             ->add('nom', TextType::class, [
                 'label' => 'Nom complet',
@@ -37,24 +43,26 @@ class RegistrationForm extends AbstractType
                 'attr' => ['placeholder' => 'Votre nom'],
             ])
             ->add('adresse', TextType::class, [
-                'required' => false,
+                'required' => true,
                 'label' => 'Adresse',
-                'attr' => ['placeholder' => 'Adresse postale'],
                 'constraints' => [
+                    new NotBlank(['message' => 'L\'adresse est obligatoire']),
                     new Length(['max' => 255, 'maxMessage' => 'L\'adresse ne peut pas dépasser {{ limit }} caractères']),
                 ],
+                'attr' => ['placeholder' => 'Adresse postale'],
             ])
             ->add('telephone', TextType::class, [
-                'required' => false,
+                'required' => true,
                 'label' => 'Téléphone',
                 'constraints' => [
+                    new NotBlank(['message' => 'Le téléphone est obligatoire']),
                     new Regex([
                         'pattern' => '/^0[1-9](\s?\d{2}){4}$/',
                         'message' => 'Le numéro de téléphone est invalide.',
                     ]),
                 ],
                 'attr' => ['placeholder' => 'Ex: 01 23 45 67 89'],
-            ])          
+            ])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password', 'placeholder' => 'Mot de passe'],
@@ -68,7 +76,7 @@ class RegistrationForm extends AbstractType
                     ]),
                 ],
             ])
-              ->add('agreeTerms', CheckboxType::class, [
+            ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'label' => 'J\'accepte les conditions générales',
                 'constraints' => [
@@ -81,6 +89,7 @@ class RegistrationForm extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'email_readonly' => false, // Option personnalisée
         ]);
     }
 }

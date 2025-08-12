@@ -1,6 +1,12 @@
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Votre panier - Leila{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Commandes - Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
 
 {% block body %}
 <section class="container mx-auto py-10 px-4 sm:px-6 lg:px-8 max-w-7xl">
@@ -32,7 +38,7 @@
                             <td class="p-3 border text-center">
                                 <form action="{{ path('cart_update', {'id': item.product.id}) }}" method="POST" class="flex items-center justify-center gap-2">
                                     <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="w-16 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" />
-                                    <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded text-sm font-semibold transition">Modifier</button>
+                                    <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-rose-800 px-3 py-1 rounded text-sm font-semibold transition">Modifier</button>
                                 </form>
                             </td>
                             <td class="p-3 border text-center text-green-700 dark:text-green-400 font-bold">
@@ -60,7 +66,7 @@
                     <form action="{{ path('cart_update', {'id': item.product.id}) }}" method="POST" class="flex items-center gap-2">
                         <label for="quantity-{{ item.product.id }}" class="sr-only">Quantité</label>
                         <input id="quantity-{{ item.product.id }}" type="number" name="quantity" value="{{ item.quantity }}" min="1" class="w-20 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-center text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" />
-                        <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-1 rounded text-sm font-semibold transition">Modifier</button>
+                        <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-rose-800 px-4 py-1 rounded text-sm font-semibold transition">Modifier</button>
                     </form>
                 </div>
             {% endfor %}

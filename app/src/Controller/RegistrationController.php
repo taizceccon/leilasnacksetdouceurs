@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\User as AppUser;
 use App\Form\RegistrationForm;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,8 +18,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use App\Repository\UserRepository;
-
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Form\RegistrationFormType;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\FormError;
 
@@ -28,90 +31,51 @@ class RegistrationController extends AbstractController
     {
     }
 
-    // #[Route('/register', name: 'app_register')]
-    // public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
-    // {
-    //     $email = $request->query->get('email', '');
-    //     $user = new User();
-    //     if ($email) {
-    //         $user->setEmail($email);
-    //     }
-    //     $form = $this->createForm(RegistrationForm::class, $user);
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-
-    //         // Vérifier si l'email est déjà pris
-    //         $existingUser = $userRepository->findOneBy(['email' => $user->getEmail()]);
-    //         if ($existingUser) {
-    //             $this->addFlash('error', 'Cette adresse e-mail est déjà utilisée.');
-    //             return $this->redirectToRoute('app_register');
-    //         }
-
-    //         /** @var string $plainPassword */
-    //         $plainPassword = $form->get('plainPassword')->getData();
-
-    //         $user->setPassword(
-    //             $userPasswordHasher->hashPassword($user, $plainPassword)
-    //         );
-
-    //         $user->setIsVerified(true);
-    //         $entityManager->persist($user);
-    //         $entityManager->flush();
-
-    //         // Envoyer email de confirmation (optionnel selon vos besoins)
-    //         $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-    //             (new TemplatedEmail())
-    //                 ->from(new Address('tzlogicsolutions@gmail.com', 'leila sd'))
-    //                 ->to($user->getEmail())
-    //                 ->subject('Please Confirm your Email')
-    //                 ->htmlTemplate('registration/confirmation_email.html.twig')
-    //         );
-
-    //         // Ajouter message flash de succès
-    //         $this->addFlash('success', 'Votre compte a bien été créé. Vous pouvez maintenant vous connecter.');
-
-    //         // Redirection vers la page de connexion
-    //         return $this->redirectToRoute('app_login');
-    //     }
-
-    //     return $this->render('registration/register.html.twig', [
-    //         'registrationForm' => $form,
-    //     ]);
-    // }
-
-    #[Route('/register', name: 'app_register')]
+    #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
         UserRepository $userRepository,
-        ValidatorInterface $validator // inject the validator
+        ValidatorInterface $validator
     ): Response {
-        $email = $request->query->get('email', '');
-        $user = new User();
-        if ($email) {
-            $user->setEmail($email);
+    
+        if (
+            $request->isMethod('POST') &&
+            $request->request->has('email') &&
+            !$request->request->has('registration_form')
+        ) {
+            $email = trim($request->request->get('email'));
+
+            // Validation de l'email
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $this->addFlash('error', 'Adresse e-mail invalide.');
+                return $this->redirectToRoute('app_register');
+            }
+
+            // Rediriger vers /register?email=xxx pour préremplir
+            return $this->redirectToRoute('app_register', ['email' => $email]);
         }
-        $form = $this->createForm(RegistrationForm::class, $user);
+
+        $emailFromQuery = $request->query->get('email');
+        $user = new User();
+
+        // Ne préremplit que si ce n’est pas une soumission POST du formulaire principal
+        if ($emailFromQuery && !$request->isMethod('POST')) {
+            $user->setEmail($emailFromQuery);
+        }
+
+        // $form = $this->createForm(RegistrationForm::class, $user);
+        $form = $this->createForm(RegistrationForm::class, $user, [
+            'email_readonly' => !empty($emailFromQuery),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            // Manually validate plainPassword here
             $plainPassword = $form->get('plainPassword')->getData();
-            // $passwordErrors = $validator->validate($plainPassword, [
-            //     new Assert\NotBlank(['message' => 'Please enter a password']),
-            //     new Assert\Length(['min' => 6, 'minMessage' => 'Your password should be at least {{ limit }} characters']),
-            // ]);
 
-            // Add errors to the form if any
-            // foreach ($passwordErrors as $error) {
-            //     $form->get('plainPassword')->addError(new FormError($error->getMessage()));
-            // }
-
-            // Now check form validity including password validation
             if ($form->isValid()) {
-                // Check if email already exists
+                // Vérifie si l'email est déjà utilisé
                 $existingUser = $userRepository->findOneBy(['email' => $user->getEmail()]);
                 if ($existingUser) {
                     $this->addFlash('error', 'Cette adresse e-mail est déjà utilisée.');
@@ -123,18 +87,21 @@ class RegistrationController extends AbstractController
                 );
 
                 $user->setIsVerified(true);
+
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+                $this->emailVerifier->sendEmailConfirmation(
+                    'app_verify_email',
+                    $user,
                     (new TemplatedEmail())
-                        ->from(new Address('tzlogicsolutions@gmail.com', 'leila sd'))
+                        ->from(new Address('taizceccon@hotmail.fr', 'leila sd'))
                         ->to($user->getEmail())
-                        ->subject('Please Confirm your Email')
+                        ->subject('Veuillez confirmer votre adresse e-mail')
                         ->htmlTemplate('registration/confirmation_email.html.twig')
                 );
 
-                $this->addFlash('success', 'Votre compte a bien été créé. Vous pouvez maintenant vous connecter.');
+                $this->addFlash('success', 'Votre compte a bien été créé. Vérifiez votre boîte mail pour confirmer votre adresse.');
 
                 return $this->redirectToRoute('app_login');
             }
@@ -145,6 +112,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
+   
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
     {
@@ -161,4 +129,50 @@ class RegistrationController extends AbstractController
         $this->addFlash('success', 'Your email address has been verified.');
         return $this->redirectToRoute('app_login');
     }
+
+
+    #[Route('/mon-compte', name: 'app_user_dashboard')]
+        public function userDashboard(
+            Request $request,
+            EntityManagerInterface $entityManager,
+            UserPasswordHasherInterface $userPasswordHasher
+        ): Response {
+            $user = $this->getUser();
+
+            if (!$user instanceof AppUser) {
+                return $this->redirectToRoute('app_login');
+            }
+
+            $form = $this->createForm(RegistrationForm::class, $user);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $plainPassword = $form->get('plainPassword')->getData();
+
+                if (!empty($plainPassword)) {
+                    if (!is_string($plainPassword)) {
+                        $this->addFlash('error', 'Le mot de passe doit être une chaîne de caractères.');
+                        return $this->redirectToRoute('app_user_dashboard');
+                    }
+
+                    try {
+                        $hashedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
+                        $user->setPassword($hashedPassword);
+                    } catch (\Throwable $e) {
+                        $this->addFlash('error', 'Erreur lors du hachage du mot de passe.');
+                        return $this->redirectToRoute('app_user_dashboard');
+                    }
+                }
+
+                $entityManager->flush();
+                $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
+
+                return $this->redirectToRoute('app_user_dashboard');
+            }
+
+            return $this->render('registration/edit_user.html.twig', [
+                'registrationForm' => $form->createView(),
+            ]);
+        }
+    
 }

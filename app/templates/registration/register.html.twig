@@ -1,16 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription - Leila Snacks{% endblock %}
+{% block title %} Connexion Douceurs de Leila{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="bg-red-100 text-red-700 px-4 py-2 rounded text-sm mb-4 max-w-md mx-auto">
-            {{ flash_error }}
-        </div>
-    {% endfor %}
-
-    <div class="flex items-center justify-center bg-crème min-h-[50vh] dark:bg-[#333] py-6 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full bg-white dark:bg-[#333] p-8 rounded-lg shadow-xl border border-jaunePale space-y-6">
+<div class="flex items-center justify-center bg-white dark:bg-[#333] py-6 px-4 sm:px-6 lg:px-8 flex-grow">
+    <div class="max-w-md w-full bg-white dark:bg-[#333] p-8 rounded-lg shadow-xl border border-jaunePale space-y-6">
 
             <!-- Logo -->
             <div class="flex justify-center">
@@ -64,7 +63,7 @@
                     </div>
 
                     <button type="submit"
-                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-vertSauge hover:bg-bleuMenthe focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-roseFonce transition">
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-roseFonce bg-vertSauge hover:bg-bleuMenthe focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-roseFonce transition">
                         S'inscrire
                     </button>
                 </div>

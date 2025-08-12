@@ -1,9 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Mon Panier - Douceurs & Snacks de Leila {% endblock %}
+{% block title %}Votre panier - Leila{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Commandes - Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+{% endblock %}
 
 {% block body %}
-<body class="dark">
 
 <section class="container mx-auto py-10 px-4 sm:px-6 lg:px-8 max-w-7xl">
     <h1 class="text-3xl font-bold text-center mb-8 text-roseFonce dark:text-jaunePale">Votre panier</h1>
@@ -44,7 +48,7 @@
                             <td class="p-3 text-center">
                                 <form action="{{ path('cart_update', { id: item.product.id }) }}" method="POST" class="inline-block js-update-form" data-product-id="{{ item.product.id }}">
                                     <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="dark:bg-[#1e1e1e] dark:text-gray-200 border px-2 py-1 w-16 text-sm rounded" />
-                                    <button type="submit"class="bg-roseFonce hover:bg-rosé text-white px-3 py-1 rounded text-sm font-semibold"> Modifier </button>
+                                    <button type="submit"class="bg-red-300 hover:bg-rosé text-white px-3 py-1 rounded text-sm font-semibold"> Modifier </button>
                                 </form>
                             </td>
                             <td class="p-3 text-center font-bold text-green-700 dark:text-green-400 js-subtotal">

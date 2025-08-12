@@ -21,8 +21,6 @@ use Stripe\Stripe;
 #[Route('/orders')]
 class OrderController extends AbstractController
 {
-
-
     #[Route('/cart/add', name: 'cart_add', methods: ['POST'])]
     public function addToCart(Request $request, CartService $cartService): Response
     {
@@ -171,10 +169,6 @@ class OrderController extends AbstractController
         return new Response('Webhook processed', 200);
     }
 
-    // ======================
-    // 📦 COMMANDES UTILISATEUR
-    // ======================
-
     #[Route('', name: 'order_index')]
     #[IsGranted('ROLE_USER')]
     public function index(EntityManagerInterface $em): Response
@@ -201,10 +195,6 @@ class OrderController extends AbstractController
             'order' => $order,
         ]);
     }
-
-    // ======================
-    // 🔒 ADMIN - COMMANDES
-    // ======================
 
     #[Route('/admin/all', name: 'admin_order_index')]
     #[IsGranted('ROLE_ADMIN')]

@@ -27,6 +27,7 @@ services:
       - ./apache/default-ssl.conf:/etc/apache2/sites-enabled/000-default-ssl.conf
       - ./etc/ssl:/etc/ssl
       - ./app:/var/www
+      - symfony_cache:/var/www/var
     depends_on:
       - mysql
       - mailpit
@@ -48,6 +49,7 @@ services:
       - mysql
     networks:
       - leilasd
+
 
   mongodb:
     container_name: mongodb
@@ -89,3 +91,7 @@ services:
 networks:
   leilasd:
     driver: bridge
+
+volumes:
+  symfony_cache:
+

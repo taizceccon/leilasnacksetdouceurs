@@ -5,9 +5,10 @@
     <div>
       <h2 class="text-xl font-semibold text-[#EDCC8B] mb-4">Leila Snacks & Douceurs</h2>
       <p class="mb-4 text-sm">Commandez en créant votre compte.</p>
-      <form action="/register" method="get" class="flex flex-col sm:flex-row gap-2 mb-4">
-        <input type="email" name="email" placeholder="Votre email" aria-label="Votre adresse email pour s’inscrire" class="px-3 py-2 rounded-md border border-[#EDCC8B] text-sm text-[#7B9E87] bg-white focus:outline-none focus:ring-2 focus:ring-[#84D3CE] w-full sm:w-auto" />
-        <button type="submit" class="bg-[#567a6f] text-white px-4 py-2 rounded-md hover:bg-[#d35f6a] transition">S'inscrire</button>
+      <form action="/register" method="post" class="flex flex-col sm:flex-row gap-2 mb-4">
+        <label for="footer-email" class="sr-only">Adresse email</label>  
+        <input id="footer-email" type="email" name="email" placeholder="Votre email" aria-label="Votre adresse email pour s’inscrire" class="px-3 py-2 rounded-md border border-[#EDCC8B] text-sm text-[#7B9E87] bg-white focus:outline-none focus:ring-2 focus:ring-[#84D3CE] w-full sm:w-auto" />
+        <button type="submit" class="bg-[#567a6f] text-white px-4 py-2 rounded-md hover:bg-[#d35f6a] transition w-full">S'inscrire</button>
       </form>
     </div>
 

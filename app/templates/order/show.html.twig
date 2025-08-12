@@ -1,11 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Détails  {% endblock %}
+{% block title %} Liste des commandes {% endblock %}
+
 {% block meta %}
-  <meta name="description" content="Commander">
+  <meta name="description" content="Commandes - Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
+  <meta property="og:title" content="Snacks Artisanaux - Leila" />
 {% endblock %}
 
 {% block body %}
+
     <div class="container mx-auto px-4 py-6">
         <h1 class="text-3xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">Détails de la Commande #{{ order.id }}</h1>
 

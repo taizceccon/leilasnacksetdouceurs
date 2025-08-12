@@ -64,8 +64,6 @@ class Product
     }
 
     #[ORM\ManyToOne(inversedBy: 'products')]
-
-
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -163,7 +161,6 @@ class Product
     public function removeOrderItem(OrderItem $orderItem): static
     {
         if ($this->orderItems->removeElement($orderItem)) {
-            // set the owning side to null (unless already changed)
             if ($orderItem->getProduct() === $this) {
                 $orderItem->setProduct(null);
             }

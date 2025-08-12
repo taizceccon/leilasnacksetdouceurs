@@ -29,11 +29,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
-
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
-
-
 use Symfony\Component\Form\FormError;
 
 
@@ -138,8 +134,8 @@ class HomeController extends AbstractController
             $em->flush();
 
             $email = (new Email())
-                ->from('no-reply@leila-snacks.fr') // recommandé pour ne pas tomber en spam
-                ->replyTo($contact->getEmail())    // vraie adresse de l'utilisateur
+                ->from('no-reply@leila-snacks.fr') //ne pas tomber en spam
+                ->replyTo($contact->getEmail())  
                 ->to('taizceccon@hotmail.fr')
                 ->subject($contact->getSujet())
                 ->text($contact->getMessage());
@@ -211,27 +207,7 @@ class HomeController extends AbstractController
         return $this->render('cgv.html.twig');
     }
 
-    #[Route('/mon-compte', name: 'app_user_dashboard')]
-    public function userDashboard(OrderRepository $orderRepository): Response
-    {
-        $user = $this->getUser(); // Récupérer l'utilisateur connecté
-
-        if (!$user) {
-            // Si l'utilisateur n'est pas connecté, on redirige
-            return $this->redirectToRoute('app_login');
-        }
-
-        // Récupérer les commandes de l'utilisateur
-        $orders = $orderRepository->findBy(['user' => $user]);
-
-        // Passer les commandes et le formulaire au template
-        return $this->render('registration/user.html.twig', [
-            'user' => $user,
-            'orders' => $orders,
-            'form' => $this->createForm(RegistrationForm::class, $user)->createView(),
-        ]);
-    }
-
+ 
     // #[Route('/error', name: 'app_error')]
     // public function error(Request $request): Response
     // {

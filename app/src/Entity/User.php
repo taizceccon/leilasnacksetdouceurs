@@ -14,7 +14,7 @@ use App\Entity\Order;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['email'], message: 'Cette adresse e-mail est déjà utilisée.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -30,15 +30,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $nom = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(message: "L'adresse est obligatoire.", groups: ['registration'])]
     private ?string $adresse = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
-    #[Assert\NotBlank(message: "L'téléphone est obligatoire.", groups: ['registration'])]
-    #[Assert\Regex(
-        pattern: '/^\+?[0-9\s\-]{7,20}$/',
-        message: "Le numéro de téléphone n'est pas valide."
-    )]
+    #[ORM\Column(length: 20, nullable: true)]    
     private ?string $telephone = null;
 
     /**
@@ -150,7 +144,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
+       
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -161,7 +155,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setRoles(array $roles): static
     {
-        $this->roles = $roles;
+       $allowedRoles = ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_ANONYMOUS'];
+        $this->roles = array_values(array_intersect($roles, $allowedRoles));
 
         return $this;
     }
@@ -177,7 +172,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -198,7 +192,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
-
         return $this;
     }
 
