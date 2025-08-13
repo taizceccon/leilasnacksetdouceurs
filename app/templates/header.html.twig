@@ -52,6 +52,7 @@
       <!-- Zone droite (desktop) -->
       <div class="flex items-center space-x-4 text-vertSauge">
         <form method="get" action="{{ path('app_home') }}" class="bg-white dark:bg-[#4A403D]  flex items-center">
+          <label for="search-input" class="sr-only">Rechercher</label>
           <input type="text" name="q" value="{{ app.request.get('q') }}" placeholder="Rechercher..." class="border border-gray-300 dark:border-[#4A403D] rounded-l px-3 py-1 text-sm w-36 focus:outline-none focus:ring focus:ring-rose-300" />
           <button type="submit" class="bg-white dark:bg-[#333] border border-gray-300 rounded-r px-2 py-1">
             <img src="/images/search.webp" alt="Rechercher" loading="lazy" aria-label="Rechercher" width="36" height="36" class="w-5 h-5 dark:bg-[#333]" />
@@ -87,7 +88,7 @@
         <!-- Panier avec compteur -->
         <a href="{{ path('cart_show') }}" class="relative hover:opacity-80 transition" aria-label="Mon panier">
           <img src="/images/panier-vide.webp" alt="Mon panier" loading="lazy" width="60" height="50" class="w-8 h-8" />
-          <span id="cart-count" class="absolute top-0 right-0 bg-roseFonce text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-bold {{ cartItemCount == 0 ? 'hidden' : '' }}">{{ cartItemCount }}</span>
+          <span id="cart-count" aria-live="polite" class="absolute top-0 right-0 bg-roseFonce text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-bold {{ cartItemCount == 0 ? 'hidden' : '' }}">{{ cartItemCount }}</span>
         </a>
 
         <button id="theme-toggle" aria-label="Changer de thème" aria-pressed="false"

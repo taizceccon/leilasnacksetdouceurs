@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   {% block meta %}
     <meta name="description" content="Douceurs & Snacks de Leila - Des gourmandises artisanales livrées chez vous avec amour." />
@@ -65,9 +65,10 @@
 
 </head>
 <body class="min-h-screen flex flex-col bg-creme text-gray-800 dark:bg-fondDark dark:text-texteClair font-sans">
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-white text-black p-2 z-50">
-        Aller directement au contenu principal
-    </a>
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:bg-white focus:text-black focus:p-2 focus:z-50">
+      Aller directement au contenu principal
+  </a>
+
   {% include 'header.html.twig' %}
 
   {% for label, messages in app.flashes %}
