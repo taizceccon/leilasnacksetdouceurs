@@ -1,55 +1,73 @@
-# leilasnacksetdouceurs
-projet - Leila Snacks & Douceurs
+#  Leila Snacks & Douceurs
 
-Bienvenue sur le dépôt GitHub du projet **Leila Snacks & Douceurs**, un site e-commerce de douceurs artisanales fait maison, développé dans le cadre de la certification **Titre Professionnel Développeur Web et Web Mobile (DWWM - Niveau 5)**.
+##  Description
 
----
-
-## Objectifs du projet
-
-- Présenter les produits de Leila de manière élégante et responsive
-- Permettre aux clients de passer commande en ligne
-- Offrir une interface d’administration pour gérer les produits, commandes et horaires
-- Prévoir l'intégration future d’un système de paiement en ligne
+**Leila Snacks** est un site e-commerce artisanal proposant des snacks sucrés et salés faits maison.  
+Les utilisateurs peuvent découvrir, rechercher et commander en ligne des produits gourmands de qualité.
 
 ---
 
-## Technologies utilisées
+##  Fonctionnalités principales
 
-- **Front-end** : HTML5, CSS3, Bootstrap, JavaScript
-- **Back-end** : PHP 8.2, Symfony 7.3.2 
-- **Base de données** : MySQL via Doctrine ORM
-- **Environnement** : Docker / Docker Compose
-- **Outils** : GitHub, Trello, Figma
+-  Recherche de produits par mots-clés avec affichage dynamique des résultats  
+-  Affichage des produits par catégories : *Snacks*, *Douceurs*, *Packs & Coffrets*  
+-  Pages produits avec description, prix, image, vidéo  
+-  Formulaire de contact sécurisé avec validation RGPD et envoi d’email via **Symfony Mailer**   
+-  Pages statiques : *Mentions légales*, *Conditions générales*, *À propos*  
+-  Gestion des erreurs et affichage de flash messages utilisateur  
+-  Test d’envoi d’e-mails en développement via **Mailpit**  
+-  Panier : ajout, mise à jour, suppression, validation de commande  
+-  Gestion des avis clients  
+-  Interface d’administration : gestion des produits, catégories, avis  
+-  Paiement en ligne sécurisé via **Stripe** (avec webhooks)  
+-  Inscription et authentification des utilisateurs
 
 ---
 
-##  Installation en local
+## 🛠 Installation locale (avec Symfony CLI)
 
-### 1. Cloner le projet
-```bash
+> **Prérequis** : PHP ≥ 8.1, Composer, Symfony CLI, MySQL, Mailpit (ou Docker)
+
+### 1. Cloner le dépôt
+
 git clone https://github.com/taizceccon/leilasnacksetdouceurs.git
 cd leilasnacksetdouceurs
+2. Installer les dépendances PHP
 
-##Fonctionnalités principales
-Affichage des produits par catégorie
+composer install
+3. Configurer la base de données (fichier .env)
+DATABASE_URL="mysql://user:password@127.0.0.1:3306/leila_snacks?serverVersion=8.0"
 
-Panier avec système de commande
-Formulaire de contact
-Gestion des horaires
-Interface d’administration (CRUD Produits, Commandes, Horaires)
+4. Appliquer les migrations
+
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+
+5. Configurer l’envoi d’emails en développement (Mailpit) .env
+
+MAILER_DSN=smtp://mailpit:1025
+
+6. Lancer le serveur Symfony
+symfony server:start  
+
+Lancement avec Docker
+docker-compose up --build
+Cela démarrera :
+Symfony (PHP + Apache), MySQL, MongoDB, phpMyAdmin, Mailpit
+
+Accéder 
+http://localhost:8080
+
+Accéder à l’interface Mailpit
+http://localhost:8025
+
+Accéder à PhpMyAdmin
+http://localhost:8899/
+
+🤝 Contribution
+Les contributions sont les bienvenues !
+
+📄 Licence
+Ce projet est sous licence MIT.
 
 
-## Documentation complémentaire
-Charte graphique : /docs/charte_graphique.pdf
-
-Diagrammes UML : /docs/diagrammes/
-
-Présentation projet : /docs/dossier_projet_leila.pdf
-
-« Ce projet est encore en cours d’intégration, la partie paiement est optionnelle selon le temps restant. »
-
-## Auteur
-Taiz Ceccon 
-Développeuse Web en formation DWWM - Promo 2025
-linkedin.com/in/taiz-ceccon
