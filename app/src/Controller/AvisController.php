@@ -22,6 +22,7 @@ class AvisController extends AbstractController
         $form = $this->createForm(AvisType::class, $avis);
 
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $dm->persist($avis);
             $dm->flush();
@@ -39,15 +40,38 @@ class AvisController extends AbstractController
     public function avis_list(DocumentManager $dm): Response
     {
          // Récupère tous les avis avec findAll
-         //$avisList = $dm->getRepository(Avis::class)->findAll(); 
-        // Passe la liste des avis à la vue Twig
-        // return $this->render('avis/list.html.twig', [
-       //    'avis' => $avisList,  ]);
+         // $avisList = $dm->getRepository(Avis::class)->findAll(); 
+         // Passe la liste des avis à la vue Twig
+         // return $this->render('avis/list.html.twig', [
+         // 'avis' => $avisList,  ]);
+
         $avisList = $dm->getRepository(Avis::class)->findBy(['isModerated' => true]);
         return $this->render('avis/list.html.twig', [
             'avis' => $avisList,
         ]);
     }
+        #[Route('/delete/{id}', name: 'app_avis_delete', methods: ['POST'])]
+        #[IsGranted('ROLE_ADMIN')]
+        public function delete(Request $request, DocumentManager $dm, string $id): RedirectResponse
+        {
+            $avis = $dm->getRepository(Avis::class)->find($id);
+
+            if (!$avis) {
+                $this->addFlash('error', 'Avis non trouvé.');
+                return $this->redirectToRoute('app_avis_list');
+            }
+
+            if ($this->isCsrfTokenValid('delete-avis' . $avis->getId(), $request->request->get('_token'))) {
+                $dm->remove($avis);
+                $dm->flush();
+                $this->addFlash('success', 'Avis supprimé avec succès.');
+            } else {
+                $this->addFlash('error', 'Jeton CSRF invalide.');
+            }
+
+            return $this->redirectToRoute('app_avis_list');
+        }
+
     #[Route('/admin/avis/{id}/valider', name: 'admin_avis_valider')]
     #[IsGranted('ROLE_ADMIN')]
     public function validerAvis(DocumentManager $dm, string $id): RedirectResponse
@@ -61,41 +85,12 @@ class AvisController extends AbstractController
             $dm->flush();
             $this->addFlash('success', 'Avis modéré avec succès.');
         }
-
         return $this->redirectToRoute('admin_index');
     }
 
-    #[Route('/delete/{id}', name: 'app_avis_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function delete(Request $request, DocumentManager $dm, string $id): RedirectResponse
-    {
-        $avis = $dm->getRepository(Avis::class)->find($id);
 
-        if (!$avis) {
-            $this->addFlash('error', 'Avis non trouvé.');
-            return $this->redirectToRoute('app_avis_list');
-        }
-
-        if ($this->isCsrfTokenValid('delete-avis' . $avis->getId(), $request->request->get('_token'))) {
-            $dm->remove($avis);
-            $dm->flush();
-            $this->addFlash('success', 'Avis supprimé avec succès.');
-        } else {
-            $this->addFlash('error', 'Jeton CSRF invalide.');
-        }
-
-        return $this->redirectToRoute('app_avis_list');
-    }
-
-    #[Route('/mongo-test', name: 'mongo_test')]
-    public function test(DocumentManager $dm): Response
-    {
-        $avis = new Avis();
-        $avis->setNom('Test')->setEmail('test@test.com')->setMessage('Ceci est un test');
-        $dm->persist($avis);
-        $dm->flush();
-
-        return new Response('Avis sauvegardé');
-    }
-
+   
 }
+
+ 
+

@@ -1,0 +1,5 @@
+body {
+    font-family: 'Playfair Display', sans-serif;
+    background-color: theme('colors.crème');
+    color: theme('colors.gray.800');
+}

@@ -1,24 +1,18 @@
 <?php
 
 namespace App\Controller;
-
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Form\CategoryForm;
 use App\Form\ProductType;
 use App\Entity\Order;
 use App\Entity\User;
-
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use App\Repository\OrderRepository; 
-
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
 use App\Form\RegistrationForm;
-
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,22 +22,18 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-
 use App\Document\Avis;
 use Doctrine\ODM\MongoDB\DocumentManager;
 
-
 class AdminController extends AbstractController
 {
-     #[Route('/admin', name: 'admin_index')]
+    #[Route('/admin', name: 'admin_index')]
     public function indexAdmin(Request $request, CategoryRepository $categoryRepository, ProductRepository $productRepository, UserRepository $userRepository, OrderRepository $orderRepository, DocumentManager $dm): Response
     {
         $search = $request->query->get('search');
         $productSearch = $request->query->get('product_search');
-
         // Recherche des catégories
         $categories = $search
             ? $categoryRepository->createQueryBuilder('c')
@@ -52,7 +42,6 @@ class AdminController extends AbstractController
                 ->getQuery()
                 ->getResult()
             : $categoryRepository->findAll();
-
         // Recherche des produits
         $products = $productSearch
             ? $productRepository->createQueryBuilder('p')
@@ -61,34 +50,26 @@ class AdminController extends AbstractController
                 ->getQuery()
                 ->getResult()
             : $productRepository->findAll();
-
         // Récupérer le nombre total des commandes
         $orderCount = $orderRepository->count([]);
-
         // Récupérer toutes les commandes
         // $orders = $orderRepository->findAll();
         $orders = $orderRepository->findBy([], ['createdAt' => 'DESC']);
-
-         // Récupérer le nombre total des avis (MongoDB)
-         
+         // Récupérer le nombre total des avis (MongoDB)         
         $avisCount = $dm->createQueryBuilder(Avis::class)
         ->count()
         ->getQuery()
         ->execute();
-
-        // Données statistiques - tableau de bord
-        return $this->render('admin/dashboard/index.html.twig', [
+         return $this->render('admin/dashboard/index.html.twig', [
             'categories' => $categories,
             'products' => $products,
             'search' => $search,
             'product_search' => $productSearch,
-            // Données statistiques
             'orderCount' => $orderCount,
             'productCount' => $productRepository->count([]),
             'categoryCount' => $categoryRepository->count([]),
             'userCount' => $userRepository->count([]),
             'users' => $userRepository->findAll(),
-            // 'clientCount' => $userRepository->count([]), // à adapter si tu as une entité User/Client
             'avisCount' => $avisCount,
             'orders' => $orders,
         ]);
@@ -145,7 +126,27 @@ class AdminController extends AbstractController
         ]);
     }
 
-     #[Route('/admin/new', name: 'admin_product_new')]
+   #[Route('/admin/all', name: 'admin_order_index')]
+    public function adminIndex(EntityManagerInterface $em): Response
+    {
+        $orders = $em->getRepository(Order::class)->findBy([], ['createdAt' => 'DESC']);
+
+        return $this->render('admin/order/index.html.twig', [
+            'orders' => $orders,
+        ]);
+    }
+
+    #[Route('/admin/produits', name: 'admin_products_index')]
+    public function listProducts(ProductRepository $productRepository): Response
+    {
+        $products = $productRepository->findAll();
+
+        return $this->render('admin/product/index.html.twig', [
+            'products' => $products,
+        ]);
+    }
+
+    #[Route('/admin/new', name: 'admin_product_new')]
     public function newProduct(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $product = new Product();
@@ -243,15 +244,12 @@ class AdminController extends AbstractController
         $category = new Category();
         $form = $this->createForm(CategoryForm::class, $category);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($category);
             $entityManager->flush();
-
             $this->addFlash('success', 'Catégorie ajoutée.');
             return $this->redirectToRoute('admin_category_index');
         }
-
         return $this->render('admin/category/new.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -298,25 +296,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-   #[Route('/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
-    {
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error,
-        ]);
-    }
-
-    #[Route('/logout', name: 'app_logout')]
-    public function logout(): void
-    {
-        throw new \Exception('Logout is handled by Symfony');
-    }
-
-
+  
     #[Route('/admin/avis', name: 'admin_avis_index')]
     public function index(DocumentManager $dm): Response
     {

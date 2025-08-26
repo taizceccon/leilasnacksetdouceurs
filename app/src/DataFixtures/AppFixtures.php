@@ -23,10 +23,7 @@ class AppFixtures extends Fixture
     }
 
     public function load(ObjectManager $manager): void
-    {
-        // $product = new Product();
-        // $manager->persist($product);
-        
+    {      
         // User
         $user = new User();
         $user->setEmail('test@test.com');
@@ -59,9 +56,10 @@ class AppFixtures extends Fixture
             $product->setCategory($randomCategory);
         
             $manager->persist($product);
-        }
-    
-
+        } 
         $manager->flush();
     }
 }
+
+        // $product = new Product();
+        // $manager->persist($product);

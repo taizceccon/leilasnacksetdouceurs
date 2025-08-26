@@ -59,6 +59,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+         $this->roles = ['ROLE_USER'];
     }
     public function getOrders(): Collection
     {

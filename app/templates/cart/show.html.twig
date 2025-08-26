@@ -48,7 +48,8 @@
                             <td class="p-3 text-center">
                                 <form action="{{ path('cart_update', { id: item.product.id }) }}" method="POST" class="inline-block js-update-form" data-product-id="{{ item.product.id }}">
                                     <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="dark:bg-[#1e1e1e] dark:text-gray-200 border px-2 py-1 w-16 text-sm rounded" />
-                                    <button type="submit"class="bg-red-300 hover:bg-rosé text-white px-3 py-1 rounded text-sm font-semibold"> Modifier </button>
+                                    <button type="submit"class="bg-red-300 hover:bg-rosé text-white px-3 py-1 rounded text-sm font-semibold"> 
+                                    Modifier </button>
                                 </form>
                             </td>
                             <td class="p-3 text-center font-bold text-green-700 dark:text-green-400 js-subtotal">
@@ -57,7 +58,8 @@
                             <td class="p-3 text-center">
                                 <form action="{{ path('cart_remove', {id: item.product.id}) }}" method="post" class="js-cart-remove">
                                 {# <form action="{{ path('cart_remove', {'id': item.product.id}) }}" method="POST" onsubmit="return confirm('Supprimer {{ item.product.titre }} du panier ?');"> #}
-                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm font-semibold"> <i class="fas fa-trash"></i>Supprimer</button>
+                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm font-semibold"> 
+                                    <i class="fas fa-trash"></i>Supprimer</button>
                                 </form>
                             </td>
                         </tr>
@@ -132,7 +134,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // GESTION DE LA MISE À JOUR DE QUANTITÉ
+    // MISE À JOUR DE QUANTITÉ
     document.querySelectorAll('form.js-update-form').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -185,11 +187,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // 🗑️ GESTION DE LA SUPPRESSION DE PRODUIT
+    // SUPPRESSION DE PRODUIT
     document.querySelectorAll('form[action*="cart/remove"]').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-
             Swal.fire({
                 title: 'Supprimer cet article ?',
                 text: "Cette action est irréversible.",

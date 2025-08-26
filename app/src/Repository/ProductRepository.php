@@ -43,8 +43,6 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-
     public function findByCategoryName(string $name): array
     {
         return $this->createQueryBuilder('p')
@@ -58,23 +56,19 @@ class ProductRepository extends ServiceEntityRepository
     public function searchByKeyword(string $keyword): array
     {
         $conn = $this->getEntityManager()->getConnection();
-
         $words = array_filter(preg_split('/\s+/', $keyword));
         $searchString = implode(' ', array_map(fn($w) => $w . '*', $words));
-
         $sql = "
             SELECT p.id
             FROM product p
             WHERE MATCH(p.titre, p.description) AGAINST (:search IN BOOLEAN MODE)
             ORDER BY MATCH(p.titre, p.description) AGAINST (:search IN BOOLEAN MODE) DESC";
-
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery(['search' => $searchString]);
         $ids = array_column($resultSet->fetchAllAssociative(), 'id');
         if (empty($ids)) {
             return [];
         }
-
         $products = $this->createQueryBuilder('p')
             ->leftJoin('p.category', 'c')
             ->addSelect('c')
@@ -82,19 +76,16 @@ class ProductRepository extends ServiceEntityRepository
             ->setParameter('ids', $ids)
             ->getQuery()
             ->getResult();
-
-         $productsById = [];
+        $productsById = [];
         foreach ($products as $product) {
             $productsById[$product->getId()] = $product;
         }
-
         $orderedProducts = [];
         foreach ($ids as $id) {
             if (isset($productsById[$id])) {
                 $orderedProducts[] = $productsById[$id];
             }
         }
-
         return $orderedProducts;
     }
 }

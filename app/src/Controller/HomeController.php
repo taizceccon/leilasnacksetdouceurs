@@ -62,7 +62,7 @@ class HomeController extends AbstractController
     {
         $categories = $categoryRepository->findAllWithProducts();
 
-        return $this->render('product/index.html.twig', [
+        return $this->render('product.html.twig', [
             'categories' => $categories,
         ]);
     }
@@ -79,7 +79,6 @@ class HomeController extends AbstractController
             'product' => $product,
         ]);
     }
-
 
     #[Route('/snacks', name: 'category_snacks')]
     public function showSnacks(CategoryRepository $categoryRepository): Response
@@ -121,6 +120,14 @@ class HomeController extends AbstractController
         ]);
     }
 
+    #[Route('category/{id}', name: 'app_category_show', methods: ['GET'])]
+    public function showCategory(Category $category): Response
+    {
+        return $this->render('category/show.html.twig', [
+            'category' => $category,
+        ]);
+    } 
+
     #[Route('/contact', name: 'app_contact')]
     public function contact(Request $request, EntityManagerInterface $em, MailerInterface $mailer): Response
     {
@@ -129,6 +136,7 @@ class HomeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+             // Le CSRF est validé automatiquement ici
             $contact->setCreatedAt(new \DateTimeImmutable());
             $em->persist($contact);
             $em->flush();
@@ -168,36 +176,7 @@ class HomeController extends AbstractController
         return $this->render('faq.html.twig');
     }
    
-    #[Route('category/{id}', name: 'app_category_show', methods: ['GET'])]
-    public function showCategory(Category $category): Response
-    {
-        return $this->render('category/show.html.twig', [
-            'category' => $category,
-        ]);
-    }
-
-    #[Route('/mail-test', name: 'mail_test')]
-    public function sendTestMail(MailerInterface $mailer)
-    {
-       $email = (new Email())
-            ->from('hello@leilasd.fr')
-            ->to('someone@leilasd.fr')
-            ->subject('Test Mailpit')
-            ->text('Ceci est un test')
-            ->html('<p>Ceci est un <strong>test</strong> Mailpit.</p>');
-
-        try {
-            $mailer->send($email);
-            return $this->json(['status' => 'Email envoyé avec succès !']);
-        } catch (TransportExceptionInterface $e) {
-            return $this->json([
-                'status' => 'Erreur lors de l\'envoi de l\'email',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    #[Route('/mentions-legales', name: 'mentions_legales')]
+      #[Route('/mentions-legales', name: 'mentions_legales')]
     public function mentions(): Response {
         return $this->render('mentions_legales.html.twig');
     }
@@ -207,7 +186,8 @@ class HomeController extends AbstractController
         return $this->render('cgv.html.twig');
     }
 
- 
+}
+
     // #[Route('/error', name: 'app_error')]
     // public function error(Request $request): Response
     // {
@@ -220,5 +200,25 @@ class HomeController extends AbstractController
 
     //     return $this->render('error/error.html.twig');
     // }
+
+     // #[Route('/mail-test', name: 'mail_test')]
+    // public function sendTestMail(MailerInterface $mailer)
+    // {
+    //    $email = (new Email())
+    //         ->from('hello@leilasd.fr')
+    //         ->to('someone@leilasd.fr')
+    //         ->subject('Test Mailpit')
+    //         ->text('Ceci est un test')
+    //         ->html('<p>Ceci est un <strong>test</strong> Mailpit.</p>');
+
+    //     try {
+    //         $mailer->send($email);
+    //         return $this->json(['status' => 'Email envoyé avec succès !']);
+    //     } catch (TransportExceptionInterface $e) {
+    //         return $this->json([
+    //             'status' => 'Erreur lors de l\'envoi de l\'email',
+    //             'message' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
          
-}

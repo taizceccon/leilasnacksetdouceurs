@@ -1,13 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: ['class', '[data-theme="dark"]'], 
-content: [
-  "./templates/**/*.{html,twig}",
-  "./src/**/*.{js,ts,vue,jsx,tsx}",
-  "./public/index.html",
-],
+  darkMode: 'class',
+  content: [
+    "./templates/**/*.{html,twig}",
+    "./assets/**/*.{js,jsx,ts,tsx,vue}",
+  ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Quicksand', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
+      },
       colors: {
         rose: '#E5C1BD',
         menthe: '#84D3CE',
@@ -17,10 +20,6 @@ content: [
         creme: '#F9F4F2',
         fondDark: '#282626ff',
         texteClair: '#F9F4F2',
-      },
-      fontFamily: {
-        primary: ['Poppins', 'sans-serif'],
-        script: ['Jost', 'sans-serif'],
       },
     },
   },

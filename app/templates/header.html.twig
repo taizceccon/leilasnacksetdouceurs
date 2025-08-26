@@ -5,7 +5,7 @@
 
       <!-- Logo centré -->
       <a href="{{ path('app_home') }}">
-        <img src="/images/logo.png" alt="Logo Leila Snacks et Douceurs" width="150"  height="150" class="mx-auto rounded" />
+        <img src="/images/logo.webp" alt="Logo Leila Snacks et Douceurs" width="150"  height="150" class="mx-auto rounded" />
       </a>
 
       <!-- Bouton burger -->
@@ -34,7 +34,7 @@
 
       <!-- Logo desktop -->
       <a href="{{ path('app_home') }}" class="flex-shrink-0 hidden md:block" aria-label="Page d'accueil">
-        <img src="/images/logo.png" alt="Logo Leila Snacks et Douceurs" width="130" height="130"
+        <img src="/images/logo.webp" alt="Logo Leila Snacks et Douceurs" width="130" height="130"
           class="mx-auto rounded mb-2" />
       </a>
 
@@ -53,7 +53,7 @@
       <div class="flex items-center space-x-4 text-vertSauge">
         <form method="get" action="{{ path('app_home') }}" class="bg-white dark:bg-[#4A403D]  flex items-center">
           <label for="search-input" class="sr-only">Rechercher</label>
-          <input type="text" name="q" value="{{ app.request.get('q') }}" placeholder="Rechercher..." class="border border-gray-300 dark:border-[#4A403D] rounded-l px-3 py-1 text-sm w-36 focus:outline-none focus:ring focus:ring-rose-300" />
+          <input type="text" name="q" value="{{ app.request.get('q') }}" placeholder="Rechercher..." class="dark:bg-[#333] border border-gray-300 dark:border-[#4A403D] rounded-l px-3 py-1 text-sm w-36 focus:outline-none focus:ring focus:ring-rose-300" />
           <button type="submit" class="bg-white dark:bg-[#333] border border-gray-300 rounded-r px-2 py-1">
             <img src="/images/search.webp" alt="Rechercher" loading="lazy" aria-label="Rechercher" width="36" height="36" class="w-5 h-5 dark:bg-[#333]" />
           </button>

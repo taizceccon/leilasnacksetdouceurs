@@ -1,48 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Douceurs de Leila{% endblock %}
+{% block title %} Douceurs de Leila - Mentions légales{% endblock %}
 
 {% block meta %}
-  <meta name="description" content="Découvrez nos snacks faits maison, sucrés et salés, livrés avec soin.">
-  <meta property="og:title" content="Snacks Artisanaux - Leila" />
+  <meta name="description" content="Mentions légales, protection des données et politique de confidentialité pour Douceurs de Leila.">
+  <meta property="og:title" content="Mentions légales - Leila Snacks" />
 {% endblock %}
 
 {% block body %}
 
+<!-- Bannière d'introduction -->
 <section class="text-center py-16 bg-[#E5C1BD]">
-    <h1 class="text-4xl font-cursive text-rose-800"> Leila Snacks & Douceurs </h1>
-    <p class="text-rose-700 mt-2">Des délices sucrés d’exception, pensés pour combler les palais les plus raffinés.</p>
+    <h1 class="text-4xl font-cursive text-rose-800">Leila Snacks & Douceurs</h1>
+    <p class="text-rose-700 mt-2">Découvrez nos délices sucrés et salés, préparés avec soin pour combler les palais les plus raffinés.</p>
 </section>
 
+<!-- Mentions légales et protection des données -->
 <section class="max-w-4xl mx-auto p-6 bg-white dark:bg-[#1e1e1e] rounded shadow">
-  <h1 class="text-3xl font-bold mb-6 text-red-400">Mentions légales</h1>
-  <h2 class="text-xl font-semibold mt-6 mb-2">Respect de la vie privée et collecte minimale</h2>
-  <p>Nous collectons uniquement les données personnelles strictement nécessaires au traitement de vos commandes et à la gestion de votre compte. Nous nous engageons à ne pas collecter de données superflues ou à des fins non explicites.</p>
 
-  <h2 class="text-xl font-semibold mb-2">Éditeur du site</h2>
+  <h1 class="text-3xl font-bold mb-6 text-red-400">Mentions légales et protection des données</h1>
+
+  <!-- Éditeur du site -->
+  <h2 class="text-xl font-semibold mt-6 mb-2">Éditeur du site</h2>
   <p>Ce site est édité par : <strong>Leila Snacks</strong></p>
-  <p>Email : contact@leilasnacks.fr</p>
+  <p>Email : <a href="mailto:contact@leilasnacks.fr" class="text-blue-500 underline">contact@leilasnacks.fr</a></p>
   <p>SIRET : 123 456 789 00012</p>
 
-  <h2 class="text-xl font-semibold mt-6 mb-2">Hébergement</h2>
-  <p>Nom de l’hébergeur : </p>
-  <p>Adresse : ...</p>
+  <!-- Conditions Générales de Vente -->
+  <h2 class="text-xl font-semibold mt-6 mb-2">Conditions Générales de Vente (CGV)</h2>
+  <p>Les CGV sont disponibles en ligne et précisent les modalités de commande, de paiement, de livraison et de rétractation afin de garantir la transparence avec les utilisateurs.</p>
 
-  <h2 class="text-xl font-semibold mt-6 mb-2">Utilisation des cookies</h2>
-  <p>Ce site n'utilise pas de cookies pour améliorer l'expérience de navigation ni mesurer l'audience. Toutefois, pour faciliter votre expérience d'achat, certaines informations, telles que votre panier, peuvent être stockées dans votre navigateur via localStorage.</p>
+  <!-- Respect du RGPD -->
+  <h2 class="text-xl font-semibold mt-6 mb-2">Respect du RGPD</h2>
+  <ul class="list-disc list-inside">
+    <li>Collecte minimale des données : seules les informations nécessaires au traitement des commandes et à la gestion des comptes sont demandées.</li>
+    <li>Consentement explicite : une case à cocher est requise pour accepter la politique de confidentialité et les conditions d’utilisation.</li>
+    <li>Aucune donnée n’est transmise à des tiers sans autorisation.</li>
+  </ul>
 
-
- <h2 class="text-xl font-semibold mt-6 mb-2">Paiement sécurisé avec Stripe</h2>
- <p>Les paiements sur notre site sont traités via la plateforme <strong>Stripe</strong>, certifiée PCI-DSS. Lors du paiement, certaines données (nom, email, coordonnées bancaires) sont transmises à Stripe de manière sécurisée uniquement pour finaliser la transaction.</p>
- <p>Aucune donnée bancaire n’est stockée sur nos serveurs.</p>
- <p>Pour plus d’informations, veuillez consulter la <a href="https://stripe.com/fr/privacy" target="_blank" class="text-blue-500 underline">politique de confidentialité de Stripe</a>.</p>
-
+  <!-- Données personnelles -->
   <h2 class="text-xl font-semibold mt-6 mb-2">Données personnelles</h2>
-  <p>Les données personnelles (nom, adresse, commande, etc.) sont utilisées uniquement pour le traitement de vos commandes. Elles sont conservées pour une durée maximale de 12 mois et ne sont jamais revendues à des tiers.</p>
-  <p>Conformément à la loi, vous pouvez demander à consulter, modifier ou supprimer vos données en nous écrivant à <a href="mailto:contact@leilasnacks.fr" class="text-blue-500 underline">contact@leilasnacks.fr</a>.</p>
+  <p>Les informations personnelles (nom, adresse, commande, etc.) sont utilisées uniquement pour le traitement des commandes et conservées pendant 12 mois après la dernière commande. Vous pouvez demander leur consultation, modification ou suppression en nous écrivant à <a href="mailto:contact@leilasnacks.fr" class="text-blue-500 underline">contact@leilasnacks.fr</a>.</p>
+
+  <!-- Cookies / stockage local -->
+  <h2 class="text-xl font-semibold mt-6 mb-2">Utilisation des cookies et stockage local</h2>
+  <p>Aucun cookie analytique ou publicitaire n’est utilisé. Seul le stockage local (localStorage) est employé pour certaines fonctionnalités, comme la gestion du panier, sans nécessiter de bannière de consentement.</p>
+
+  <!-- Paiement sécurisé -->
+  <h2 class="text-xl font-semibold mt-6 mb-2">Paiement sécurisé</h2>
+  <p>Les paiements sont traités via <strong>Stripe</strong>, certifiée PCI-DSS. Aucune donnée bancaire n’est stockée sur nos serveurs. Lors du paiement, certaines informations (nom, email, coordonnées bancaires) sont transmises à Stripe de manière sécurisée uniquement pour finaliser la transaction.</p>
+  <p>Pour plus d’informations, consultez la <a href="https://stripe.com/fr/privacy" target="_blank" class="text-blue-500 underline">politique de confidentialité de Stripe</a>.</p>
+
 </section>
-
-
-
 
 {% endblock %}

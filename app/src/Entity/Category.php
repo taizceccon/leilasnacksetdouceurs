@@ -28,24 +28,19 @@ class Category
     {
         $this->products = new ArrayCollection();
     }
-
     public function getId(): ?int
     {
         return $this->id;
     }
-
     public function getCategory(): ?string
     {
         return $this->category;
     }
-
     public function setCategory(string $category): static
     {
         $this->category = $category;
-
         return $this;
     }
-
     public function getName(): ?string
     {
         return $this->category;
@@ -65,19 +60,16 @@ class Category
             $this->products->add($product);
             $product->setCategory($this);
         }
-
         return $this;
     }
 
     public function removeProduct(Product $product): static
     {
         if ($this->products->removeElement($product)) {
-            // set the owning side to null (unless already changed)
             if ($product->getCategory() === $this) {
                 $product->setCategory(null);
             }
         }
-
         return $this;
     }
 }

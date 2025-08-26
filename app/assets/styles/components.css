@@ -1,0 +1,4 @@
+/* Exemple bouton */
+.btn-primary {
+    @apply px-4 py-2 bg-roseFonce text-white rounded-lg hover:bg-rosé transition;
+}

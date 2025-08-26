@@ -5,32 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   {% block meta %}
-    <meta name="description" content="Douceurs & Snacks de Leila - Des gourmandises artisanales livrées chez vous avec amour." />
-    <meta name="keywords" content="snacks, douceurs, sucreries, artisanales, Leila, confiseries, livraison" />
-    <meta name="author" content="Leila Snacks" />
-    <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="Douceurs & Snacks de Leila" />
-    <meta property="og:description" content="Des snacks et douceurs faits avec amour pour tous vos moments gourmands." />
-    <meta property="og:image" content="{{ asset('images/meta-preview.jpg') }}" />
-    <meta property="og:url" content="{{ app.request.uri }}" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">  {# CSP pour éviter les injections #}
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
   {% endblock %}
 
   <title>{% block title %}Douceurs & Snacks de Leila{% endblock %}</title>
 
   <link rel="icon" href="/favicon.ico" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;700&family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Polices optimisées : Playfair Display (titres), Quicksand (texte) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yT1b9J6Z+...etc" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Tailwind optimisé (version buildée en local, pas le CDN) -->
   {# <link href="/build/tailwind.css" rel="stylesheet"> #}
+  <script src="https://cdn.tailwindcss.com"></script> 
+  <!-- Styles spécifiques -->
+  <link rel="stylesheet" href="/css/style.css" />
 
-  <script>
-    
+  <script>    
     if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
     } else {
@@ -83,9 +76,10 @@
     </main>
 
  {% include 'footer.html.twig' %}
+ {% block javascripts %}
 
-  {% block javascripts %}
   <script>
+  
     document.addEventListener('DOMContentLoaded', function () {
       // Mobile menu
       const burgerBtn = document.getElementById('burger-button');
@@ -97,7 +91,9 @@
           mobileMenu.classList.toggle('hidden');
         });
       }  
+
       // Dark mode toggle
+ 
       const themeToggleBtn = document.getElementById('theme-toggle');
       const themeIcon = document.getElementById('theme-icon');
       if (themeToggleBtn && themeIcon) {
@@ -110,13 +106,13 @@
         });
       }
       // Update panier avec AJAX
+     
       document.querySelectorAll('form[action*="cart/update"]').forEach(form => {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
           const input = form.querySelector('input[name="quantity"]');
           const quantity = input.value;
           const action = form.getAttribute('action');
-
           fetch(action, {
             method: 'POST',
             headers: {
@@ -145,20 +141,66 @@
           });
         });
       });
+           
+// compteur panier
+  document.querySelectorAll('.add-to-cart-button').forEach(button => {
+      button.addEventListener('click', async (e) => {
+          e.preventDefault();
 
-      // compteur panier
-      document.querySelectorAll('.add-to-cart-button').forEach(button => {
-        button.addEventListener('click', () => {
-          const countEl = document.getElementById('cart-count');
-          let current = parseInt(countEl.textContent) || 0;
-          current++;
-          countEl.textContent = current;
-          countEl.classList.remove('hidden');
-        });
+          const form = button.closest("form");
+          if (!form) return;
+
+          const response = await fetch(form.action, {
+              method: "POST",
+              body: new FormData(form),
+              headers: { "X-Requested-With": "XMLHttpRequest" }
+          });
+
+          if (response.ok) {
+              const data = await response.json();
+              if (data.cartItemCount !== undefined) {
+                  cartCountEl.textContent = data.cartItemCount;
+                  cartCountEl.classList.remove("hidden");
+              }
+          }
       });
-    });
-  </script>
-  {% endblock %}
+  });
 
+    // ✅ Cas: mise à jour dans la page panier
+    document.querySelectorAll('.update-cart-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const response = await fetch(form.action, {
+                method: "POST",
+                body: new FormData(form)
+            });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.cartItemCount !== undefined) {
+                    cartCountEl.textContent = data.cartItemCount;
+                    cartCountEl.classList.toggle('hidden', data.cartItemCount === 0);
+                }
+            }
+        });
+    });
+
+    // ✅ Cas: suppression produit
+    document.querySelectorAll('.remove-from-cart').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const response = await fetch(button.href, { method: "POST" });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.cartItemCount !== undefined) {
+                    cartCountEl.textContent = data.cartItemCount;
+                    cartCountEl.classList.toggle('hidden', data.cartItemCount === 0);
+                }
+            }
+        });
+    });
+});
+     </script>
+
+  {% endblock %}
 </body>
 </html>

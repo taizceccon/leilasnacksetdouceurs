@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\User as AppUser;
+use App\Entity\Order;
 use App\Form\RegistrationForm;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
@@ -65,7 +66,7 @@ class RegistrationController extends AbstractController
             $user->setEmail($emailFromQuery);
         }
 
-        // $form = $this->createForm(RegistrationForm::class, $user);
+
         $form = $this->createForm(RegistrationForm::class, $user, [
             'email_readonly' => !empty($emailFromQuery),
         ]);
@@ -130,49 +131,104 @@ class RegistrationController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
 
-
     #[Route('/mon-compte', name: 'app_user_dashboard')]
-        public function userDashboard(
-            Request $request,
-            EntityManagerInterface $entityManager,
-            UserPasswordHasherInterface $userPasswordHasher
-        ): Response {
-            $user = $this->getUser();
+    public function userDashboard(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $userPasswordHasher
+    ): Response {
+        $user = $this->getUser();
 
-            if (!$user instanceof AppUser) {
-                return $this->redirectToRoute('app_login');
-            }
+        if (!$user instanceof AppUser) {
+            return $this->redirectToRoute('app_login');
+        }
 
-            $form = $this->createForm(RegistrationForm::class, $user);
-            $form->handleRequest($request);
+        // Récupérer les commandes de l'utilisateur
+        $orders = $entityManager->getRepository(Order::class)
+            ->findBy(['user' => $user], ['createdAt' => 'DESC']);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $plainPassword = $form->get('plainPassword')->getData();
+        // Formulaire avec option is_edit = true
+        $form = $this->createForm(RegistrationForm::class, $user, [
+            'email_readonly' => true,
+            'is_edit' => true,
+        ]);
+        $form->handleRequest($request);
 
-                if (!empty($plainPassword)) {
-                    if (!is_string($plainPassword)) {
-                        $this->addFlash('error', 'Le mot de passe doit être une chaîne de caractères.');
-                        return $this->redirectToRoute('app_user_dashboard');
-                    }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $plainPassword = $form->get('plainPassword')->getData();
+            $currentPassword = $form->get('currentPassword')->getData();
 
-                    try {
-                        $hashedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
-                        $user->setPassword($hashedPassword);
-                    } catch (\Throwable $e) {
-                        $this->addFlash('error', 'Erreur lors du hachage du mot de passe.');
-                        return $this->redirectToRoute('app_user_dashboard');
-                    }
+            if (!empty($plainPassword)) {
+                if (empty($currentPassword) || !$userPasswordHasher->isPasswordValid($user, $currentPassword)) {
+                    $this->addFlash('error', 'Le mot de passe actuel est incorrect.');
+                    return $this->redirectToRoute('app_user_dashboard');
                 }
 
-                $entityManager->flush();
-                $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
-
-                return $this->redirectToRoute('app_user_dashboard');
+                $hashedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($hashedPassword);
             }
 
-            return $this->render('registration/edit_user.html.twig', [
-                'registrationForm' => $form->createView(),
-            ]);
+            $entityManager->flush();
+            $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
+            return $this->redirectToRoute('app_user_dashboard');
         }
+
+        return $this->render('registration/user.html.twig', [
+            'registrationForm' => $form->createView(),
+            'orders' => $orders,
+        ]);
+    }
+
+
+    // #[Route('/mon-compte', name: 'app_user_dashboard')]
+    // public function userDashboard(
+    //     Request $request,
+    //     EntityManagerInterface $entityManager,
+    //     UserPasswordHasherInterface $userPasswordHasher
+    // ): Response {
+    //     $user = $this->getUser();
+
+    //     if (!$user instanceof AppUser) {
+    //         return $this->redirectToRoute('app_login');
+    //     }
+
+    //     // Récupérer les commandes de l'utilisateur
+    //     $orders = $entityManager->getRepository(Order::class)
+    //         ->findBy(['user' => $user], ['createdAt' => 'DESC']);
+
+    //     //Ajout de l'option email_readonly pour empêcher la modif
+    //     $form = $this->createForm(RegistrationForm::class, $user, [
+    //         'email_readonly' => true,
+    //     ]);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $plainPassword = $form->get('plainPassword')->getData();
+    //         $currentPassword = $form->get('currentPassword')->getData();
+
+    //         //Vérifier si l’utilisateur veut changer son mot de passe
+    //         if (!empty($plainPassword)) {
+    //             // Vérification que le mot de passe actuel est correct
+    //             if (empty($currentPassword) || !$userPasswordHasher->isPasswordValid($user, $currentPassword)) {
+    //                 $this->addFlash('error', 'Le mot de passe actuel est incorrect.');
+    //                 return $this->redirectToRoute('app_user_dashboard');
+    //             }
+
+    //             //OK → on met à jour le mot de passe
+    //             $hashedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
+    //             $user->setPassword($hashedPassword);
+    //         }
+
+    //         $entityManager->flush();
+    //         $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
+
+    //         return $this->redirectToRoute('app_user_dashboard');
+    //     }
+
+    //     return $this->render('registration/user.html.twig', [
+    //         'registrationForm' => $form->createView(),
+    //         'orders' => $orders,
+    //     ]);
+    // }
     
 }

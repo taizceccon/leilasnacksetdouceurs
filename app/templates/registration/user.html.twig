@@ -8,8 +8,10 @@
 {% endblock %}
 
 {% block body %}
+
  <div class="flex items-center justify-center bg-white dark:bg-[#333] py-6 px-4 sm:px-6 lg:px-8 flex-grow">
-    <div class="max-w-md w-full bg-white dark:bg-[#333] p-8 rounded-lg shadow-xl border border-jaunePale space-y-6">
+    <div class="max-w-4xl w-full mx-auto bg-white dark:bg-[#333] p-8 rounded-lg shadow-xl border border-jaunePale space-y-6">
+
 
     <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Mon compte</h1>
 
@@ -25,15 +27,32 @@
         </div>
     {% endfor %}
 
-    {{ form_start(form) }}
+    {{ form_start(registrationForm) }}
         <div class="grid grid-cols-1 gap-4">
             <!-- Champs de formulaire avec gestion des classes Dark Mode -->
-            {{ form_row(form.nom, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
-            {{ form_row(form.adresse, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
-            {{ form_row(form.telephone, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
-            {{ form_row(form.plainPassword, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
-            {{ form_row(form.email, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
-            {{ form_row(form.agreeTerms, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
+
+            {# Email en lecture seule #}        
+            {{ form_row(registrationForm.email, { 
+                'attr': { 
+                    'readonly': true, 
+                    'class': 'p-2 border rounded-md bg-gray-100 dark:bg-[#3a3a3a] text-gray-700 dark:text-white' 
+                } 
+            }) }}             
+            {{ form_row(registrationForm.nom, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
+            {{ form_row(registrationForm.adresse, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
+            {{ form_row(registrationForm.telephone, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
+            {# {{ form_row(registrationForm.plainPassword, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }} #}
+            {{ form_row(registrationForm.currentPassword, { 
+                'attr': {
+                    'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'
+                }
+            }) }}
+            {{ form_row(registrationForm.plainPassword, { 
+                'attr': {
+                    'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'
+                }
+            }) }}
+            {{ form_row(registrationForm.agreeTerms, { 'attr': {'class': 'p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#3a3a3a] dark:text-white dark:border-gray-700'} }) }}
         </div>
         <div class="mt-6 flex justify-between items-center">
             <button class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg" type="submit">
@@ -43,7 +62,7 @@
                 <i class="fas fa-sign-out-alt mr-2"></i> Se déconnecter
             </a>
         </div>
-    {{ form_end(form) }}
+    {{ form_end(registrationForm) }}
 
     <hr class="my-8 border-gray-300 dark:border-gray-600">
 

@@ -61,8 +61,8 @@ section {
 }
 
 :root {
-    --font-primary: 'Poppins', sans-serif;
-    --font-script: 'Jost', sans-serif;
+    --font-primary: 'Playfair Display', sans-serif;
+    --font-script: 'Quicksand', sans-serif;
 
     --color-rose: #E5C1BD;
     --color-menthe: #84D3CE;
@@ -85,7 +85,7 @@ body {
 }
 
 /* Titres principaux (h1, h2...) */
-h1, h2, .section-title {
+h1, .section-title {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
     color: #C4847C;
@@ -95,13 +95,13 @@ h1, h2, .section-title {
 
 /* Sous-titres */
 h3, h4, .sub-title {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Quicksand', sans-serif;
     font-weight: 600;
     color: #7B9E87; /* vert sauge */
 }
 
 h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Quicksand', serif;
     font-weight: 700;
     font-size: 2rem; /* ou ce qui convient */
     color: #7B9E87; /* ou ta couleur verte sauge */
